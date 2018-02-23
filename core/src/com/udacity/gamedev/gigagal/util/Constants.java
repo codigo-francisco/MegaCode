@@ -23,7 +23,7 @@ public class Constants {
 
     public static final float JUMP_SPEED = 200;
     public static final Vector2 KNOCKBACK_VELOCITY = new Vector2(200, 200);
-    public static final float MAX_JUMP_DURATION = .1f;
+    public static final float MAX_JUMP_DURATION = 0.1f;
     public static final int INITIAL_AMMO = 10;
     public static final int INITIAL_LIVES = 3;
 
@@ -100,6 +100,15 @@ public class Constants {
     public static final float HUD_MARGIN = 20;
     public static final String HUD_AMMO_LABEL = "Ammo: ";
     public static final String HUD_SCORE_LABEL = "Score: ";
+
+    // Onscreen Controls
+    public static final float ONSCREEN_CONTROLS_VIEWPORT_SIZE = 200;
+    public static final String MOVE_LEFT_BUTTON = "button-move-left";
+    public static final String MOVE_RIGHT_BUTTON = "button-move-right";
+    public static final String SHOOT_BUTTON = "button-shoot";
+    public static final String JUMP_BUTTON = "button-jump";
+    public static final Vector2 BUTTON_CENTER = new Vector2(15, 15);
+    public static final float BUTTON_RADIUS = 32;
 
     // Victory/Game Over screens
     public static final float LEVEL_END_DURATION = 5;

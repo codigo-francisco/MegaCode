@@ -29,7 +29,6 @@ allprojects {
     }
 
     repositories {
-        mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
@@ -37,6 +36,7 @@ allprojects {
         maven {
             url 'https://maven.google.com'
         }
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -66,6 +66,7 @@ project(":android") {
         compile 'com.android.support:recyclerview-v7:26.0.1'
         compile 'com.android.support:support-v4:26.0.1'
         compile 'com.google.blockly.android:blocklylib-vertical:0.9-beta.20171003'
+        compile 'com.github.ctodobom:OpenCV-3.1.0-Android:-SNAPSHOT'
     }
 }
 
@@ -93,6 +94,9 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        compile ('com.googlecode.json-simple:json-simple:1.1.1') {
+            exclude module: 'junit'
+        }
     }
 }
 

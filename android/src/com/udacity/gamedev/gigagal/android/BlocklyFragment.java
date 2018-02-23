@@ -51,7 +51,7 @@ public class BlocklyFragment extends AbstractBlocklyFragment {
 
     CodeGenerationRequest.CodeGeneratorCallback mCodeGeneratorCallback = null;
 
-    Level level;
+    private static Level level;
 
     @NonNull
     @Override

@@ -17,7 +17,6 @@ import com.udacity.gamedev.gigagal.entities.Powerup;
 import com.udacity.gamedev.gigagal.util.Constants;
 import com.udacity.gamedev.gigagal.util.Enums.Direction;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -52,6 +51,7 @@ public class Level {
         victory = false;
         score = 0;
 
+
     }
 
     public static Level debugLevel() {
@@ -63,7 +63,21 @@ public class Level {
     private Queue<Comando> comandos;
 
     public void setComandos(List<String> comandos){
-        this.comandos = transformarCadenaAComandos(comandos);
+        Queue<Comando> comandosEnum = new LinkedList<Comando>();
+
+        for (String comando: comandos){
+            if (comando.equals("izquierda")){
+                comandosEnum.add(Comando.CAMINAR_IZQUIERDA);
+            }else if (comando.equals("derecha")){
+                comandosEnum.add(Comando.CAMINAR_DERECHA);
+            }else if (comando.equals("saltar")){
+                comandosEnum.add(Comando.SALTAR);
+            }else if (comando.equals("disparar")){
+                comandosEnum.add(Comando.DISPARAR);
+            }
+        }
+
+        this.comandos = comandosEnum;
     }
 
     public void procesarComandos(){
@@ -112,28 +126,9 @@ public class Level {
         }
     }
 
-    public Queue<Comando> transformarCadenaAComandos(List<String> comandos){
-
-        Queue<Comando> comandosEnum = new LinkedList<Comando>();
-
-        for (String comando: comandos){
-            if (comando.equals("izquierda")){
-                comandosEnum.add(Comando.CAMINAR_IZQUIERDA);
-            }else if (comando.equals("derecha")){
-                comandosEnum.add(Comando.CAMINAR_DERECHA);
-            }else if (comando.equals("saltar")){
-                comandosEnum.add(Comando.SALTAR);
-            }else if (comando.equals("disparar")){
-                comandosEnum.add(Comando.DISPARAR);
-            }
-        }
-
-        return comandosEnum;
-    }
-
     public void update(float delta) {
 
-        // TODO: If GigaGal has less than 0 lives, set gameOver to true
+
         if (gigaGal.getLives() < 0) {
             gameOver = true;
         } else if (gigaGal.getPosition().dst(exitPortal.position) < Constants.EXIT_PORTAL_RADIUS) {

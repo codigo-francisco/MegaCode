@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,20 +8,34 @@
     android:keepScreenOn="true"
     tools:context="com.udacity.gamedev.gigagal.android.AndroidLauncher">
 
-    <FrameLayout
-        android:id="@+id/content_blockly"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        >
-    </FrameLayout>
+        android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/content_framelayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        >
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/content_blockly"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            >
+        </FrameLayout>
 
-</LinearLayout>
+        <FrameLayout
+            android:id="@+id/content_framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <org.opencv.android.JavaCameraView
+        android:layout_height="100dp"
+        android:layout_width="100dp"
+        android:visibility="gone"
+        android:id="@+id/camera_view"
+        >
+
+    </org.opencv.android.JavaCameraView>
+</RelativeLayout>

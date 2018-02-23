@@ -9,6 +9,7 @@
     tools:context="com.udacity.gamedev.gigagal.android.AndroidLauncher">
 
     <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -34,8 +35,8 @@
         android:layout_height="100dp"
         android:layout_width="100dp"
         android:visibility="gone"
+        android:layout_alignTop="@id/linear_layout"
         android:id="@+id/camera_view"
         >
-
     </org.opencv.android.JavaCameraView>
 </RelativeLayout>

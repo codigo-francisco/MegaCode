@@ -49,6 +49,7 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 		}
 
 		cameraBridgeViewBase = (CameraBridgeViewBase)findViewById(R.id.camera_view);
+		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
 		cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
 		cameraBridgeViewBase.setCvCameraViewListener(this);
 
@@ -83,7 +84,7 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 
 	@Override
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame cvCameraViewFrame) {
-		return cvCameraViewFrame.rgba();
+		return cvCameraViewFrame.gray();
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 
 		if (!OpenCVLoader.initDebug()){
 			Log.d(TAG, "opencv inicializado");
-			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, baseLoaderCallback);
+			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, baseLoaderCallback);
 		}else{
 			Log.d(TAG, "opencv no inicializado");
 		}

@@ -1,11 +1,16 @@
 package com.udacity.gamedev.gigagal.android;
 
 import android.app.Activity;
-import android.content.res.AssetManager;
-import android.media.FaceDetector;
+import android.content.Context;
+import android.util.Log;
 
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfRect;
+import org.opencv.core.Size;
 import org.opencv.objdetect.CascadeClassifier;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,6 +19,7 @@ import java.io.InputStream;
  */
 
 public class FaceRecognition {
+    private final static String TAG = "FaceRecognition";
 
     private static FaceRecognition faceRecognition;
     private CascadeClassifier cascadeClassifier;
@@ -26,11 +32,26 @@ public class FaceRecognition {
         return faceRecognition;
     }
 
-    public FaceRecognition(Activity manager){
+    public boolean getFace(Mat image, Mat face){
+        boolean result = false;
+        MatOfRect matOfRect = new MatOfRect();
+
+        cascadeClassifier.detectMultiScale(image, matOfRect);
+
+        if (!matOfRect.empty()){
+            face = new Mat(image, matOfRect.toArray()[0]);
+            org.opencv.imgproc.Imgproc.resize(face, face, new Size(150, 150));
+            result = true;
+        }
+
+        return result;
+    }
+
+    public FaceRecognition(Activity activity){
 
         try {
-            InputStream is = manager.open("lbpcascade_frontalface_improved.xml");
-            File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
+            InputStream is = activity.getAssets().open("lbpcascade_frontalface_improved.xml");
+            File cascadeDir = activity.getDir("cascade", Context.MODE_PRIVATE);
             File mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
             FileOutputStream os = new FileOutputStream(mCascadeFile);
 
@@ -47,6 +68,7 @@ public class FaceRecognition {
             mCascadeFile.delete();
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e(TAG, "Error face recognition: "+e.getMessage());
         }
 
     }

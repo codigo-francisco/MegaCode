@@ -1,6 +1,7 @@
 package com.udacity.gamedev.gigagal.android;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -8,7 +9,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 
@@ -37,6 +41,7 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 		}
 	};
 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -52,6 +57,15 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
 		cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
 		cameraBridgeViewBase.setCvCameraViewListener(this);
+		cameraBridgeViewBase.setClickable(true);
+		cameraBridgeViewBase.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent motionEvent) {
+				Log.d(TAG, "click en camara");
+
+				return false;
+			}
+		});
 
 		BlocklyFragment blocklyFragment = new BlocklyFragment();
 
@@ -82,9 +96,12 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 
 	}
 
+	private Mat lastFrame;
+
 	@Override
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame cvCameraViewFrame) {
-		return cvCameraViewFrame.gray();
+		lastFrame = cvCameraViewFrame.gray();
+		return cvCameraViewFrame.rgba();
 	}
 
 	@Override

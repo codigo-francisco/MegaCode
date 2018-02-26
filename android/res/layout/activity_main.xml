@@ -32,13 +32,24 @@
         </FrameLayout>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="250dp"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
 
-    <org.opencv.android.JavaCameraView
-        android:layout_height="100dp"
-        android:layout_width="100dp"
-        android:visibility="gone"
-        android:layout_alignTop="@id/linear_layout"
-        android:id="@+id/camera_view"
-        >
-    </org.opencv.android.JavaCameraView>
+        <org.opencv.android.JavaCameraView
+            android:layout_height="200dp"
+            android:layout_width="200dp"
+            android:visibility="gone"
+            android:id="@+id/camera_view"
+            >
+        </org.opencv.android.JavaCameraView>
+        <Button
+            android:id="@+id/button_camera"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="Prueba Rostro" />
+    </LinearLayout>
+
 </RelativeLayout>

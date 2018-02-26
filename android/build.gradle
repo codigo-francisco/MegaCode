@@ -16,6 +16,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 18
+        targetSdkVersion 22
     }
     productFlavors {
     }
@@ -117,5 +118,5 @@ idea {
 }
 dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile project(':openCVLibrary320')
+    compile project(':openCVLibrary340')
 }

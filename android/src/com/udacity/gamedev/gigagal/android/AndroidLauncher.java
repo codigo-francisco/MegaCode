@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
@@ -26,44 +27,31 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 
 	private final static String TAG = "Launcher";
 	private CameraBridgeViewBase cameraBridgeViewBase;
+	private FaceRecognition faceRecognition;
 
-	BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(this) {
-		@Override
-		public void onManagerConnected(int status) {
-			switch (status) {
-				case LoaderCallbackInterface.SUCCESS:
-					cameraBridgeViewBase.enableView();
-					break;
-				default:
-					super.onManagerConnected(status);
-					break;
-			}
-		}
-	};
-
-	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 0);
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+				|| ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.INTERNET}, 0);
 		}else{
 			exit();
 		}
 
-		cameraBridgeViewBase = (CameraBridgeViewBase)findViewById(R.id.camera_view);
+		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
 		cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
 		cameraBridgeViewBase.setCvCameraViewListener(this);
-		cameraBridgeViewBase.setClickable(true);
-		cameraBridgeViewBase.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View view, MotionEvent motionEvent) {
-				Log.d(TAG, "click en camara");
 
-				return false;
+		Button butonCamera = findViewById(R.id.button_camera);
+		butonCamera.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "click de foto");
+				String emocion = faceRecognition.detectEmotion(lastFrame);
 			}
 		});
 
@@ -96,23 +84,38 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 
 	}
 
-	private Mat lastFrame;
+	protected Mat lastFrame;
 
 	@Override
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame cvCameraViewFrame) {
 		lastFrame = cvCameraViewFrame.gray();
-		return cvCameraViewFrame.rgba();
+		return  faceRecognition.markFace(cvCameraViewFrame.rgba());
 	}
+
+	BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(this) {
+		@Override
+		public void onManagerConnected(int status) {
+			switch (status) {
+				case LoaderCallbackInterface.SUCCESS:
+					cameraBridgeViewBase.enableView();
+					faceRecognition = new FaceRecognition(getApplicationContext());
+					break;
+				default:
+					super.onManagerConnected(status);
+					break;
+			}
+		}
+	};
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
 		if (!OpenCVLoader.initDebug()){
-			Log.d(TAG, "opencv inicializado");
-			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_2_0, this, baseLoaderCallback);
+			Log.d(TAG, "opencv inicializado asincronicamente");
+			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, baseLoaderCallback);
 		}else{
-			Log.d(TAG, "opencv no inicializado");
+			Log.d(TAG, "opencv inicializado");
 		}
 	}
 }

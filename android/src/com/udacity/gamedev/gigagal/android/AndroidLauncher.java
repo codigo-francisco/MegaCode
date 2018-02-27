@@ -34,11 +34,8 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-				|| ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.INTERNET}, 0);
-		}else{
-			exit();
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
 		}
 
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
@@ -51,7 +48,8 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 			@Override
 			public void onClick(View v) {
 				Log.d(TAG, "click de foto");
-				String emocion = faceRecognition.detectEmotion(lastFrame);
+				//String emocion = faceRecognition.detectEmotion(lastFrame);
+				faceRecognition.detectDummyEmotion();
 			}
 		});
 

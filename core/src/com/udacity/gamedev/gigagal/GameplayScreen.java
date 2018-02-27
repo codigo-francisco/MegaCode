@@ -92,9 +92,9 @@ public class GameplayScreen extends ScreenAdapter {
         level.render(batch);
 
         // TODO: When you're done testing, use onMobile() turn off the controls when not on a mobile device
-        /*if (onMobile()) {
+        if (onMobile()) {
             onscreenControls.render(batch);
-        }*/
+        }
 
         hud.render(batch, level.getGigaGal().getLives(), level.getGigaGal().getAmmo(), level.score);
         renderLevelEndOverlays(batch);

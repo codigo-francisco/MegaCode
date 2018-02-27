@@ -3,6 +3,7 @@ package com.udacity.gamedev.gigagal.android;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
@@ -41,10 +42,56 @@ public class FaceRecognition {
     private static FaceRecognition faceRecognition;
     private CascadeClassifier cascadeClassifier;
     private RequestQueue queue;
-    private static final String url  = "http:/192.168.1.96:5000/emocion";
+    private static final String url  = "http:/192.168.173.1/emocion";
+    private Context context;
+    private static final String default_result = "no_detectado";
+
+    public void detectDummyEmotion(){
+        String result = default_result;
+
+
+        try {
+            Bitmap image = BitmapFactory.decodeStream(context.getAssets().open("rostro.jpg"));
+            String encodedString = getEncodedString(image);
+
+            Map<String, String> params = new HashMap<>();
+            params.put("fotografia",encodedString);
+
+            executeRequest(params);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getEncodedString(Bitmap bitmap){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] byteArray = baos.toByteArray();
+
+        return  Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    private void executeRequest(Map<String, String> params){
+        StringRequest stringRequest = new CustomRequest( Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Log.d(TAG, "Request de rostro recibido");
+                Log.d(TAG, "Emocion " + response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Request de rostro con error " +error.getMessage());
+            }
+        }, params );
+
+        queue.add(stringRequest);
+        queue.start();
+    }
 
     public String detectEmotion(Mat image){
-        final String default_result = "no_detectado";
+
         String result = default_result;
         Mat newFace = null;
         MatOfRect matOfRect = new MatOfRect();
@@ -60,28 +107,12 @@ public class FaceRecognition {
             //Conversion de imagen a base64
             Utils.matToBitmap(newFace, bitMapFace);
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitMapFace.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] byteArray = baos.toByteArray();
-            String encodeString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            String encodeString = getEncodedString(bitMapFace);
+
             Map<String, String> params = new HashMap<>();
             params.put("fotografia",encodeString);
 
-            StringRequest stringRequest = new CustomRequest( Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.d(TAG, "Request de rostro recibido");
-                    Log.d(TAG, "Emocion " + response);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Request de rostro con error " +error.getMessage());
-                }
-            }, params );
-
-            queue.add(stringRequest);
-            queue.start();
+            executeRequest(params);
         }
 
         return result;
@@ -118,6 +149,8 @@ public class FaceRecognition {
     }
 
     public FaceRecognition(Context context){
+
+        this.context = context;
 
         queue = Volley.newRequestQueue(context);
 

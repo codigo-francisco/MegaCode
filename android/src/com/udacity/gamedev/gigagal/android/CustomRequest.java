@@ -13,8 +13,12 @@ public class CustomRequest extends StringRequest {
 
     private Map<String, String> params;
 
-    CustomRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener, Map<String, String> params){
+    CustomRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener){
         super(method, url, listener, errorListener);
+    }
+
+    CustomRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener, Map<String, String> params){
+        this(method, url, listener, errorListener);
         this.params = params;
     }
 

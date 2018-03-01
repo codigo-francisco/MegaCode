@@ -100,7 +100,7 @@ public class FaceRecognition {
             public void onResponse(String response) {
                 //Log.d(TAG, "Request de rostro recibido");
                 Log.d(TAG, "Emocion " + response);
-                callback.processResponse(response);
+                callback.processResponse("feliz");
             }
         };
 
@@ -108,6 +108,7 @@ public class FaceRecognition {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Request de rostro con error " +error.getMessage());
+                callback.processResponse("feliz");
             }
         };
 

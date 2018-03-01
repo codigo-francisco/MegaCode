@@ -57,8 +57,11 @@ public class GigaGal {
     public void init() {
         ammo = Constants.INITIAL_AMMO;
         lives = Constants.INITIAL_LIVES;
+        justDied = false;
         respawn();
     }
+
+    public boolean justDied=false;
 
     private void respawn() {
         position.set(spawnLocation);
@@ -82,6 +85,7 @@ public class GigaGal {
 
         if (position.y < Constants.KILL_PLANE) {
             lives--;
+            justDied = true;
             if (lives > -1) {
                 respawn();
             }

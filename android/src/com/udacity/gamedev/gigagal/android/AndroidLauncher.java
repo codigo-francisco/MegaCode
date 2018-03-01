@@ -3,7 +3,9 @@ package com.udacity.gamedev.gigagal.android;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +15,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 
@@ -21,6 +26,7 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
 public class AndroidLauncher extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
@@ -28,6 +34,21 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 	private final static String TAG = "Launcher";
 	private CameraBridgeViewBase cameraBridgeViewBase;
 	private FaceRecognition faceRecognition;
+	private TextView textViewEmotion;
+	private ImageView imageViewFace;
+	private LinearLayout linearLayoutCamera;
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (requestCode==0){
+
+		}
+	}
+
+	public LinearLayout getLinearLayoutCamera(){
+		return linearLayoutCamera;
+	}
+	public CameraBridgeViewBase getCameraBridgeViewBase() { return cameraBridgeViewBase; }
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -43,13 +64,24 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 		cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
 		cameraBridgeViewBase.setCvCameraViewListener(this);
 
+		textViewEmotion = findViewById(R.id.text_view_emotion);
+		imageViewFace = findViewById(R.id.image_view_face);
+		linearLayoutCamera = findViewById(R.id.linear_layout_camera);
+
 		Button butonCamera = findViewById(R.id.button_camera);
 		butonCamera.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.d(TAG, "click de foto");
-				//String emocion = faceRecognition.detectEmotion(lastFrame);
-				faceRecognition.detectDummyEmotion();
+				Bitmap imageFace = Bitmap.createBitmap(lastFrame.width(), lastFrame.height(), Bitmap.Config.ARGB_8888);
+				Utils.matToBitmap(lastFrame, imageFace);
+				imageViewFace.setImageBitmap(imageFace);
+				textViewEmotion.setText("Detectando emocion...");
+				faceRecognition.detectEmotion(lastFrame, new CustomCallback<String>() {
+					@Override
+					public void processResponse(String response) {
+						textViewEmotion.setText(response);
+					}
+				});
 			}
 		});
 
@@ -86,8 +118,8 @@ public class AndroidLauncher extends AppCompatActivity implements  AndroidFragme
 
 	@Override
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame cvCameraViewFrame) {
-		lastFrame = cvCameraViewFrame.gray();
-		return  faceRecognition.markFace(cvCameraViewFrame.rgba());
+		lastFrame = cvCameraViewFrame.rgba();
+		return  faceRecognition.markFace(lastFrame);
 	}
 
 	BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(this) {

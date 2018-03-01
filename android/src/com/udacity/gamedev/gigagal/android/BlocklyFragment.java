@@ -2,6 +2,12 @@ package com.udacity.gamedev.gigagal.android;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.blockly.android.AbstractBlocklyFragment;
 import com.google.blockly.android.codegen.CodeGenerationRequest;
@@ -9,6 +15,8 @@ import com.google.blockly.model.DefaultBlocks;
 import com.udacity.gamedev.gigagal.GameplayScreen;
 import com.udacity.gamedev.gigagal.GigaGalGame;
 import com.udacity.gamedev.gigagal.Level;
+
+import org.opencv.android.CameraBridgeViewBase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +30,37 @@ import java.util.List;
 public class BlocklyFragment extends AbstractBlocklyFragment {
 
     public final static String TAG = "BlocklyFragment";
+    private int idMenuCamera;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        idMenuCamera = menu.add("Mostrar/Ocultar Camara").getItemId();
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int idItem = item.getItemId();
+
+        if (idItem==idMenuCamera){
+            LinearLayout linearLayout = ((AndroidLauncher)getActivity()).getLinearLayoutCamera();
+            CameraBridgeViewBase camera = ((AndroidLauncher)getActivity()).getCameraBridgeViewBase();
+            if (linearLayout.getVisibility() == View.GONE) {
+                linearLayout.setVisibility(View.VISIBLE);
+                //camera.enableView();
+                camera.setVisibility(View.VISIBLE);
+            }
+            else {
+                //camera.disableView();
+                camera.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     @NonNull
     @Override

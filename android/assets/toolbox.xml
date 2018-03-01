@@ -4,6 +4,7 @@
     <block type="caminarderecha"></block>
     <block type="caminarizquierda"></block>
     <block type="saltar"></block>
+    <block type="disparar"></block>
   </category>
   <category name="Numeros">
     <block type="math_number">

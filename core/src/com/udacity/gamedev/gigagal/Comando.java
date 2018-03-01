@@ -8,7 +8,7 @@ enum Comando {
     CAMINAR_DERECHA(0),
     CAMINAR_IZQUIERDA(1),
     SALTAR(2),
-    DISPARAR(3);
+    DISPARAR(3), NADA(4);
 
     private int value;
 

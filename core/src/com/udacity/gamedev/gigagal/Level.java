@@ -80,6 +80,11 @@ public class Level {
         this.comandos = comandosEnum;
     }
 
+    private float secondsMovements = 1.5f;
+    private float jumpTime = .1f;
+    private float shootTime = .1f;
+    private Comando lastMovement = Comando.NADA;
+
     public void procesarComandos(){
         if (comandos.size() > 0){
             Comando comando = comandos.poll();
@@ -91,9 +96,10 @@ public class Level {
                     @Override
                     public void run() {
                         gigaGal.rightButtonPressed = false;
+                        lastMovement = Comando.CAMINAR_DERECHA;
                         procesarComandos();
                     }
-                },1);
+                },secondsMovements);
 
             }else if (comando == Comando.CAMINAR_IZQUIERDA){
                 gigaGal.leftButtonPressed = true;
@@ -102,25 +108,45 @@ public class Level {
                     @Override
                     public void run() {
                         gigaGal.leftButtonPressed = false;
+                        lastMovement = Comando.CAMINAR_IZQUIERDA;
                         procesarComandos();
                     }
-                },1);
+                },secondsMovements);
 
             }else if (comando == Comando.DISPARAR){
 
                 gigaGal.shoot();
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        procesarComandos();
+                    }
+                }, shootTime);
 
             }else if (comando == Comando.SALTAR){
 
                 gigaGal.jumpButtonPressed = true;
+                if (lastMovement==Comando.CAMINAR_DERECHA){
+                    gigaGal.rightButtonPressed = true;
+                }else if (lastMovement == Comando.CAMINAR_IZQUIERDA){
+                    gigaGal.leftButtonPressed = true;
+                }
 
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         gigaGal.jumpButtonPressed = false;
-                        procesarComandos();
                     }
-                },1);
+                },jumpTime);
+
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        procesarComandos();
+                        gigaGal.rightButtonPressed = false;
+                        gigaGal.leftButtonPressed = false;
+                    }
+                }, secondsMovements);
 
             }
         }

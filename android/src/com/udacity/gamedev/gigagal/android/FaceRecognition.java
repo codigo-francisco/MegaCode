@@ -42,13 +42,10 @@ public class FaceRecognition {
     private static FaceRecognition faceRecognition;
     private CascadeClassifier cascadeClassifier;
     private RequestQueue queue;
-    private static final String url  = "http:/192.168.173.1/emocion";
+    private static final String url  = "http:/192.168.1.96/emocion";
     private Context context;
-    private static final String default_result = "no_detectado";
 
     public void detectDummyEmotion(){
-        String result = default_result;
-
 
         try {
             Bitmap image = BitmapFactory.decodeStream(context.getAssets().open("rostro.jpg"));
@@ -57,7 +54,7 @@ public class FaceRecognition {
             Map<String, String> params = new HashMap<>();
             params.put("fotografia",encodedString);
 
-            executeRequest(params);
+            //executeRequest(params);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,50 +69,50 @@ public class FaceRecognition {
         return  Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
-    private void executeRequest(Map<String, String> params){
-        StringRequest stringRequest = new CustomRequest( Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                //Log.d(TAG, "Request de rostro recibido");
-                Log.d(TAG, "Emocion " + response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Request de rostro con error " +error.getMessage());
-            }
-        }, params );
+    private void executeRequest(Map<String, String> params, Response.Listener<String> listener, Response.ErrorListener errorListener){
+        StringRequest stringRequest = new CustomRequest( Request.Method.POST, url, listener , errorListener , params );
 
         queue.add(stringRequest);
         queue.start();
     }
 
-    public String detectEmotion(Mat image){
+    public void detectEmotion(Mat image, final CustomCallback callback){
+        //MatOfRect matOfRect = new MatOfRect();
 
-        String result = default_result;
-        Mat newFace = null;
-        MatOfRect matOfRect = new MatOfRect();
+        //cascadeClassifier.detectMultiScale(image, matOfRect);
 
-        cascadeClassifier.detectMultiScale(image, matOfRect);
+        //if (!matOfRect.empty()){
+            //newFace = new Mat(image, matOfRect.toArray()[0]);
+            //org.opencv.imgproc.Imgproc.resize(newFace, newFace, new Size(150, 150));
 
-        if (!matOfRect.empty()){
-            newFace = new Mat(image, matOfRect.toArray()[0]);
-            org.opencv.imgproc.Imgproc.resize(newFace, newFace, new Size(150, 150));
+        Bitmap bitMapFace = Bitmap.createBitmap(image.width(), image.height(), Bitmap.Config.ARGB_8888);
 
-            Bitmap bitMapFace = Bitmap.createBitmap(150, 150, Bitmap.Config.ARGB_8888);
+        //Conversion de imagen a base64
+        Utils.matToBitmap(image, bitMapFace);
 
-            //Conversion de imagen a base64
-            Utils.matToBitmap(newFace, bitMapFace);
+        String encodeString = getEncodedString(bitMapFace);
 
-            String encodeString = getEncodedString(bitMapFace);
+        Map<String, String> params = new HashMap<>();
+        params.put("fotografia",encodeString);
 
-            Map<String, String> params = new HashMap<>();
-            params.put("fotografia",encodeString);
+        Response.Listener<String> listener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //Log.d(TAG, "Request de rostro recibido");
+                Log.d(TAG, "Emocion " + response);
+                callback.processResponse(response);
+            }
+        };
 
-            executeRequest(params);
-        }
+        Response.ErrorListener errorListener = new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Request de rostro con error " +error.getMessage());
+            }
+        };
 
-        return result;
+        executeRequest(params, listener, errorListener);
+        //}
     }
 
     public Mat getFace(Mat image){

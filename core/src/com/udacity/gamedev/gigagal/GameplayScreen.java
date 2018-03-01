@@ -55,7 +55,7 @@ public class GameplayScreen extends ScreenAdapter {
     }
 
     private boolean onMobile() {
-        return Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS;
+        return false;//Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.iOS;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class GameplayScreen extends ScreenAdapter {
 
 //        level = Level.debugLevel();
 
-        String levelName = Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
+        String levelName = "levels/Tutorial.dt"; //Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
         level = LevelLoader.load(levelName);
 
         chaseCam.camera = level.viewport.getCamera();

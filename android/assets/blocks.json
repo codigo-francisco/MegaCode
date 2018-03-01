@@ -43,5 +43,14 @@
     "colour": 230,
     "tooltip": "Saltar",
     "helpUrl": ""
+  },
+  {
+    "type": "disparar",
+    "message0": "Disparar",
+    "previousStatement": null,
+    "nextStatement": null,
+    "colour": 230,
+    "tooltip": "Dispara al enemigo",
+    "helpUrl": ""
   }
 ]

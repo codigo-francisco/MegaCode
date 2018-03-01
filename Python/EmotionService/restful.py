@@ -13,11 +13,32 @@ app = Flask(__name__)
 def index():
     return "Raiz"
 
+#@app.route("/emocion", methods=["POST"])
+#def get_emotion():
+    #fotografia = request.form["fotografia"]
+    #print(fotografia)
+    #encoded_data = fotografia
+    #nparr = np.fromstring(encoded_data.decode("base64"), np.uint8)
+    #img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+
+    #predict = emotions[model.predict_classes(np.reshape(img, (1,150,150)))[0]]
+
+    #print(predict)
+
+    #return predict
+
+contador = 0
+
+@app.route("/emocion", methods=["POST"])
 def get_emotion():
     fotografia = request.form["fotografia"]
-    encoded_data = fotografia.split(",")[1]
+    encoded_data = fotografia #.split(",")[1]
     nparr = np.fromstring(encoded_data.decode("base64"), np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
+
+    global contador
+    cv2.imwrite("D:\\EmotionService\\imagenes\\%s.jpg" % contador)
+    contador+=1
 
     faces = classifier_face.detectMultiScale(img)
 
@@ -28,26 +49,12 @@ def get_emotion():
         img_face = img[face[1]:face[1] + face[3], face[0]:face[0] + face[2]]
         img_face = cv2.resize(img_face, (150, 150))
 
-        predict = emotions[model.predict_classes(np.reshape(img_face, (1,150,150))[0])]
+        predict = emotions[model.predict_classes(np.reshape(img_face, (1,150,150)))[0]]
 
-    return predict
+        print(predict)
 
-@app.route("/emocion", methods=["POST"])
-def get_emocion_conrostro():
-    fotografia = request.form["fotografia"]
-    encoded_data = fotografia.split(",")[1]
-    nparr = np.fromstring(encoded_data.decode("base64"), np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
-
-    predict = "no_encontrado"
-
-    try:
-        predict = emotions[model.predict_classes(np.reshape(img, (1, 150, 150))[0])]
-    except:
-        pass
-
-    return predict
+    return "feliz"
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=80, debug=True)

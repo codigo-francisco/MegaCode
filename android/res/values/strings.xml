@@ -3,4 +3,12 @@
 
     <string name="app_name">GigaGal</string>
 
+    <string-array name="items_menu">
+        <item>Perfil</item>
+        <item>Progreso</item>
+        <item>Ejercicios</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -1,55 +1,75 @@
 package com.udacity.gamedev.gigagal.android;
 
-import android.support.v4.app.Fragment;
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class RootActivity extends AppCompatActivity {
 
-    private String[] arrayItems;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private Toolbar toolbarMenu;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private PerfilFragment perfilFragment;
+    private Persona persona;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
-        arrayItems = getResources().getStringArray(R.array.items_menu);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerLayout = findViewById(R.id.drawer_layout);
 
-        //Adaptador de la lista de elementos en un listview
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, arrayItems);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        toolbarMenu = findViewById(R.id.toolbar_menu);
+        setSupportActionBar(toolbarMenu);
 
-        Fragment perfilFragment = new PerfilFragment();
+        navigationView = findViewById(R.id.menu_navigation);
 
-        //Carga de actividad por default
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, perfilFragment)
-                .commit();
-    }
+        //Instancia de opciones
+        perfilFragment = new PerfilFragment();
 
-    class DrawerItemClickListener implements ListView.OnItemClickListener{
+        //Persona Dummy
+        persona = new Persona(29, "Francisco Gonzalez", "Masculino");
 
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d("DEBUG POSICION","Posición seleccionada: "+position);
-        }
-    }
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
 
-    private void selectItem(int position){
-        //Crear un nuevo fragmento y especificar el item a mostrar basado en la posición
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        //item.setChecked(true);
 
+                        FragmentManager manager = getSupportFragmentManager();
+
+                        //Aquí se hace el cambio de fragmento
+                        int id = item.getItemId();
+                        switch (id){
+                            case R.id.perfil:
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("persona", persona);
+                                perfilFragment.setArguments(bundle);
+                                manager.beginTransaction()
+                                        .replace(R.id.content_frame, perfilFragment)
+                                        .commit();
+                                break;
+                            default:
+                                Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
+                        }
+
+                        drawerLayout.closeDrawers();
+
+                        return true;
+                    }
+                }
+        );
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
+        actionBarDrawerToggle.syncState();
     }
 }

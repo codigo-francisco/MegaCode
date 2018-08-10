@@ -1,6 +1,6 @@
 android {
-    buildToolsVersion '26.0.1'
-    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -117,6 +117,6 @@ idea {
     }
 }
 dependencies {
-    compile project(':openCVLibrary340')
     compile 'com.android.support:support-v4:26.1.0'
+    compile project(':openCVLibrary340')
 }

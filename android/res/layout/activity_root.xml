@@ -6,15 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
-    android:fitsSystemWindows="true"
-    tools:context="com.udacity.gamedev.gigagal.android.RootActivity">
+    android:fitsSystemWindows="true">
 
-    <!-- Contenido principal -->
-    <FrameLayout
+    <!-- Menu -->
+    <include layout="@layout/toolbar_menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/content_frame"
-        />
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/menu_navigation"
@@ -23,7 +20,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:menu="@menu/menu_drawer"
-        android:theme="@style/MenuTheme"
         />
 
 </android.support.v4.widget.DrawerLayout>

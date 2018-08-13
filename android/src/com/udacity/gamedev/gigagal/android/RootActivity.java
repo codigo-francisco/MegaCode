@@ -3,7 +3,9 @@ package com.udacity.gamedev.gigagal.android;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,64 +14,78 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class RootActivity extends AppCompatActivity {
+public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private Toolbar toolbarMenu;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private PerfilFragment perfilFragment;
     private Persona persona;
+    ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-
-        toolbarMenu = findViewById(R.id.toolbar_menu);
+        toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
 
+        drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
 
-        //Instancia de opciones
-        perfilFragment = new PerfilFragment();
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //Cargar el perfil por default
+        selectFragment(R.id.perfil);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return selectFragment(menuItem.getItemId());
+    }
+
+    public boolean selectFragment(int id){
         //Persona Dummy
         persona = new Persona(29, "Francisco Gonzalez", "Masculino");
 
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
+        //item.setChecked(true);
 
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        //item.setChecked(true);
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment=null;
 
-                        FragmentManager manager = getSupportFragmentManager();
+        //Aquí se hace el cambio de fragmento
+        switch (id){
+            case R.id.perfil:
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("persona", persona);
+                fragment = new PerfilFragment();
+                fragment.setArguments(bundle);
 
-                        //Aquí se hace el cambio de fragmento
-                        int id = item.getItemId();
-                        switch (id){
-                            case R.id.perfil:
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("persona", persona);
-                                perfilFragment.setArguments(bundle);
-                                manager.beginTransaction()
-                                        .replace(R.id.content_frame, perfilFragment)
-                                        .commit();
-                                break;
-                            default:
-                                Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
-                        }
+                break;
+            default:
+                Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
 
-                        drawerLayout.closeDrawers();
+        }
 
-                        return true;
-                    }
-                }
-        );
+        if (fragment!=null)
+            manager.beginTransaction()
+                    .replace(R.id.frame_layout, fragment)
+                    .commit();
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
-        actionBarDrawerToggle.syncState();
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
     }
 }

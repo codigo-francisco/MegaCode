@@ -9,4 +9,8 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="MenuTheme">
+        <item name="android:textColor">@color/md_white_1000</item>
+    </style>
+
 </resources>

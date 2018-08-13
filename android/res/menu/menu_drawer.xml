@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/estudiante">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/perfil"
+                    android:checked="true"
+                    android:title="@string/perfil"
+                    />
+                <item
+                    android:id="@+id/progreso"
+                    android:checked="false"
+                    android:title="@string/progreso"
+                    />
+            </group>
+        </menu>
+    </item>
+    <item android:title="@string/ejercicios">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/ejercicios"
+                    android:checked="false"
+                    android:title="@string/jugar"
+                    />
+            </group>
+        </menu>
+    </item>
+</menu>

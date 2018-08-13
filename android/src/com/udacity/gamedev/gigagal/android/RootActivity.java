@@ -1,55 +1,91 @@
 package com.udacity.gamedev.gigagal.android;
 
+import android.os.Parcel;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.widget.Toast;
 
-public class RootActivity extends AppCompatActivity {
+public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    private String[] arrayItems;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private Toolbar toolbarMenu;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
+    private Persona persona;
+    ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
-        arrayItems = getResources().getStringArray(R.array.items_menu);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        toolbarMenu = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbarMenu);
 
-        //Adaptador de la lista de elementos en un listview
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, arrayItems);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.menu_navigation);
 
-        Fragment perfilFragment = new PerfilFragment();
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
-        //Carga de actividad por default
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, perfilFragment)
-                .commit();
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //Cargar el perfil por default
+        selectFragment(R.id.perfil);
     }
 
-    class DrawerItemClickListener implements ListView.OnItemClickListener{
+    @Override
+    public void onBackPressed() {
+        if(drawerLayout.isDrawerOpen(GravityCompat.START))
+            drawerLayout.closeDrawer(GravityCompat.START);
+        else
+            super.onBackPressed();
+    }
 
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Log.d("DEBUG POSICION","Posición seleccionada: "+position);
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return selectFragment(menuItem.getItemId());
+    }
+
+    public boolean selectFragment(int id){
+        //Persona Dummy
+        persona = new Persona(29, "Francisco Gonzalez", "Masculino");
+
+        //item.setChecked(true);
+
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment=null;
+
+        //Aquí se hace el cambio de fragmento
+        switch (id){
+            case R.id.perfil:
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("persona", persona);
+                fragment = new PerfilFragment();
+                fragment.setArguments(bundle);
+
+                break;
+            default:
+                Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
+
         }
-    }
 
-    private void selectItem(int position){
-        //Crear un nuevo fragmento y especificar el item a mostrar basado en la posición
+        if (fragment!=null)
+            manager.beginTransaction()
+                    .replace(R.id.frame_layout, fragment)
+                    .commit();
 
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        return true;
     }
 }

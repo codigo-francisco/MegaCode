@@ -1,5 +1,6 @@
 package com.udacity.gamedev.gigagal.android;
 
+import android.content.Intent;
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -72,6 +73,10 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
                 fragment = new PerfilFragment();
                 fragment.setArguments(bundle);
 
+                break;
+            case R.id.jugar:
+                Intent intent = new Intent(this, AndroidLauncher.class);
+                startActivity(intent);
                 break;
             default:
                 Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();

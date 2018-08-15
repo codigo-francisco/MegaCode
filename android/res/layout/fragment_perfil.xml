@@ -56,27 +56,60 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/view_data"
+        android:id="@+id/text_seleccion"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
         android:text="@string/seleccionar_personaje"/>
-    <com.synnapps.carouselview.CarouselView
-        android:id="@+id/carouselView"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_below="@id/view_data"
-        app:pageColor="@color/md_grey_600"
-        app:fillColor="@color/md_black_1000"
-        app:radius="6dp"
-        app:indicatorMarginVertical="12dp"
-        app:autoPlay="false"
-        />
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/text_character"
-        android:layout_below="@id/carouselView"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        />
+        android:layout_below="@id/text_seleccion"
+        android:id="@+id/seleccion_personaje"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/button_megacode"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@drawable/borders"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:src="@drawable/megacode"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/megacode"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/button_shemegacode"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:background="@color/md_white_1000"
+                android:src="@drawable/she_megacode"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/she_megacode"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </RelativeLayout>

@@ -36,7 +36,7 @@ public class PerfilFragment extends Fragment {
     private static int REQUEST_GET_SINGLE_FILE = 1;
     private static int RESULT_OK = -1;
     private static String TAG = "PerfilFragment";
-    private AppCompatImageButton fotoPerfil;
+    private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
 
     public PerfilFragment() {
         // Required empty public constructor
@@ -80,41 +80,28 @@ public class PerfilFragment extends Fragment {
             }
         });
 
-        final TextView textCharacter = fragmentView.findViewById(R.id.text_character);
-
-        CarouselView carouselView = fragmentView.findViewById(R.id.carouselView);
-        carouselView.setPageCount(2);
-        carouselView.stopCarousel();
-        carouselView.setImageListener(new ImageListener() {
-            @Override
-            public void setImageForPosition(int position, ImageView imageView) {
-                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                imageView.setAdjustViewBounds(true);
-                switch (position){
-                    case 0:
-                        imageView.setImageResource(R.drawable.megacode);
-                        textCharacter.setText("MegaCode");
-                        break;
-                    case 1:
-                        imageView.setImageResource(R.drawable.she_megacode);
-                        break;
-                }
-            }
-        });
-        carouselView.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
-            @Override
-            public void onPageSelected(int position) {
-                switch (position){
-                    case 0:
-                        textCharacter.setText("MegaCode");
-                        break;
-                    case 1:
-                        textCharacter.setText("She-MegaCode");
-                        break;
-                }
-            }
-        });
+        buttonMegaCode = fragmentView.findViewById(R.id.button_megacode);
+        buttonMegaCode.setOnClickListener(clickListener);
+        buttonSheMegaCode = fragmentView.findViewById(R.id.button_shemegacode);
+        buttonSheMegaCode.setOnClickListener(clickListener);
 
         return fragmentView;
     }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            switch (id){
+                case R.id.button_megacode:
+                    buttonSheMegaCode.setBackgroundResource(0);
+                    buttonMegaCode.setBackgroundResource(R.drawable.borders);
+                    break;
+                case R.id.button_shemegacode:
+                    buttonMegaCode.setBackgroundResource(0);
+                    buttonSheMegaCode.setBackgroundResource(R.drawable.borders);
+                    break;
+            }
+        }
+    };
 }

@@ -7,18 +7,20 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ImageListener;
+import com.synnapps.carouselview.ViewListener;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -35,7 +37,6 @@ public class PerfilFragment extends Fragment {
     private static int RESULT_OK = -1;
     private static String TAG = "PerfilFragment";
     private AppCompatImageButton fotoPerfil;
-    private SliderLayout sliderLayout;
 
     public PerfilFragment() {
         // Required empty public constructor
@@ -79,46 +80,41 @@ public class PerfilFragment extends Fragment {
             }
         });
 
-        sliderLayout = fragmentView.findViewById(R.id.slider);
+        final TextView textCharacter = fragmentView.findViewById(R.id.text_character);
 
-        Map<String, Integer> images = new HashMap<>();
-        images.put("MegaCode", R.drawable.megacode);
-        images.put("She-MegaCode", R.drawable.she_megacode);
-
-        for(String name: images.keySet()){
-            TextSliderView textSliderView = new TextSliderView(getContext());
-            textSliderView.description(name)
-                    .image(images.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.Fit);
-            sliderLayout.addSlider(textSliderView);
-        }
-
-        sliderLayout.stopAutoCycle();
-        sliderLayout.setPresetTransformer(SliderLayout.Transformer.Accordion);
-
-        sliderLayout.addOnPageChangeListener(new ViewPagerEx.OnPageChangeListener() {
+        CarouselView carouselView = fragmentView.findViewById(R.id.carouselView);
+        carouselView.setPageCount(2);
+        carouselView.stopCarousel();
+        carouselView.setImageListener(new ImageListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            public void setImageForPosition(int position, ImageView imageView) {
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imageView.setAdjustViewBounds(true);
+                switch (position){
+                    case 0:
+                        imageView.setImageResource(R.drawable.megacode);
+                        textCharacter.setText("MegaCode");
+                        break;
+                    case 1:
+                        imageView.setImageResource(R.drawable.she_megacode);
+                        break;
+                }
             }
-
+        });
+        carouselView.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
             @Override
             public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+                switch (position){
+                    case 0:
+                        textCharacter.setText("MegaCode");
+                        break;
+                    case 1:
+                        textCharacter.setText("She-MegaCode");
+                        break;
+                }
             }
         });
 
         return fragmentView;
-    }
-
-    @Override
-    public void onStop() {
-        sliderLayout.stopAutoCycle();
-        super.onStop();
     }
 }

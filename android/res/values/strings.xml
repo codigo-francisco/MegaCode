@@ -19,4 +19,5 @@
     <string name="estudiante">Estudiante</string>
     <string name="anios">Años</string>
     <string name="seleccionar_fotografia">Seleccionar Fotografia</string>
+    <string name="seleccionar_personaje">Selecciona un personaje</string>
 </resources>

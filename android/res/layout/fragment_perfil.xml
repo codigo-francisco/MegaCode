@@ -52,12 +52,31 @@
             android:id="@+id/text_sex"/>
     </LinearLayout>
 
-    <com.daimajia.slider.library.SliderLayout
-        android:id="@+id/slider"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/view_data"
         android:layout_centerHorizontal="true"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:text="@string/seleccionar_personaje"/>
+    <com.synnapps.carouselview.CarouselView
+        android:id="@+id/carouselView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/view_data"
+        app:pageColor="@color/md_grey_600"
+        app:fillColor="@color/md_black_1000"
+        app:radius="6dp"
+        app:indicatorMarginVertical="12dp"
+        app:autoPlay="false"
         />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/text_character"
+        android:layout_below="@id/carouselView"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+        />
 </RelativeLayout>

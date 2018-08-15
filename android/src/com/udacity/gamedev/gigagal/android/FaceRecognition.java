@@ -76,7 +76,7 @@ public class FaceRecognition {
         queue.start();
     }
 
-    public void detectEmotion(Mat image, final CustomCallback callback){
+    public void detectEmotion(Mat image, final CustomCallback<String> callback){
         //MatOfRect matOfRect = new MatOfRect();
 
         //cascadeClassifier.detectMultiScale(image, matOfRect);
@@ -100,7 +100,7 @@ public class FaceRecognition {
             public void onResponse(String response) {
                 //Log.d(TAG, "Request de rostro recibido");
                 Log.d(TAG, "Emocion " + response);
-                callback.processResponse("feliz");
+                callback.processResponse(response);
             }
         };
 
@@ -108,7 +108,7 @@ public class FaceRecognition {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, "Request de rostro con error " +error.getMessage());
-                callback.processResponse("feliz");
+                callback.processResponse(error.getMessage());
             }
         };
 

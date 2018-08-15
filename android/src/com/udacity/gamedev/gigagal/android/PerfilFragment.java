@@ -8,13 +8,21 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.daimajia.slider.library.Tricks.ViewPagerEx;
+
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -27,6 +35,7 @@ public class PerfilFragment extends Fragment {
     private static int RESULT_OK = -1;
     private static String TAG = "PerfilFragment";
     private AppCompatImageButton fotoPerfil;
+    private SliderLayout sliderLayout;
 
     public PerfilFragment() {
         // Required empty public constructor
@@ -38,16 +47,10 @@ public class PerfilFragment extends Fragment {
 
         if (resultCode==RESULT_OK){
             if (requestCode == REQUEST_GET_SINGLE_FILE){
-                String[] projection = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getActivity().getContentResolver().query(data.getData(),projection, null,null, null);
-                if (cursor!=null){
-                    cursor.moveToNext();
-                    String picturePath = cursor.getString(cursor.getColumnIndex(projection[0]));
-                    fotoPerfil.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                if (data!=null){
+                    fotoPerfil.setImageURI(data.getData());
                     fotoPerfil.setBackgroundResource(R.color.translucent);
-                    cursor.close();
-                }else
-                    Log.d(TAG, "Cursor vacio");
+                }
             }
         }
     }
@@ -76,7 +79,46 @@ public class PerfilFragment extends Fragment {
             }
         });
 
+        sliderLayout = fragmentView.findViewById(R.id.slider);
+
+        Map<String, Integer> images = new HashMap<>();
+        images.put("MegaCode", R.drawable.megacode);
+        images.put("She-MegaCode", R.drawable.she_megacode);
+
+        for(String name: images.keySet()){
+            TextSliderView textSliderView = new TextSliderView(getContext());
+            textSliderView.description(name)
+                    .image(images.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+            sliderLayout.addSlider(textSliderView);
+        }
+
+        sliderLayout.stopAutoCycle();
+        sliderLayout.setPresetTransformer(SliderLayout.Transformer.Accordion);
+
+        sliderLayout.addOnPageChangeListener(new ViewPagerEx.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         return fragmentView;
     }
 
+    @Override
+    public void onStop() {
+        sliderLayout.stopAutoCycle();
+        super.onStop();
+    }
 }

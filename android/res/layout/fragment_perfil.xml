@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.udacity.gamedev.gigagal.android.PerfilFragment">
 
     <android.support.v7.widget.AppCompatImageView
@@ -19,7 +20,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-60dp"
         android:id="@+id/foto_perfil"
-        android:src="@drawable/ic_outline_insert_photo_24px"
+        android:src="@drawable/ic_outline_photo_camera_24px"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         />
@@ -36,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/name_view"
+        android:id="@+id/view_data"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal">
         <TextView
@@ -49,5 +51,13 @@
             android:layout_marginStart="5dp"
             android:id="@+id/text_sex"/>
     </LinearLayout>
+
+    <com.daimajia.slider.library.SliderLayout
+        android:id="@+id/slider"
+        android:layout_below="@id/view_data"
+        android:layout_centerHorizontal="true"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        />
 
 </RelativeLayout>

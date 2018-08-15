@@ -20,7 +20,7 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private Persona persona;
-    ActionBarDrawerToggle actionBarDrawerToggle;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +53,13 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        menuItem.setChecked(true);
         return selectFragment(menuItem.getItemId());
     }
 
     public boolean selectFragment(int id){
         //Persona Dummy
         persona = new Persona(29, "Francisco Gonzalez", "Masculino");
-
-        //item.setChecked(true);
 
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment=null;

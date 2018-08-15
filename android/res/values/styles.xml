@@ -9,8 +9,10 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="MenuTheme">
-        <item name="android:textColor">@color/md_white_1000</item>
+    <style name="Cabecera">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:fontFamily">@font/sawarabimincho_regular</item>
     </style>
 
 </resources>

@@ -31,9 +31,9 @@ public class PerfilFragment extends Fragment {
         View fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false);
 
         //Se colocan los valores
-        ((TextView)fragmentView.findViewById(R.id.text_name)).setText(persona.getName());
-        ((TextView)fragmentView.findViewById(R.id.text_age)).setText(String.valueOf(persona.getAge()));
-        ((TextView)fragmentView.findViewById(R.id.text_sex)).setText(persona.getSex());
+        ((TextView)fragmentView.findViewById(R.id.name_view)).setText(persona.getName());
+        /*((TextView)fragmentView.findViewById(R.id.text_age)).setText(String.valueOf(persona.getAge()));
+        ((TextView)fragmentView.findViewById(R.id.text_sex)).setText(persona.getSex());*/
 
         return fragmentView;
     }

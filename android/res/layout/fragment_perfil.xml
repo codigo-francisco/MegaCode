@@ -4,30 +4,50 @@
     android:layout_height="wrap_content"
     tools:context="com.udacity.gamedev.gigagal.android.PerfilFragment">
 
-        <android.support.v7.widget.AppCompatImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:src="@drawable/background_game"
-            android:id="@+id/cover_image"
-            />
+    <android.support.v7.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        android:layout_height="150dp"
+        android:src="@drawable/background_game"
+        android:id="@+id/cover_image"
+        />
 
-        <android.support.v7.widget.AppCompatImageButton
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_below="@id/cover_image"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="-60dp"
-            android:id="@+id/foto_perfil"
-            android:src="@drawable/ic_launcher"
-            />
+    <android.support.v7.widget.AppCompatImageButton
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_below="@id/cover_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-60dp"
+        android:id="@+id/foto_perfil"
+        android:src="@drawable/ic_outline_insert_photo_24px"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/name_view"
+        android:layout_below="@id/foto_perfil"
+        android:textAppearance="@style/Cabecera"
+        android:layout_centerHorizontal="true"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_view"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/name_view"
-            android:layout_below="@id/foto_perfil"
-            android:textAppearance="@style/Cabecera"
-            android:layout_centerHorizontal="true"
-            />
+            android:layout_marginEnd="5dp"
+            android:id="@+id/text_age"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:id="@+id/text_sex"/>
+    </LinearLayout>
 
 </RelativeLayout>

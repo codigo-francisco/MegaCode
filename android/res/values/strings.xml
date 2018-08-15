@@ -17,4 +17,6 @@
     <string name="sexo">sexo</string>
     <string name="opcion_no_implementada">Opcion no implementada todavía</string>
     <string name="estudiante">Estudiante</string>
+    <string name="anios">Años</string>
+    <string name="seleccionar_fotografia">Seleccionar Fotografia</string>
 </resources>

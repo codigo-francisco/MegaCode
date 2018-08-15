@@ -20,10 +20,16 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/frame_layout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/frame_layout"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

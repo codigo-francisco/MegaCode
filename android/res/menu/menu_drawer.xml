@@ -5,16 +5,19 @@
             android:id="@+id/perfil"
             android:checked="true"
             android:title="@string/perfil"
+            android:icon="@drawable/ic_baseline_account_box_24px"
             />
         <item
             android:id="@+id/progreso"
             android:checked="false"
             android:title="@string/progreso"
+            android:icon="@drawable/ic_baseline_trending_up_24px"
             />
         <item
             android:id="@+id/jugar"
             android:checked="false"
             android:title="@string/jugar"
+            android:icon="@drawable/ic_baseline_videogame_asset_24px"
             />
     </group>
 </menu>

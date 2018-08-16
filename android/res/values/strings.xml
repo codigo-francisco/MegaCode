@@ -22,4 +22,14 @@
     <string name="seleccionar_personaje">Selecciona un personaje</string>
     <string name="megacode">MegaCode</string>
     <string name="she_megacode">She-MegaCode</string>
+    <string name="Nombre">Nombre*</string>
+    <string name="Edad">Edad*</string>
+    <string name="Sexo">Sexo*</string>
+    <string name="masculino">Masculino</string>
+    <string name="femenino">Femenino</string>
+
+    <string-array name="sexos">
+        <item>@string/masculino</item>
+        <item>@string/femenino</item>
+    </string-array>
 </resources>

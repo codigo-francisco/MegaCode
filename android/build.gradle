@@ -117,4 +117,5 @@ idea {
 dependencies {
     //compile 'com.android.support:support-v4:26.1.0'
     implementation project(':openCVLibrary340')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 }

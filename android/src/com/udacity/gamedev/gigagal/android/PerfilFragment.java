@@ -18,10 +18,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.synnapps.carouselview.CarouselView;
-import com.synnapps.carouselview.ImageListener;
-import com.synnapps.carouselview.ViewListener;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;

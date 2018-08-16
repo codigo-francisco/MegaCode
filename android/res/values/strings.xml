@@ -27,6 +27,11 @@
     <string name="Sexo">Sexo*</string>
     <string name="masculino">Masculino</string>
     <string name="femenino">Femenino</string>
+    <string name="email">Email*</string>
+    <string name="requerido">Requerido*</string>
+    <string name="contrasena">Contraseña*</string>
+    <string name="registrarse">Registrarse</string>
+    <string name="confirmar_contrasena">Confirmar Contraseña*</string>
 
     <string-array name="sexos">
         <item>@string/masculino</item>

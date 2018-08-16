@@ -14,7 +14,7 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 28
     }
     productFlavors {
     }

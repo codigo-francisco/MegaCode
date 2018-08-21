@@ -1,0 +1,7 @@
+Convirtio a 150x150
+a
+Mapa de bits
+a
+Vector
+
+Tensorflow lite android

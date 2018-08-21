@@ -1,5 +1,6 @@
 package com.udacity.gamedev.gigagal.android;
 
+import android.content.Intent;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -64,9 +65,14 @@ public class LoginActivity extends AppCompatActivity {
                 boolean todoValido = name && age && sex && email && contrasena && contrasena2 && contrasenaDiferentes;
 
                 if (todoValido){
-                    //Se realiza el registro aquí
-
+                    //Se realiza el registro aquí, queda entrada al sistema principal
+                    Intent intentActivity = new Intent(getApplication(), RootActivity.class);
+                    startActivity(intentActivity);
                 }
+
+                //TODO: Quitar, solo para pruebas
+                Intent intentActivity = new Intent(getApplication(), RootActivity.class);
+                startActivity(intentActivity);
             }
         });
 

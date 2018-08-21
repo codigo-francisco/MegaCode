@@ -27,6 +27,7 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".RootActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <category android:name="android.intent.category.HOME"/>
@@ -35,6 +36,7 @@
         <activity
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:screenOrientation="portrait"
+            android:noHistory="true"
             android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

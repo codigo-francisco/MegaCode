@@ -1,7 +1,6 @@
 package com.udacity.gamedev.gigagal.android;
 
 import android.content.Intent;
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.megacode.models.Persona;
+
 public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private Toolbar toolbarMenu;
@@ -27,6 +28,13 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
+
+        Intent intent = getIntent();
+        if (intent!=null){
+            Bundle bundle = intent.getExtras();
+            assert bundle != null;
+            persona = bundle.getParcelable("persona");
+        }
 
         toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
@@ -59,8 +67,6 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public boolean selectFragment(int id){
-        //Persona Dummy
-        persona = new Persona(29, "Francisco Gonzalez", "Masculino");
 
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment=null;

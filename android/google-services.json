@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "766914875162",
+    "firebase_url": "https://megacode-a3511.firebaseio.com",
+    "project_id": "megacode-a3511",
+    "storage_bucket": "megacode-a3511.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766914875162:android:d2dcf0da6756a29a",
+        "android_client_info": {
+          "package_name": "com.udacity.gamedev.gigagal.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "766914875162-ctholgnv82tsu78gr6sfpvt1o5j29q01.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udacity.gamedev.gigagal.android",
+            "certificate_hash": "79be0771f0115c9bcd201339abd32d3cbcb43198"
+          }
+        },
+        {
+          "client_id": "766914875162-jjhan0hi7t50k8mdphkgsd8ehis2n22n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvRGdWq2B1xDjtciFKVDE0gV-sE44v9jE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "766914875162-jjhan0hi7t50k8mdphkgsd8ehis2n22n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

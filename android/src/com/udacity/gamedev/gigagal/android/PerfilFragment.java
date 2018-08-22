@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.megacode.models.Persona;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -28,7 +30,6 @@ import java.util.Map;
  */
 public class PerfilFragment extends Fragment {
 
-    private Persona persona;
     private static int REQUEST_GET_SINGLE_FILE = 1;
     private static int RESULT_OK = -1;
     private static String TAG = "PerfilFragment";
@@ -57,7 +58,8 @@ public class PerfilFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         Bundle bundle = this.getArguments();
-        persona = bundle.getParcelable("persona");
+        assert bundle != null;
+        Persona persona = bundle.getParcelable("persona");
 
         View fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false);
 

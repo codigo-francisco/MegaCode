@@ -1,6 +1,7 @@
 package com.udacity.gamedev.gigagal.android;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -8,6 +9,7 @@ import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.util.SparseArray;
 import android.view.View;
@@ -18,6 +20,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.megacode.models.Persona;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import java.util.HashMap;
@@ -25,14 +36,18 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static String TAG = "LoginActivity";
     private MaterialButton materialButton;
     private MaterialBetterSpinner spinnerSex;
     private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        auth = FirebaseAuth.getInstance();
 
         spinnerSex = findViewById(R.id.login_spinner_sexo);
         nameTextEdit =  findViewById(R.id.login_text_name);
@@ -66,13 +81,41 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (todoValido){
                     //Se realiza el registro aquí, queda entrada al sistema principal
-                    Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                    startActivity(intentActivity);
+                    auth.createUserWithEmailAndPassword(emailTextEdit.getText().toString(), contrasenaTextEdit.getText().toString())
+                            .addOnSuccessListener(
+                                new OnSuccessListener<AuthResult>() {
+                                    @Override
+                                    public void onSuccess(AuthResult authResult) {
+                                        //Se construye al usuario y se guarda en base de datos y en la memoria
+                                        FirebaseUser user = authResult.getUser();
+                                        Persona persona = new Persona(user.getUid(),Integer.parseInt(ageTextEdit.getText().toString())
+                                                ,nameTextEdit.getText().toString()
+                                                , spinnerSex.getText().toString());
+                                        persona.setEmail(emailTextEdit.getText().toString());
+                                        persona.setContrasena(contrasenaTextEdit.getText().toString());
+
+                                        persona.setToken(user.getIdToken(false).getResult().getToken());
+
+                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                                        db.child("persona").child(persona.getId()).setValue(persona);
+
+                                        Intent intentActivity = new Intent(getApplication(), RootActivity.class);
+                                        intentActivity.putExtra("persona", persona);
+                                        startActivity(intentActivity);
+                                    }
+                                }
+                    ).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, e.getMessage());
+                            Toast.makeText(getApplicationContext(), "No se ha registrado el usuario, intentelo de nuevo", Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
 
                 //TODO: Quitar, solo para pruebas
-                Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                startActivity(intentActivity);
+                /*Intent intentActivity = new Intent(getApplication(), RootActivity.class);
+                startActivity(intentActivity);*/
             }
         });
 
@@ -93,10 +136,14 @@ public class LoginActivity extends AppCompatActivity {
     private boolean validarContrasenasIguales(){
         boolean areNotEquals = !TextUtils.equals(contrasenaTextEdit.getText(), contrasena2TextEdit.getText());
 
-        if (areNotEquals)
-            ((TextInputLayout)contrasenaTextEdit.getParent().getParent()).setError("Las contraseñas no coinciden");
-        else
-            ((TextInputLayout)contrasenaTextEdit.getParent().getParent()).setError("");
+        if (areNotEquals) {
+            ((TextInputLayout) contrasenaTextEdit.getParent().getParent()).setError("Las contraseñas no coinciden");
+            ((TextInputLayout) contrasena2TextEdit.getParent().getParent()).setError("Las contraseñas no coinciden");
+        }
+        else {
+            ((TextInputLayout) contrasenaTextEdit.getParent().getParent()).setError("");
+            ((TextInputLayout) contrasena2TextEdit.getParent().getParent()).setError("");
+        }
 
         return !areNotEquals;
     }

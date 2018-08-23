@@ -20,19 +20,27 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.Volley;
 import com.megacode.models.Persona;
+import com.squareup.moshi.Moshi;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
+import io.realm.Realm;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,24 +48,24 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialButton materialButton;
     private MaterialBetterSpinner spinnerSex;
     private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
-    private FirebaseAuth auth;
+    Persona persona;
+    Toast message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        auth = FirebaseAuth.getInstance();
+        message = Toast.makeText(getApplicationContext(), "Ocurrió un error al intentar agregar al usuario",Toast.LENGTH_LONG);
 
         spinnerSex = findViewById(R.id.login_spinner_sexo);
-        nameTextEdit =  findViewById(R.id.login_text_name);
+        nameTextEdit = findViewById(R.id.login_text_name);
         ageTextEdit = findViewById(R.id.login_text_age);
         emailTextEdit = findViewById(R.id.login_text_email);
         contrasenaTextEdit = findViewById(R.id.login_text_contrasena);
         contrasena2TextEdit = findViewById(R.id.login_text_contrasena2);
 
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sexos,android.R.layout.simple_dropdown_item_1line);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexos, android.R.layout.simple_dropdown_item_1line);
         spinnerSex.setAdapter(adapter);
 
         setFocusChildListener(findViewById(R.id.login_layout_root));
@@ -79,47 +87,81 @@ public class LoginActivity extends AppCompatActivity {
 
                 boolean todoValido = name && age && sex && email && contrasena && contrasena2 && contrasenaDiferentes;
 
-                if (todoValido){
-                    //Se realiza el registro aquí, queda entrada al sistema principal
-                    auth.createUserWithEmailAndPassword(emailTextEdit.getText().toString(), contrasenaTextEdit.getText().toString())
-                            .addOnSuccessListener(
-                                new OnSuccessListener<AuthResult>() {
+                if (todoValido) {
+                    //Se guarda en base de datos remoto y se obtiene el token
+                    try {
+                        persona = new Persona();
+                        persona.setNombre(nameTextEdit.getText().toString());
+                        persona.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
+                        persona.setSexo(spinnerSex.getText().toString());
+                        persona.setEmail(emailTextEdit.getText().toString());
+                        persona.setContrasena(contrasenaTextEdit.getText().toString());
+
+                        JsonRequest jsonRequest = new JsonObjectRequest(
+                                JsonObjectRequest.Method.POST,
+                                "http://192.168.1.64/megacode/api/login/registrar",
+                                new JSONObject(new Moshi.Builder().build().adapter(Persona.class).toJson(persona)),
+                                new Response.Listener<JSONObject>() {
                                     @Override
-                                    public void onSuccess(AuthResult authResult) {
-                                        //Se construye al usuario y se guarda en base de datos y en la memoria
-                                        FirebaseUser user = authResult.getUser();
-                                        Persona persona = new Persona(user.getUid(),Integer.parseInt(ageTextEdit.getText().toString())
-                                                ,nameTextEdit.getText().toString()
-                                                , spinnerSex.getText().toString());
-                                        persona.setEmail(emailTextEdit.getText().toString());
-                                        persona.setContrasena(contrasenaTextEdit.getText().toString());
+                                    public void onResponse(JSONObject response) {
+                                        try {
+                                            persona.setId(response.getLong("id"));
 
-                                        persona.setToken(user.getIdToken(false).getResult().getToken());
+                                            Realm realm = Realm.getDefaultInstance();
+                                            //Se guarda en base de datos local
+                                            realm.executeTransaction(transactionUsuario);
 
-                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                                        db.child("persona").child(persona.getId()).setValue(persona);
+                                            Intent intentActivity = new Intent(getApplication(), RootActivity.class);
+                                            intentActivity.putExtra("persona", persona);
+                                            startActivity(intentActivity);
+                                        } catch (JSONException e) {
+                                            Log.e(TAG, e.getMessage());
+                                            message.show();
+                                        }
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        if (error!=null && error.networkResponse!=null){
+                                            try {
+                                                Log.e(TAG,
+                                                        String.format("Error code:%s Error message:%s",
+                                                                error.networkResponse.statusCode,
+                                                                new String(error.networkResponse.data, "UTF-8")
+                                                        ),
+                                                        error
+                                                );
+                                            } catch (UnsupportedEncodingException e) {
+                                                Log.e(TAG, e.getMessage());
+                                            }
+                                        }
 
-                                        Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                                        intentActivity.putExtra("persona", persona);
-                                        startActivity(intentActivity);
+                                        message.show();
                                     }
                                 }
-                    ).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, e.getMessage());
-                            Toast.makeText(getApplicationContext(), "No se ha registrado el usuario, intentelo de nuevo", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
+                        );
 
-                //TODO: Quitar, solo para pruebas
-                /*Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                startActivity(intentActivity);*/
+                        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
+                                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                        queue.add(jsonRequest);
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        message.show();
+                    }
+                }
             }
         });
-
     }
+
+    Realm.Transaction transactionUsuario = new Realm.Transaction() {
+        @Override
+        public void execute(Realm realm) {
+            //Se crea el objeto persona en Realm
+            realm.copyToRealm(persona);
+        }
+    };
 
     private void setFocusChildListener(View view){
         if (view instanceof ViewGroup) {

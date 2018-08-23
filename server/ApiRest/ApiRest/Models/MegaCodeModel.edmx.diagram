@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="304c92627f6940baa2cad3d27b4d0711" Name="Diagram1">
+        <EntityTypeShape EntityType="MegacodeModel.Conexion" Width="1.5" PointX="3.75" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="MegacodeModel.Emociones_Sesion" Width="1.5" PointX="8.25" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MegacodeModel.Nivel" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MegacodeModel.Niveles_Terminados" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MegacodeModel.Sesion" Width="1.5" PointX="6" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MegacodeModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MegacodeModel.Usuario" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="MegacodeModel.FK_Sesion_ConexionId" ManuallyRouted="false" />
+        <AssociationConnector Association="MegacodeModel.FK_Emocion_Sesion_SesionId" ManuallyRouted="false" />
+        <AssociationConnector Association="MegacodeModel.FK_NivelesTerminados_NivelId" ManuallyRouted="false" />
+        <AssociationConnector Association="MegacodeModel.FK_Sesion_NivelId" ManuallyRouted="false" />
+        <AssociationConnector Association="MegacodeModel.FK_NivelesTerminados_UsuarioId" ManuallyRouted="false" />
+        <AssociationConnector Association="MegacodeModel.FK_Sesion_UsuarioId" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -3,8 +3,7 @@ package com.megacode.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
+import io.realm.RealmObject;
 /**
  * Created by Francisco on 10/08/2018.
  */
@@ -12,68 +11,54 @@ import com.google.firebase.database.IgnoreExtraProperties;
 /**
  * Clase que representa a la persona que realiza la sesión en el sistema
  */
-@IgnoreExtraProperties
-public class Persona implements Parcelable {
-    public int age;
-    private String id;
-    public int si;
-    public int para;
-    public int mientras;
-    public int variables;
-    public String name;
-    public String sex;
+public class Persona extends RealmObject implements Parcelable {
+    private int edad;
+    private long idRemoto;
+    private int si;
+    private int para;
+    private int mientras;
+    private int variables;
+    public String nombre;
+    private String sexo;
     public String email;
     public String contrasena;
     private String token;
 
-    public Persona(){
-
-    }
-
     /**
-     *
-     * @param id ID generado en firebase (es Unique ID)
-     * @param age Edad de la persona
-     * @param name Nombre Completo de la persona
-     * @param sex Sexo de la persona
+     * Construye una persona vacia (ideal para Realm)
      */
-    public Persona(String id, int age, String name, String sex){
-        this.id = id;
-        this.age = age;
-        this.name = name;
-        this.sex = sex;
+    public Persona(){}
+
+    public Integer getEdad() {
+        return edad;
     }
 
-    public Integer getAge() {
-        return age;
+    public void setEdad(int edad) {
+        this.edad = edad;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public String getNombre() {
+        return nombre;
     }
 
-    public String getName() {
-        return name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getSexo() {
+        return sexo;
     }
 
-    public String getSex() {
-        return sex;
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 
-    public void setSex(String sex) {
-        this.sex = sex;
+    public long getId() {
+        return idRemoto;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setId(long id) {
+        this.idRemoto = id;
     }
 
     public int getSi() {
@@ -115,27 +100,27 @@ public class Persona implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.age);
-        dest.writeString(this.id);
+        dest.writeInt(this.edad);
+        dest.writeLong(this.idRemoto);
         dest.writeInt(this.si);
         dest.writeInt(this.para);
         dest.writeInt(this.mientras);
         dest.writeInt(this.variables);
-        dest.writeString(this.name);
-        dest.writeString(this.sex);
+        dest.writeString(this.nombre);
+        dest.writeString(this.sexo);
         dest.writeString(this.getEmail());
         dest.writeString(this.getContrasena());
     }
 
     protected Persona(Parcel in) {
-        this.age = in.readInt();
-        this.id = in.readString();
+        this.edad = in.readInt();
+        this.idRemoto = in.readLong();
         this.si = in.readInt();
         this.para = in.readInt();
         this.mientras = in.readInt();
         this.variables = in.readInt();
-        this.name = in.readString();
-        this.sex = in.readString();
+        this.nombre = in.readString();
+        this.sexo = in.readString();
         this.setEmail(in.readString());
         this.setContrasena(in.readString());
     }

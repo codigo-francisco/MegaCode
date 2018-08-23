@@ -4,11 +4,14 @@ CREATE TABLE Usuario(
 	id bigint identity(1,1) primary key,
 	nombre varchar(200) not null,
 	edad smallint not null,
-	sexo char not null,
+	sexo varchar(20) not null,
 	variables smallint not null default 0,
 	si smallint not null default 0,
 	para smallint not null default 0,
-	mientras smallint not null default 0
+	mientras smallint not null default 0,
+	email varchar(200) not null,
+	contrasena varchar(max) not null
+	constraint UQ_Email UNIQUE (email)
 );
 
 CREATE TABLE Nivel(

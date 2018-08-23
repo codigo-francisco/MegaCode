@@ -24,13 +24,29 @@ namespace ApiRest.Controllers
         [Route("registrar")]
         public IHttpActionResult Registrar(Usuario usuario)
         {
-            if (usuario==null)
+            try
             {
-                return BadRequest("Modelo no valido");
+                if (usuario == null)
+                {
+                    return BadRequest("Modelo no valido");
+                }
+                //Validar si el usuario existe
+                if (entities.Usuario.FirstOrDefault(us => us.email == usuario.email)!=null)
+                {
+                    return StatusCode(HttpStatusCode.Forbidden);
+                }
+                else
+                {
+                    entities.Usuario.Add(usuario);
+                    entities.SaveChanges();
+                    return Json(usuario);
+                }
+                
             }
-            entities.Usuario.Add(usuario);
-            entities.SaveChanges();
-            return Json(usuario);
+            catch(Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

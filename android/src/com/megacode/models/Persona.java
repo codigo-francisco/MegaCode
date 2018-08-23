@@ -13,7 +13,7 @@ import io.realm.RealmObject;
  */
 public class Persona extends RealmObject implements Parcelable {
     private int edad;
-    private long idRemoto;
+    private long id;
     private int si;
     private int para;
     private int mientras;
@@ -54,11 +54,11 @@ public class Persona extends RealmObject implements Parcelable {
     }
 
     public long getId() {
-        return idRemoto;
+        return id;
     }
 
     public void setId(long id) {
-        this.idRemoto = id;
+        this.id = id;
     }
 
     public int getSi() {
@@ -101,7 +101,7 @@ public class Persona extends RealmObject implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.edad);
-        dest.writeLong(this.idRemoto);
+        dest.writeLong(this.id);
         dest.writeInt(this.si);
         dest.writeInt(this.para);
         dest.writeInt(this.mientras);
@@ -114,7 +114,7 @@ public class Persona extends RealmObject implements Parcelable {
 
     protected Persona(Parcel in) {
         this.edad = in.readInt();
-        this.idRemoto = in.readLong();
+        this.id = in.readLong();
         this.si = in.readInt();
         this.para = in.readInt();
         this.mientras = in.readInt();

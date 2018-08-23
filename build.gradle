@@ -74,6 +74,8 @@ project(":android") {
         implementation 'com.android.support:animated-vector-drawable:28.0.0-rc01'
         implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
         implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'
+        implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+        implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
     }
 }
 

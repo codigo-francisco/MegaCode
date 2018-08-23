@@ -6,6 +6,7 @@ import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.text.TextUtilsCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.megacode.models.Persona;
+import com.megacode.services.MegaCodeService;
 import com.squareup.moshi.Moshi;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
@@ -39,24 +41,35 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.moshi.MoshiConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static String TAG = "LoginActivity";
+    private final static String TAG = "LoginActivity";
     private MaterialButton materialButton;
     private MaterialBetterSpinner spinnerSex;
     private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
     Persona persona;
     Toast message;
+    AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        message = Toast.makeText(getApplicationContext(), "Ocurrió un error al intentar agregar al usuario",Toast.LENGTH_LONG);
+        message = Toast.makeText(this, "Ocurrió un error al intentar agregar al usuario",Toast.LENGTH_LONG);
+        alertDialog = new AlertDialog.Builder(this)
+                .setMessage("El email se encuentra registrado")
+                .setPositiveButton("Ok", null)
+                .create();
 
         spinnerSex = findViewById(R.id.login_spinner_sexo);
         nameTextEdit = findViewById(R.id.login_text_name);
@@ -69,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
         spinnerSex.setAdapter(adapter);
 
         setFocusChildListener(findViewById(R.id.login_layout_root));
-
         materialButton = findViewById(R.id.button_registrarse);
         materialButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,79 +101,61 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (todoValido) {
                     //Se guarda en base de datos remoto y se obtiene el token
-                    try {
-                        persona = new Persona();
-                        persona.setNombre(nameTextEdit.getText().toString());
-                        persona.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
-                        persona.setSexo(spinnerSex.getText().toString());
-                        persona.setEmail(emailTextEdit.getText().toString());
-                        persona.setContrasena(contrasenaTextEdit.getText().toString());
+                    persona = new Persona();
+                    persona.setNombre(nameTextEdit.getText().toString());
+                    persona.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
+                    persona.setSexo(spinnerSex.getText().toString());
+                    persona.setEmail(emailTextEdit.getText().toString());
+                    persona.setContrasena(contrasenaTextEdit.getText().toString());
 
-                        JsonRequest jsonRequest = new JsonObjectRequest(
-                                JsonObjectRequest.Method.POST,
-                                "http://192.168.1.64/megacode/api/login/registrar",
-                                new JSONObject(new Moshi.Builder().build().adapter(Persona.class).toJson(persona)),
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        try {
-                                            persona.setId(response.getLong("id"));
+                    final OkHttpClient client = new OkHttpClient.Builder().
+                            connectTimeout(10, TimeUnit.SECONDS).
+                            readTimeout(10, TimeUnit.SECONDS)
+                            .build();
+                    final Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl("http://192.168.1.83/megacode/")
+                            .addConverterFactory(MoshiConverterFactory.create())
+                            .client(client)
+                            .build();
+                    MegaCodeService megaCodeService = retrofit.create(MegaCodeService.class);
 
-                                            Realm realm = Realm.getDefaultInstance();
-                                            //Se guarda en base de datos local
-                                            realm.executeTransaction(transactionUsuario);
+                    megaCodeService.registrar(persona)
+                            .enqueue(new Callback<Persona>() {
+                                @Override
+                                public void onResponse(Call<Persona> call, retrofit2.Response<Persona> response) {
+                                    if (response.isSuccessful()){
+                                        persona.setId(response.body().getId());
 
-                                            Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                                            intentActivity.putExtra("persona", persona);
-                                            startActivity(intentActivity);
-                                        } catch (JSONException e) {
-                                            Log.e(TAG, e.getMessage());
-                                            message.show();
-                                        }
-                                    }
-                                },
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        if (error!=null && error.networkResponse!=null){
-                                            try {
-                                                Log.e(TAG,
-                                                        String.format("Error code:%s Error message:%s",
-                                                                error.networkResponse.statusCode,
-                                                                new String(error.networkResponse.data, "UTF-8")
-                                                        ),
-                                                        error
-                                                );
-                                            } catch (UnsupportedEncodingException e) {
-                                                Log.e(TAG, e.getMessage());
+                                        Realm realm = Realm.getDefaultInstance();
+                                        //Se guarda en base de datos local
+                                        realm.executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                //Se crea el objeto persona en Realm
+                                                realm.copyToRealm(persona);
+
+                                                Intent intentActivity = new Intent(getApplication(), RootActivity.class);
+                                                intentActivity.putExtra("persona", persona);
+                                                startActivity(intentActivity);
                                             }
-                                        }
-
+                                        });
+                                    }else if (response.code()==403) {
+                                            alertDialog.show();
+                                    }else {
                                         message.show();
                                     }
                                 }
-                        );
 
-                        jsonRequest.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS,
-                                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                        queue.add(jsonRequest);
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        message.show();
-                    }
+                                @Override
+                                public void onFailure(Call<Persona> call, Throwable t) {
+                                    Log.e(TAG, t.getMessage(), t);
+                                    message.show();
+                                }
+                            });
                 }
             }
         });
     }
-
-    Realm.Transaction transactionUsuario = new Realm.Transaction() {
-        @Override
-        public void execute(Realm realm) {
-            //Se crea el objeto persona en Realm
-            realm.copyToRealm(persona);
-        }
-    };
 
     private void setFocusChildListener(View view){
         if (view instanceof ViewGroup) {

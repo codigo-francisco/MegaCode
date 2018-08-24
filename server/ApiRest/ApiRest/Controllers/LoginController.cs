@@ -1,4 +1,5 @@
-﻿using ApiRest.Models;
+﻿using ApiRest.Generatos;
+using ApiRest.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +15,32 @@ namespace ApiRest.Controllers
     {
         private megacodeEntities entities = new megacodeEntities();
 
-        [HttpGet]
-        public IHttpActionResult Ping()
+        [HttpPost]
+        public IHttpActionResult Login(Usuario usuario)
         {
-            return Ok();
+            try
+            {
+
+                if (usuario == null) return BadRequest("Json incorrecto");
+
+                var usuarioResult = 
+                    entities.Usuario.FirstOrDefault(user => user.email == usuario.email && user.contrasena == usuario.contrasena);
+                if (usuarioResult != null)
+                {
+                    //Se genera el token y se envía al usuario
+                    RegistroResponse registroResponse = 
+                        new RegistroResponse() { token = TokenGenerator.GenerateTokenJwt(usuario.email) };
+                    return Json(registroResponse);
+                }
+                else
+                {
+                    return StatusCode(HttpStatusCode.Forbidden);
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
 
         [HttpPost]
@@ -26,10 +49,7 @@ namespace ApiRest.Controllers
         {
             try
             {
-                if (usuario == null)
-                {
-                    return BadRequest("Modelo no valido");
-                }
+                if (usuario == null) return BadRequest("Json Incorrecto");
                 //Validar si el usuario existe
                 if (entities.Usuario.FirstOrDefault(us => us.email == usuario.email)!=null)
                 {
@@ -39,7 +59,9 @@ namespace ApiRest.Controllers
                 {
                     entities.Usuario.Add(usuario);
                     entities.SaveChanges();
-                    return Json(usuario);
+                    //Creamos un token para el usuario que se acaba de registrar
+                    RegistroResponse response = new RegistroResponse { id=usuario.id, token=TokenGenerator.GenerateTokenJwt(usuario.email) };
+                    return Json(response);
                 }
                 
             }

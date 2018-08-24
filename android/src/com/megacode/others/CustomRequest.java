@@ -1,4 +1,4 @@
-package com.udacity.gamedev.gigagal.android;
+package com.megacode.others;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;

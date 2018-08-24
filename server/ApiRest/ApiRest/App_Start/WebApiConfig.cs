@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApiRest.Generatos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Formatting;
@@ -15,6 +16,8 @@ namespace ApiRest
 
             // Rutas de API web
             config.MapHttpAttributeRoutes();
+
+            config.MessageHandlers.Add(new TokenHandler());
 
             JsonMediaTypeFormatter jsonFormatter = config.Formatters.JsonFormatter;
             jsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));

@@ -1,58 +1,32 @@
-package com.udacity.gamedev.gigagal.android;
+package com.megacode.screens;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
-import com.android.volley.toolbox.Volley;
+import com.megacode.base.ActivityBase;
 import com.megacode.models.Persona;
-import com.megacode.services.MegaCodeService;
-import com.squareup.moshi.Moshi;
+import com.megacode.models.RegistroResponse;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import io.realm.Realm;
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
 
-public class LoginActivity extends AppCompatActivity {
+public class RegisterActivity extends ActivityBase {
 
-    private final static String TAG = "LoginActivity";
+    private final static String TAG = "RegisterActivity";
     private MaterialButton materialButton;
     private MaterialBetterSpinner spinnerSex;
     private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
@@ -63,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
         message = Toast.makeText(this, "Ocurrió un error al intentar agregar al usuario",Toast.LENGTH_LONG);
         alertDialog = new AlertDialog.Builder(this)
@@ -101,30 +75,15 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (todoValido) {
                     //Se guarda en base de datos remoto y se obtiene el token
-                    persona = new Persona();
-                    persona.setNombre(nameTextEdit.getText().toString());
-                    persona.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
-                    persona.setSexo(spinnerSex.getText().toString());
-                    persona.setEmail(emailTextEdit.getText().toString());
-                    persona.setContrasena(contrasenaTextEdit.getText().toString());
-
-                    final OkHttpClient client = new OkHttpClient.Builder().
-                            connectTimeout(10, TimeUnit.SECONDS).
-                            readTimeout(10, TimeUnit.SECONDS)
-                            .build();
-                    final Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://192.168.1.83/megacode/")
-                            .addConverterFactory(MoshiConverterFactory.create())
-                            .client(client)
-                            .build();
-                    MegaCodeService megaCodeService = retrofit.create(MegaCodeService.class);
+                    persona = buildPersona();
 
                     megaCodeService.registrar(persona)
-                            .enqueue(new Callback<Persona>() {
+                            .enqueue(new Callback<RegistroResponse>() {
                                 @Override
-                                public void onResponse(Call<Persona> call, retrofit2.Response<Persona> response) {
+                                public void onResponse(Call<RegistroResponse> call, retrofit2.Response<RegistroResponse> response) {
                                     if (response.isSuccessful()){
                                         persona.setId(response.body().getId());
+                                        persona.setToken(response.body().getToken());
 
                                         Realm realm = Realm.getDefaultInstance();
                                         //Se guarda en base de datos local
@@ -134,20 +93,21 @@ public class LoginActivity extends AppCompatActivity {
                                                 //Se crea el objeto persona en Realm
                                                 realm.copyToRealm(persona);
 
+                                                //Se manda a llamar la actividad principal
                                                 Intent intentActivity = new Intent(getApplication(), RootActivity.class);
                                                 intentActivity.putExtra("persona", persona);
                                                 startActivity(intentActivity);
                                             }
                                         });
                                     }else if (response.code()==403) {
-                                            alertDialog.show();
+                                        alertDialog.show();
                                     }else {
                                         message.show();
                                     }
                                 }
 
                                 @Override
-                                public void onFailure(Call<Persona> call, Throwable t) {
+                                public void onFailure(Call<RegistroResponse> call, Throwable t) {
                                     Log.e(TAG, t.getMessage(), t);
                                     message.show();
                                 }
@@ -155,6 +115,22 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    private Persona buildPersona(){
+        Persona persona = new Persona();
+        persona.setNombre(nameTextEdit.getText().toString());
+        persona.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
+        persona.setSexo(spinnerSex.getText().toString());
+        persona.setEmail(emailTextEdit.getText().toString());
+        persona.setContrasena(contrasenaTextEdit.getText().toString());
+
+        return persona;
     }
 
     private void setFocusChildListener(View view){

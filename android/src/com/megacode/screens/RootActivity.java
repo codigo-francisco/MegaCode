@@ -1,4 +1,4 @@
-package com.udacity.gamedev.gigagal.android;
+package com.megacode.screens;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -81,7 +81,7 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             case R.id.jugar:
-                Intent intent = new Intent(this, AndroidLauncher.class);
+                Intent intent = new Intent(this, MegaCodeAcitivity.class);
                 startActivity(intent);
                 break;
             default:

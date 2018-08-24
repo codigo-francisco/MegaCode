@@ -1,4 +1,4 @@
-package com.udacity.gamedev.gigagal.android;
+package com.megacode.others;
 
 /**
  * Created by Francisco on 28/02/2018.

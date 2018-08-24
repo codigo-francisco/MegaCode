@@ -1,4 +1,4 @@
-package com.udacity.gamedev.gigagal.android;
+package com.megacode.screens;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,9 +8,7 @@ import android.view.ViewGroup;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.udacity.gamedev.gigagal.GameplayScreen;
 import com.udacity.gamedev.gigagal.GigaGalGame;
-import com.udacity.gamedev.gigagal.Level;
 
 /**
  * Created by Francisco on 22/02/2018.

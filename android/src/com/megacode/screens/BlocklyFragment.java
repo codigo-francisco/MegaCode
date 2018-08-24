@@ -1,8 +1,7 @@
-package com.udacity.gamedev.gigagal.android;
+package com.megacode.screens;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,7 +12,6 @@ import com.google.blockly.android.AbstractBlocklyFragment;
 import com.google.blockly.android.codegen.CodeGenerationRequest;
 import com.google.blockly.model.DefaultBlocks;
 import com.udacity.gamedev.gigagal.GameplayScreen;
-import com.udacity.gamedev.gigagal.GigaGalGame;
 import com.udacity.gamedev.gigagal.Level;
 
 import org.opencv.android.CameraBridgeViewBase;
@@ -45,8 +43,8 @@ public class BlocklyFragment extends AbstractBlocklyFragment {
         int idItem = item.getItemId();
 
         if (idItem==idMenuCamera){
-            LinearLayout linearLayout = ((AndroidLauncher)getActivity()).getLinearLayoutCamera();
-            CameraBridgeViewBase camera = ((AndroidLauncher)getActivity()).getCameraBridgeViewBase();
+            LinearLayout linearLayout = ((MegaCodeAcitivity)getActivity()).getLinearLayoutCamera();
+            CameraBridgeViewBase camera = ((MegaCodeAcitivity)getActivity()).getCameraBridgeViewBase();
             if (linearLayout.getVisibility() == View.GONE) {
                 linearLayout.setVisibility(View.VISIBLE);
                 //camera.enableView();

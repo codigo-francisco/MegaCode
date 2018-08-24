@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.udacity.gamedev.gigagal.android"
+    package="com.megacode.screens"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -14,33 +14,39 @@
 
     <application
         android:name="com.megacode.base.ApplicationBase"
+        android:fullBackupContent="true"
         android:allowBackup="true"
         android:icon="@drawable/megacode"
         android:label="@string/app_name"
         android:theme="@style/Theme.MaterialComponents.Light"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".AndroidLauncher"
+            android:name="com.megacode.screens.MegaCodeAcitivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/GdxTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".RootActivity"
+            android:name="com.megacode.screens.RootActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
-                <category android:name="android.intent.category.HOME"/>
+                <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            android:name="com.megacode.screens.RegisterActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:noHistory="true"
-            android:name=".LoginActivity">
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+        <activity android:name="com.megacode.screens.LoginActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 /**
  * Created by Francisco on 10/08/2018.
  */
@@ -13,6 +14,7 @@ import io.realm.RealmObject;
  */
 public class Persona extends RealmObject implements Parcelable {
     private int edad;
+    @PrimaryKey
     private long id;
     private int si;
     private int para;

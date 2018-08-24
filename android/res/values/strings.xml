@@ -32,6 +32,8 @@
     <string name="contrasena">Contraseña*</string>
     <string name="registrarse">Registrarse</string>
     <string name="confirmar_contrasena">Confirmar Contraseña*</string>
+    <string name="login">Login</string>
+    <string name="texto_registro">¿No tienes cuenta? Registrate</string>
 
     <string-array name="sexos">
         <item>@string/masculino</item>

@@ -2,8 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    tools:context=".LoginActivity">
 
     <LinearLayout
         android:id="@+id/login_layout_root"
@@ -12,7 +13,9 @@
         android:orientation="vertical"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        tools:context=".LoginActivity">
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        tools:context="com.megacode.screens.RegisterActivity">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -41,73 +44,7 @@
                 android:src="@drawable/megacode" />
         </RelativeLayout>
 
-        <android.support.design.widget.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:id="@+id/layout_name"
-            app:helperTextEnabled="true"
-            app:helperText="@string/requerido"
-            app:errorEnabled="true">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/login_text_name"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:hint="@string/Nombre"
-                android:inputType="text" />
-
-        </android.support.design.widget.TextInputLayout>
-
-        <LinearLayout
-            android:baselineAligned="false"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:orientation="horizontal">
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:counterEnabled="true"
-                app:counterMaxLength="2"
-                app:helperTextEnabled="true"
-                app:helperText="@string/requerido"
-                app:errorEnabled="true">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/login_text_age"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/Edad"
-                    android:inputType="number" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <LinearLayout
-                android:layout_width="10dp"
-                android:layout_height="match_parent" />
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/layout_spinner"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:helperTextEnabled="true"
-                app:helperText="@string/requerido"
-                app:errorEnabled="true"
-                android:layout_weight="1">
-
-                <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
-                    android:id="@+id/login_spinner_sexo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/Sexo"
-                    app:met_floatingLabel="normal" />
-
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
         <android.support.design.widget.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:id="@+id/layout_email"
@@ -119,7 +56,7 @@
             >
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/login_text_email"
+                android:id="@+id/activity_login_text_email"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
@@ -136,36 +73,26 @@
             android:layout_height="120dp">
 
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/login_text_contrasena"
+                android:id="@+id/activity_login_text_contrasena"
                 android:inputType="textPassword"
                 android:hint="@string/contrasena"
                 android:layout_width="match_parent"
                 android:layout_height="80dp" />
 
         </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            app:passwordToggleEnabled="true"
-            app:helperTextEnabled="true"
-            app:helperText="@string/requerido"
-            app:errorEnabled="true"
-            android:layout_width="match_parent"
-            android:layout_height="120dp">
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/login_text_contrasena2"
-                android:inputType="textPassword"
-                android:hint="@string/confirmar_contrasena"
-                android:layout_width="match_parent"
-                android:layout_height="80dp" />
-
-        </android.support.design.widget.TextInputLayout>
         <android.support.design.button.MaterialButton
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:id="@+id/button_registrarse"
-            android:text="@string/registrarse"/>
+            android:id="@+id/button_login"
+            android:text="@string/login"/>
+        <TextView
+            android:id="@+id/login_text_registrate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/texto_registro"/>
     </LinearLayout>
 
 </ScrollView>

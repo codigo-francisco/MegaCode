@@ -3,6 +3,10 @@ package com.megacode.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.squareup.moshi.Moshi;
+
+import java.io.IOException;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 /**
@@ -160,5 +164,15 @@ public class Persona extends RealmObject implements Parcelable {
     }
     public void setToken(String token) {
         this.token = token;
+    }
+
+    private static Moshi moshi = new Moshi.Builder().build();
+
+    public String toJson(){
+        return moshi.adapter(Persona.class).toJson(this);
+    }
+
+    public static Persona buildPersonaFromJson(String json) throws IOException {
+        return moshi.adapter(Persona.class).fromJson(json);
     }
 }

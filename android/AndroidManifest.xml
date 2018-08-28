@@ -16,7 +16,7 @@
         android:name="com.megacode.base.ApplicationBase"
         android:fullBackupContent="true"
         android:allowBackup="true"
-        android:icon="@drawable/megacode"
+        android:icon="@drawable/ico"
         android:label="@string/app_name"
         android:theme="@style/Theme.MaterialComponents.Light"
         tools:ignore="GoogleAppIndexingWarning">

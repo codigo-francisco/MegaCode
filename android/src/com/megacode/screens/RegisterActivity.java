@@ -1,6 +1,8 @@
 package com.megacode.screens;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -78,6 +80,7 @@ public class RegisterActivity extends ActivityBase {
                     persona = buildPersona();
 
                     megaCodeService.registrar(persona)
+                            .clone()
                             .enqueue(new Callback<RegistroResponse>() {
                                 @Override
                                 public void onResponse(Call<RegistroResponse> call, retrofit2.Response<RegistroResponse> response) {
@@ -95,7 +98,8 @@ public class RegisterActivity extends ActivityBase {
 
                                                 //Se manda a llamar la actividad principal
                                                 Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                                                intentActivity.putExtra("persona", persona);
+                                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                                preferences.edit().putString(getString(R.string.persona), persona.toJson()).apply();
                                                 startActivity(intentActivity);
                                             }
                                         });

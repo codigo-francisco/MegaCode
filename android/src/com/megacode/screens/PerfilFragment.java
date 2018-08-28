@@ -2,10 +2,13 @@ package com.megacode.screens;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 
 import com.megacode.models.Persona;
 
+import java.io.IOException;
 import java.util.Locale;
 
 
@@ -21,9 +25,9 @@ import java.util.Locale;
  */
 public class PerfilFragment extends Fragment {
 
-    private static int REQUEST_GET_SINGLE_FILE = 1;
-    private static int RESULT_OK = -1;
-    private static String TAG = "PerfilFragment";
+    private final static int REQUEST_GET_SINGLE_FILE = 1;
+    private final static int RESULT_OK = -1;
+    private final static String TAG = "PerfilFragment";
     private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
 
     public PerfilFragment() {
@@ -48,31 +52,34 @@ public class PerfilFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Bundle bundle = this.getArguments();
-        assert bundle != null;
-        Persona persona = bundle.getParcelable("persona");
-
         View fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        //Se colocan los valores
-        ((TextView)fragmentView.findViewById(R.id.name_view)).setText(persona.getNombre());
-        ((TextView)fragmentView.findViewById(R.id.text_age)).setText(String.format(Locale.getDefault(),"%d %s",persona.getEdad(), getResources().getString(R.string.anios)));
-        ((TextView)fragmentView.findViewById(R.id.text_sex)).setText(persona.getSexo());
+        try {
+            Persona persona = Persona.buildPersonaFromJson(preferences.getString(getString(R.string.persona),null));
 
-        fotoPerfil = fragmentView.findViewById(R.id.foto_perfil);
-        fotoPerfil.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
-            }
-        });
+            //Se colocan los valores
+            ((TextView)fragmentView.findViewById(R.id.name_view)).setText(persona.getNombre());
+            ((TextView)fragmentView.findViewById(R.id.text_age)).setText(String.format(Locale.getDefault(),"%d %s",persona.getEdad(), getResources().getString(R.string.anios)));
+            ((TextView)fragmentView.findViewById(R.id.text_sex)).setText(persona.getSexo());
 
-        buttonMegaCode = fragmentView.findViewById(R.id.button_megacode);
-        buttonMegaCode.setOnClickListener(clickListener);
-        buttonSheMegaCode = fragmentView.findViewById(R.id.button_shemegacode);
-        buttonSheMegaCode.setOnClickListener(clickListener);
+            fotoPerfil = fragmentView.findViewById(R.id.foto_perfil);
+            fotoPerfil.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
+                }
+            });
+
+            buttonMegaCode = fragmentView.findViewById(R.id.button_megacode);
+            buttonMegaCode.setOnClickListener(clickListener);
+            buttonSheMegaCode = fragmentView.findViewById(R.id.button_shemegacode);
+            buttonSheMegaCode.setOnClickListener(clickListener);
+        } catch (IOException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
 
         return fragmentView;
     }

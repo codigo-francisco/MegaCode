@@ -21,7 +21,6 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbarMenu;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private Persona persona;
     private ActionBarDrawerToggle actionBarDrawerToggle;
 
     @Override
@@ -29,12 +28,12 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         if (intent!=null){
             Bundle bundle = intent.getExtras();
             assert bundle != null;
             persona = bundle.getParcelable("persona");
-        }
+        }*/
 
         toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
@@ -49,7 +48,7 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         //Cargar el perfil por default
-        selectFragment(R.id.perfil);
+        selectFragment(R.id.feed);
     }
 
     @Override
@@ -73,12 +72,11 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
         //Aquí se hace el cambio de fragmento
         switch (id){
+            case R.id.feed:
+                fragment = new FeedFragment();
+                break;
             case R.id.perfil:
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("persona", persona);
                 fragment = new PerfilFragment();
-                fragment.setArguments(bundle);
-
                 break;
             case R.id.jugar:
                 Intent intent = new Intent(this, MegaCodeAcitivity.class);

@@ -116,6 +116,8 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Generatos\TokenGenerator.cs" />
+    <Compile Include="Generatos\TokenHandler.cs" />
     <Compile Include="Models\Conexion.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>
@@ -146,6 +148,8 @@
     <Compile Include="Models\Niveles_Terminados.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Responses\LoginResponse.cs" />
+    <Compile Include="Models\Responses\RegistroResponse.cs" />
     <Compile Include="Models\Sesion.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>

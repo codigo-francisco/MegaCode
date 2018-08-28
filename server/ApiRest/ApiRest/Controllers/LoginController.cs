@@ -1,5 +1,6 @@
 ﻿using ApiRest.Generatos;
 using ApiRest.Models;
+using ApiRest.Models.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,13 @@ using System.Web.Http;
 namespace ApiRest.Controllers
 {
     [AllowAnonymous]
-    [RoutePrefix("api/login")]
+    [RoutePrefix("api/autenticacion")]
     public class LoginController : ApiController
     {
         private megacodeEntities entities = new megacodeEntities();
 
         [HttpPost]
+        [Route("login")]
         public IHttpActionResult Login(Usuario usuario)
         {
             try
@@ -28,9 +30,13 @@ namespace ApiRest.Controllers
                 if (usuarioResult != null)
                 {
                     //Se genera el token y se envía al usuario
-                    RegistroResponse registroResponse = 
-                        new RegistroResponse() { token = TokenGenerator.GenerateTokenJwt(usuario.email) };
-                    return Json(registroResponse);
+                    String token = TokenGenerator.GenerateTokenJwt(usuario.email);
+                    LoginResponse loginResponse = new LoginResponse()
+                    {
+                        usuario = usuarioResult,
+                        token = token
+                    };
+                    return Json(loginResponse);
                 }
                 else
                 {

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
+        <item android:id="@+id/feed"
+            android:checked="true"
+            android:title="@string/noticias"
+            android:icon="@drawable/ic_baseline_dashboard_24px"
+            />
         <item
             android:id="@+id/perfil"
-            android:checked="true"
+            android:checked="false"
             android:title="@string/perfil"
             android:icon="@drawable/ic_baseline_account_box_24px"
             />

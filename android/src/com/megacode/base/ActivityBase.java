@@ -1,6 +1,9 @@
 package com.megacode.base;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.megacode.services.MegaCodeService;
 
@@ -22,5 +25,13 @@ public class ActivityBase extends AppCompatActivity {
             .build();
 
     protected MegaCodeService megaCodeService = retrofit.create(MegaCodeService.class);
+    protected Toast errorGeneralMessage;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        errorGeneralMessage = Toast.makeText(this, "Ha ocurrido un error en el proceso", Toast.LENGTH_LONG);
+    }
 
 }

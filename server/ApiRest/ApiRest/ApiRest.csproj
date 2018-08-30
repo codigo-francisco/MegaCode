@@ -115,10 +115,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Generatos\TokenGenerator.cs" />
-    <Compile Include="Generatos\TokenHandler.cs" />
+    <Compile Include="Generators\TokenGenerator.cs" />
+    <Compile Include="Generators\TokenHandler.cs" />
     <Compile Include="Models\Conexion.cs">
+      <DependentUpon>MegaCodeModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ConexionSesion.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Emociones_Sesion.cs">
@@ -148,12 +152,12 @@
     <Compile Include="Models\Niveles_Terminados.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\obtenerMarcadorUsuario_Result.cs">
+      <DependentUpon>MegaCodeModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Responses\LoginResponse.cs" />
     <Compile Include="Models\Responses\RegistroResponse.cs" />
     <Compile Include="Models\Sesion.cs">
-      <DependentUpon>MegaCodeModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Usuario.cs">

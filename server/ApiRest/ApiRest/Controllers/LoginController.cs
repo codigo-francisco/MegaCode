@@ -25,7 +25,7 @@ namespace ApiRest.Controllers
 
                 if (usuario == null) return BadRequest("Json incorrecto");
 
-                var usuarioResult = 
+                Usuario usuarioResult = 
                     entities.Usuario.FirstOrDefault(user => user.email == usuario.email && user.contrasena == usuario.contrasena);
                 if (usuarioResult != null)
                 {

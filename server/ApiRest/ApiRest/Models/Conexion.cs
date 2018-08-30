@@ -17,15 +17,17 @@ namespace ApiRest.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Conexion()
         {
-            this.Sesion = new HashSet<Sesion>();
+            this.ConexionSesion = new HashSet<ConexionSesion>();
         }
     
         public System.Guid id { get; set; }
         public System.DateTime entrada { get; set; }
         public Nullable<System.DateTime> salida { get; set; }
         public Nullable<int> duracion { get; set; }
+        public Nullable<long> usuarioId { get; set; }
     
+        public virtual Usuario Usuario { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Sesion> Sesion { get; set; }
+        public virtual ICollection<ConexionSesion> ConexionSesion { get; set; }
     }
 }

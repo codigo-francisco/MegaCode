@@ -57,7 +57,7 @@ public class LoginActivity extends ActivityBase {
                 personaLogin.setContrasena(contrasenaEditText.getText().toString());
 
                 //Realizar el registro
-                megaCodeService.login(personaLogin).clone().enqueue(new Callback<LoginResponse>() {
+                megaCodeService.login(personaLogin).enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if (response.isSuccessful()) {

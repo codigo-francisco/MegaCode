@@ -28,13 +28,6 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
-        /*Intent intent = getIntent();
-        if (intent!=null){
-            Bundle bundle = intent.getExtras();
-            assert bundle != null;
-            persona = bundle.getParcelable("persona");
-        }*/
-
         toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
 
@@ -90,7 +83,7 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         if (fragment!=null)
             manager.beginTransaction()
                     .replace(R.id.frame_layout, fragment)
-                    .commit();
+                    .commitNow();
 
         drawerLayout.closeDrawer(GravityCompat.START);
 

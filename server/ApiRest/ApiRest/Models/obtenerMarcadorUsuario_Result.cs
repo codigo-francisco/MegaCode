@@ -10,14 +10,14 @@
 namespace ApiRest.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class obtenerMarcadorUsuario_Result
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public string nombre { get; set; }
+        public short variables { get; set; }
+        public short si { get; set; }
+        public short para { get; set; }
+        public short mientras { get; set; }
+        public Nullable<short> total { get; set; }
     }
 }

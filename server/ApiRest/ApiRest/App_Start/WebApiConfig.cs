@@ -15,9 +15,10 @@ namespace ApiRest
             // Configuración y servicios de API web
 
             // Rutas de API web
-            config.MessageHandlers.Add(new TokenHandler());
 
             config.MapHttpAttributeRoutes();
+
+            config.MessageHandlers.Add(new TokenHandler());
 
             JsonMediaTypeFormatter jsonFormatter = config.Formatters.JsonFormatter;
             jsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));

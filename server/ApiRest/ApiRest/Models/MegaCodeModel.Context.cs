@@ -12,6 +12,8 @@ namespace ApiRest.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class megacodeEntities : DbContext
     {
@@ -29,8 +31,18 @@ namespace ApiRest.Models
         public virtual DbSet<Emociones_Sesion> Emociones_Sesion { get; set; }
         public virtual DbSet<Nivel> Nivel { get; set; }
         public virtual DbSet<Niveles_Terminados> Niveles_Terminados { get; set; }
-        public virtual DbSet<Sesion> Sesion { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
+        public virtual DbSet<ConexionSesion> ConexionSesion { get; set; }
+        public virtual DbSet<Sesion> Sesion { get; set; }
+    
+        [DbFunction("megacodeEntities", "obtenerMarcadorUsuario")]
+        public virtual IQueryable<obtenerMarcadorUsuario_Result> obtenerMarcadorUsuario(Nullable<long> id)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("id", id) :
+                new ObjectParameter("id", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<obtenerMarcadorUsuario_Result>("[megacodeEntities].[obtenerMarcadorUsuario](@id)", idParameter);
+        }
     }
 }

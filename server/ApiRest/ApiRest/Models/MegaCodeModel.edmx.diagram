@@ -9,15 +9,17 @@
         <EntityTypeShape EntityType="MegacodeModel.Emociones_Sesion" Width="1.5" PointX="8.25" PointY="5.125" IsExpanded="true" />
         <EntityTypeShape EntityType="MegacodeModel.Nivel" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MegacodeModel.Niveles_Terminados" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MegacodeModel.Sesion" Width="1.5" PointX="6" PointY="4.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MegacodeModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="8.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MegacodeModel.Usuario" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <AssociationConnector Association="MegacodeModel.FK_Sesion_ConexionId" ManuallyRouted="false" />
-        <AssociationConnector Association="MegacodeModel.FK_Emocion_Sesion_SesionId" ManuallyRouted="false" />
         <AssociationConnector Association="MegacodeModel.FK_NivelesTerminados_NivelId" ManuallyRouted="false" />
-        <AssociationConnector Association="MegacodeModel.FK_Sesion_NivelId" ManuallyRouted="false" />
         <AssociationConnector Association="MegacodeModel.FK_NivelesTerminados_UsuarioId" ManuallyRouted="false" />
-        <AssociationConnector Association="MegacodeModel.FK_Sesion_UsuarioId" ManuallyRouted="false" />
+        <AssociationConnector Association="MegacodeModel.FK_Conecion_UsuarioId" />
+        <EntityTypeShape EntityType="MegacodeModel.ConexionSesion" Width="1.5" PointX="8.25" PointY="2.125" />
+        <AssociationConnector Association="MegacodeModel.FK_ConexionSesion_ConexionId" />
+        <EntityTypeShape EntityType="MegacodeModel.Sesion" Width="1.5" PointX="6" PointY="2.625" />
+        <AssociationConnector Association="MegacodeModel.FK_ConexionSesion_SesionId" />
+        <AssociationConnector Association="MegacodeModel.FK_Emocion_Sesion_SesionId" />
+        <AssociationConnector Association="MegacodeModel.FK_Sesion_NivelId" />
+        <AssociationConnector Association="MegacodeModel.FK_Sesion_UsuarioId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

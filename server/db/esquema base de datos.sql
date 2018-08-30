@@ -28,23 +28,31 @@ CREATE TABLE Nivel(
 
 CREATE TABLE Conexion(
 	id uniqueidentifier primary key default newsequentialid(),
+	usuarioId bigint,
 	entrada datetime not null,
 	salida datetime,
 	duracion int
+	constraint FK_Conecion_UsuarioId foreign key(usuarioId) references Usuario(id)
 );
 
 CREATE TABLE Sesion(
 	id uniqueidentifier primary key default newsequentialid(),
 	usuarioId bigint,
-	conexionId uniqueidentifier,
 	nivelId int,
 	tiempo timestamp,
 	intentos int,
 	ayudas int,
 	inactividad int
 	constraint FK_Sesion_UsuarioId foreign key (usuarioId) references Usuario(id),
-	constraint FK_Sesion_ConexionId foreign key (conexionId) references Conexion(id),
 	constraint FK_Sesion_NivelId foreign key (nivelId) references Nivel(id)
+);
+
+CREATE TABLE ConexionSesion(
+	id uniqueidentifier primary key default newsequentialid(),
+	sesionId uniqueidentifier,
+	conexionId uniqueidentifier,
+	constraint FK_ConexionSesion_ConexionId foreign key (conexionId) references Conexion(id),
+	constraint FK_ConexionSesion_SesionId foreign key (conexionId) references Sesion(id)
 );
 
 CREATE TABLE Emociones_Sesion(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <dimen name="card_spacing" >8dp</dimen>
-    <dimen name="size_card_image_content">40dp</dimen>
+    <dimen name="size_card_image_content">60dp</dimen>
     <dimen name="margin_card">5dp</dimen>
 
 </resources>

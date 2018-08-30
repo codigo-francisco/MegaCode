@@ -24,7 +24,7 @@ public class ActivityBase extends AppCompatActivity {
             .client(client)
             .build();
 
-    protected MegaCodeService megaCodeService = retrofit.create(MegaCodeService.class);
+    public static MegaCodeService megaCodeService = retrofit.create(MegaCodeService.class);
     protected Toast errorGeneralMessage;
 
     @Override

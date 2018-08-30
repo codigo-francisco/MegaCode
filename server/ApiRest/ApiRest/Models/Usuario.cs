@@ -18,6 +18,7 @@ namespace ApiRest.Models
         public Usuario()
         {
             this.Niveles_Terminados = new HashSet<Niveles_Terminados>();
+            this.Conexion = new HashSet<Conexion>();
             this.Sesion = new HashSet<Sesion>();
         }
     
@@ -34,6 +35,8 @@ namespace ApiRest.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Niveles_Terminados> Niveles_Terminados { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Conexion> Conexion { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Sesion> Sesion { get; set; }
     }

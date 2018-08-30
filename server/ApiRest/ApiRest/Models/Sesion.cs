@@ -17,19 +17,20 @@ namespace ApiRest.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Sesion()
         {
+            this.ConexionSesion = new HashSet<ConexionSesion>();
             this.Emociones_Sesion = new HashSet<Emociones_Sesion>();
         }
     
         public System.Guid id { get; set; }
         public Nullable<long> usuarioId { get; set; }
-        public Nullable<System.Guid> conexionId { get; set; }
         public Nullable<int> nivelId { get; set; }
         public byte[] tiempo { get; set; }
         public Nullable<int> intentos { get; set; }
         public Nullable<int> ayudas { get; set; }
         public Nullable<int> inactividad { get; set; }
     
-        public virtual Conexion Conexion { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ConexionSesion> ConexionSesion { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Emociones_Sesion> Emociones_Sesion { get; set; }
         public virtual Nivel Nivel { get; set; }

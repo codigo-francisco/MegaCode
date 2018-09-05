@@ -25,4 +25,5 @@ public interface MegaCodeService {
     @GET("api/feed/posicionContraOtros/{id}")
     Call<List<PosicionesResponse>> posiconContraOtros(@Header("Authorization") String token, @Path("id") long id);
 
+
 }

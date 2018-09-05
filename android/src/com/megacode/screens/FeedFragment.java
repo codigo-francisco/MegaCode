@@ -125,7 +125,7 @@ public class FeedFragment extends Fragment {
                                                 listDataModel.get(1).getNombre(),
                                                 listDataModel.get(0).getTotal(),
                                                 listDataModel.get(1).getTotal(),
-                                                listDataModel.size()
+                                                listDataModel.size()-2
                                         )
                                 );
                             }

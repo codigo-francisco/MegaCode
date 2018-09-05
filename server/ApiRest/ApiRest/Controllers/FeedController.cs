@@ -40,23 +40,29 @@ namespace ApiRest.Controllers
             return result;
         }
 
-        /*[Route("siguienteEjercicio")]
-        public IHttpActionResult SiguienteEjercicio(Usuario usuario)
+        [HttpGet]
+        [Route("siguienteEjercicio/{id}")]
+        public IHttpActionResult SiguienteEjercicio(Int64? id)
         {
-            if (usuario == null)
-            {
-                return BadRequest();
-            }
+            IHttpActionResult result = null;
 
-            Usuario usuarioConsulta = entities.Usuario.Where(user => user.email == usuario.email).FirstOrDefault();
-            if (usuarioConsulta.Niveles_Terminados.Count() == 0)
+            if (id == null)
             {
-                return Ok("El usuario no ha realizado ningún ejercicio");
+                result = BadRequest();
             }
             else
             {
-                //Niveles sin terminar
+                var dataResult = (from n in entities.Nivel
+                                  where n.id == ((from nt in entities.Niveles_Terminados
+                                                  join u in entities.Usuario on nt.UsuarioId equals u.id
+                                                  orderby nt.NivelId descending
+                                                  select nt.NivelId).First() + 1)
+                                  select n).FirstOrDefault();
+
+                return Ok();
             }
-        }*/
+
+            return result;
+        }
     }
 }

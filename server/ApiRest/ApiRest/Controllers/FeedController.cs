@@ -16,14 +16,6 @@ namespace ApiRest.Controllers
         megacodeEntities entities = new megacodeEntities();
 
         [HttpGet]
-        [Route("ping/{id}")]
-        public IHttpActionResult Ping(String id)
-        {
-
-            return Ok(id);
-        }
-
-        [HttpGet]
         [Route("posicionContraOtros/{id}")]
         public IHttpActionResult PosicionContraOtros(Int64? id)
         {
@@ -56,10 +48,10 @@ namespace ApiRest.Controllers
                                   where n.id == ((from nt in entities.Niveles_Terminados
                                                   join u in entities.Usuario on nt.UsuarioId equals u.id
                                                   orderby nt.NivelId descending
-                                                  select nt.NivelId).First() + 1)
+                                                  select nt.NivelId).FirstOrDefault() + 1)
                                   select n).FirstOrDefault();
 
-                return Ok();
+                return Json(dataResult);
             }
 
             return result;

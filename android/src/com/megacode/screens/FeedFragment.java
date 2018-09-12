@@ -13,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.megacode.RuleInstance;
 import com.megacode.adapters.model.DataModel;
 import com.megacode.base.ActivityBase;
+import com.megacode.models.FeedBack;
 import com.megacode.models.Persona;
+import com.megacode.models.response.NivelResponse;
 import com.megacode.models.response.PosicionesResponse;
 
 import java.io.IOException;
@@ -58,27 +61,13 @@ public class FeedFragment extends Fragment {
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+            //Datos vacios para el feed
             data = new ArrayList<>();
 
-            //Dummy data
-            DataModel dataModel = new DataModel();
-            dataModel.setImagen(R.drawable.ico);
-            dataModel.setTitle("Titulo");
-            dataModel.setContent("Contenido dentro de la carta");
-
-            data.add(dataModel);
-
-            dataModel = new DataModel();
-            dataModel.setImagen(R.drawable.megacode);
-            dataModel.setTitle("MegaCode");
-            dataModel.setContent("Datos de pruebas");
-
-            data.add(dataModel);
+            customAdapter = new CustomAdapter(data);
 
             //actualizar el feed...
             actualizarFeed();
-
-            customAdapter = new CustomAdapter(data);
 
             recyclerView.setAdapter(customAdapter);
         } catch (IOException e) {
@@ -143,6 +132,43 @@ public class FeedFragment extends Fragment {
                     }
                 }
         );
+
+        ActivityBase.megaCodeService.siguienteEjercicio(persona.getToken(), persona.getId()).clone().enqueue(
+                new Callback<NivelResponse>() {
+                    @Override
+                    public void onResponse(Call<NivelResponse> call, Response<NivelResponse> response) {
+                        if (response.isSuccessful()){
+                            NivelResponse nivelResponse = response.body();
+
+                            DataModel dataModel = new DataModel();
+                            dataModel.setTitle("Vamos a jugar");
+                            dataModel.setContent(String.format(Locale.getDefault(), "Comienza a jugar, prueba el nivel %s", nivelResponse.getNombre()));
+                            dataModel.setImagen(R.drawable.ic_baseline_videogame_asset_24px);
+
+                            data.add(dataModel);
+                            customAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NivelResponse> call, Throwable t) {
+                        Log.e(TAG, t.getMessage(), t);
+                    }
+                }
+        );
+
+        //Feedbacks
+        List<FeedBack> feedBacks = RuleInstance.getRuleInstance(persona).getFeedbacks();
+        for (FeedBack feedBack: feedBacks){
+            DataModel dataModel = new DataModel();
+            dataModel.setTitle(feedBack.getTitulo());
+            dataModel.setContent(feedBack.getContenido());
+            dataModel.setImagen(R.drawable.ic_baseline_info_24px);
+
+            data.add(dataModel);
+        }
+        if (feedBacks.size()>0)
+            customAdapter.notifyDataSetChanged();
     }
 
 }

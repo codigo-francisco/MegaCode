@@ -3,6 +3,7 @@ package com.megacode.services;
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
 import com.megacode.models.response.LoginResponse;
+import com.megacode.models.response.NivelResponse;
 import com.megacode.models.response.PosicionesResponse;
 
 import java.util.List;
@@ -25,5 +26,7 @@ public interface MegaCodeService {
     @GET("api/feed/posicionContraOtros/{id}")
     Call<List<PosicionesResponse>> posiconContraOtros(@Header("Authorization") String token, @Path("id") long id);
 
+    @GET("api/feed/siguienteEjercicio/{id}")
+    Call<NivelResponse> siguienteEjercicio(@Header("Authorization") String token, @Path("id") long id);
 
 }

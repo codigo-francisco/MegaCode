@@ -1,118 +1,125 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".PerfilFragment">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.AppCompatImageView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:scaleType="centerCrop"
-        android:layout_height="100dp"
-        android:src="@drawable/background_game"
-        android:id="@+id/cover_image"
-        />
-
-    <android.support.v7.widget.AppCompatImageButton
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_below="@id/cover_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-60dp"
-        android:id="@+id/foto_perfil"
-        android:src="@drawable/ic_outline_photo_camera_24px"
-        android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/name_view"
-        android:layout_below="@id/foto_perfil"
-        android:textAppearance="@style/Cabecera"
-        android:layout_centerHorizontal="true"
-        />
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_view"
-        android:id="@+id/view_data"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".PerfilFragment">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:scaleType="centerCrop"
+            android:layout_height="100dp"
+            android:src="@drawable/background_game"
+            android:id="@+id/cover_image"
+            />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_below="@id/cover_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-60dp"
+            android:id="@+id/foto_perfil"
+            android:src="@drawable/ic_outline_photo_camera_24px"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:id="@+id/text_age"/>
+            android:id="@+id/name_view"
+            android:layout_below="@id/foto_perfil"
+            android:textAppearance="@style/Cabecera"
+            android:layout_centerHorizontal="true"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name_view"
+            android:id="@+id/view_data"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:id="@+id/text_age"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:id="@+id/text_sex"/>
+        </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:id="@+id/text_sex"/>
-    </LinearLayout>
+            android:layout_below="@id/view_data"
+            android:id="@+id/text_seleccion"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:text="@string/seleccionar_personaje"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/view_data"
-        android:id="@+id/text_seleccion"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-        android:text="@string/seleccionar_personaje"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_below="@id/text_seleccion"
-        android:id="@+id/seleccion_personaje"
-        android:orientation="horizontal">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/button_megacode"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@drawable/borders"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:src="@drawable/megacode"/>
-            <TextView
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_below="@id/text_seleccion"
+            android:id="@+id/seleccion_personaje"
+            android:orientation="horizontal">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/megacode"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/button_shemegacode"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                android:background="@color/md_white_1000"
-                android:src="@drawable/she_megacode"/>
-
-            <TextView
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/button_megacode"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@drawable/borders"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/megacode"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/megacode"/>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/she_megacode"/>
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:id="@+id/button_shemegacode"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
+                    android:background="@color/md_white_1000"
+                    android:src="@drawable/she_megacode"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/she_megacode"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</RelativeLayout>
+</ScrollView>

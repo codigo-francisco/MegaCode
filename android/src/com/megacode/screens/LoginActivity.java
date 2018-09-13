@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.megacode.base.ActivityBase;
 import com.megacode.models.Persona;
 import com.megacode.models.response.LoginResponse;
+import com.megacode.services.MegaCodeServiceInstance;
 
 import java.util.Set;
 
@@ -57,7 +58,7 @@ public class LoginActivity extends ActivityBase {
                 personaLogin.setContrasena(contrasenaEditText.getText().toString());
 
                 //Realizar el registro
-                megaCodeService.login(personaLogin).enqueue(new Callback<LoginResponse>() {
+                MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.login(personaLogin).enqueue(new Callback<LoginResponse>() {
                     @Override
                     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                         if (response.isSuccessful()) {

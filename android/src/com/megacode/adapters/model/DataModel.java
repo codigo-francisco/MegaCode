@@ -1,6 +1,8 @@
 package com.megacode.adapters.model;
 
-public class DataModel {
+import io.realm.RealmObject;
+
+public class DataModel extends RealmObject {
 
     private int imagen;
     private String title;

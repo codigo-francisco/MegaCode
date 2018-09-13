@@ -1,6 +1,7 @@
 package com.megacode.screens;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -20,12 +21,17 @@ import com.megacode.models.FeedBack;
 import com.megacode.models.Persona;
 import com.megacode.models.response.NivelResponse;
 import com.megacode.models.response.PosicionesResponse;
+import com.megacode.services.MegaCodeService;
+import com.megacode.services.MegaCodeServiceInstance;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,7 +50,6 @@ public class FeedFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,13 +62,16 @@ public class FeedFragment extends Fragment {
             RecyclerView recyclerView = view.findViewById(R.id.recycler_view_feed);
             recyclerView.setHasFixedSize(true);
 
-            LinearLayoutManager  linearLayoutManager = new LinearLayoutManager(getContext());
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-            //Datos vacios para el feed
-            data = new ArrayList<>();
+            Realm realm = Realm.getDefaultInstance();
+            RealmQuery<DataModel> query = realm.where(DataModel.class);
 
+            if (data==null)
+                //Datos vacios para el feed
+                data = new ArrayList<>();
             customAdapter = new CustomAdapter(data);
 
             //actualizar el feed...
@@ -74,14 +82,13 @@ public class FeedFragment extends Fragment {
             Log.e(TAG, e.getMessage(), e);
         }
 
-
-
         return view;
     }
 
     public void actualizarFeed(){
         //Posicion contra otros
-        ActivityBase.megaCodeService.posiconContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
+        MegaCodeService megaCodeService = MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService;
+        megaCodeService.posiconContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
                 new Callback<List<PosicionesResponse>>() {
                     @Override
                     public void onResponse(Call<List<PosicionesResponse>> call,
@@ -133,7 +140,7 @@ public class FeedFragment extends Fragment {
                 }
         );
 
-        ActivityBase.megaCodeService.siguienteEjercicio(persona.getToken(), persona.getId()).clone().enqueue(
+        megaCodeService.siguienteEjercicio(persona.getToken(), persona.getId()).clone().enqueue(
                 new Callback<NivelResponse>() {
                     @Override
                     public void onResponse(Call<NivelResponse> call, Response<NivelResponse> response) {
@@ -171,4 +178,8 @@ public class FeedFragment extends Fragment {
             customAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
 }

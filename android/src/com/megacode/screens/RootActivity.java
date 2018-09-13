@@ -1,6 +1,8 @@
 package com.megacode.screens;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,6 +17,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.megacode.models.Persona;
+import com.megacode.models.Tags;
+
+import java.util.EnumMap;
 
 public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -22,6 +27,9 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    private int selectedFragment;
+    private SharedPreferences sharedPreferences;
+    private String currentTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +48,12 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        selectedFragment = sharedPreferences.getInt("selectedFragment", R.id.feed);
+
         //Cargar el perfil por default
-        selectFragment(R.id.feed);
+        selectFragment(selectedFragment);
     }
 
     @Override
@@ -62,14 +74,22 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment=null;
+        String tag = null;
+        selectedFragment = id;
 
         //Aquí se hace el cambio de fragmento
         switch (id){
             case R.id.feed:
                 fragment = new FeedFragment();
+                tag = Tags.FEED.toString();
                 break;
             case R.id.perfil:
                 fragment = new PerfilFragment();
+                tag = Tags.PERFIL.toString();
+                break;
+            case R.id.progreso:
+                fragment = new ProgresoFragment();
+                tag = Tags.PROGRESO.toString();
                 break;
             case R.id.jugar:
                 Intent intent = new Intent(this, MegaCodeAcitivity.class);
@@ -80,13 +100,26 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-        if (fragment!=null)
+        currentTag = tag;
+
+        if (fragment!=null) {
+            fragment.setRetainInstance(true);
             manager.beginTransaction()
-                    .replace(R.id.frame_layout, fragment)
+                    .replace(R.id.frame_layout, fragment, tag)
                     .commitNow();
+        }
 
         drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("selectedFragment", selectedFragment);
+        editor.commit();
     }
 }

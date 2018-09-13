@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.megacode.base.ActivityBase;
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
+import com.megacode.services.MegaCodeServiceInstance;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import io.realm.Realm;
@@ -79,7 +80,7 @@ public class RegisterActivity extends ActivityBase {
                     //Se guarda en base de datos remoto y se obtiene el token
                     persona = buildPersona();
 
-                    megaCodeService.registrar(persona)
+                    MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.registrar(persona)
                             .clone()
                             .enqueue(new Callback<RegistroResponse>() {
                                 @Override
@@ -94,7 +95,7 @@ public class RegisterActivity extends ActivityBase {
                                             @Override
                                             public void execute(Realm realm) {
                                                 //Se crea el objeto persona en Realm
-                                                realm.copyToRealm(persona);
+                                                realm.insert(persona);
 
                                                 //Se manda a llamar la actividad principal
                                                 Intent intentActivity = new Intent(getApplication(), RootActivity.class);

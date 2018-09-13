@@ -15,4 +15,7 @@
         <item name="android:fontFamily">@font/sawarabimincho_regular</item>
     </style>
 
+    <style name="TabViewMaterial" parent="Widget.MaterialComponents.TabLayout">
+    </style>
+
 </resources>

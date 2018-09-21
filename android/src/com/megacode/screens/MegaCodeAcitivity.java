@@ -12,14 +12,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.megacode.base.ApplicationBase;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
+import com.megacode.utils.StringHelper;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -28,9 +35,11 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.io.IOException;
+
 public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
 
-	private final static String TAG = "Launcher";
+	private final static String TAG = "MegaCodeActivity";
 	private CameraBridgeViewBase cameraBridgeViewBase;
 	private FaceRecognition faceRecognition;
 	private TextView textViewEmotion;
@@ -84,15 +93,28 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			}
 		});
 
-		BlocklyFragment blocklyFragment = new BlocklyFragment();
+		WebView webView = findViewById(R.id.megacode_activity_webview);
+		WebSettings webSettings = webView.getSettings();
+		webSettings.setJavaScriptEnabled(true);
+		webSettings.setAllowContentAccess(true);
+		webSettings.setAllowFileAccess(true);
+		webSettings.setAllowFileAccessFromFileURLs(true);
+		webSettings.setAllowUniversalAccessFromFileURLs(true);
+		webSettings.setBlockNetworkLoads(true);
+		webSettings.setLoadsImagesAutomatically(true);
+		webSettings.setDomStorageEnabled(true);
+		webSettings.setSupportZoom(true);
+		webSettings.setDisplayZoomControls(true);
 
-		// Create libgdx fragment
+		webView.loadUrl("file:///android_asset/blockly/index.html");
+
+        // Create libgdx fragment
 		GameFragment libgdxFragment = new GameFragment();
 
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 		transaction
-				.add(R.id.content_blockly, blocklyFragment)
+				//.add(R.id.content_blockly, blocklyFragment)
 				.add(R.id.content_framelayout, libgdxFragment)
 				.commit();
 

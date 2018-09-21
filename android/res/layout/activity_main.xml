@@ -11,19 +11,19 @@
     <LinearLayout
         android:id="@+id/linear_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:baselineAligned="false">
 
-        <FrameLayout
-            android:id="@+id/content_blockly"
-            android:layout_width="match_parent"
+        <WebView
+            android:id="@+id/megacode_activity_webview"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
-            >
-        </FrameLayout>
+            />
 
         <FrameLayout
             android:id="@+id/content_framelayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             >

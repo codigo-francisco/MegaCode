@@ -9,9 +9,35 @@
     android:fitsSystemWindows="true">
 
     <!-- Menu -->
-    <include layout="@layout/toolbar_menu"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:context="com.megacode.screens.RootActivity" >
+
+        <android.support.design.widget.AppBarLayout
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bar_layout"
+            >
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_main"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways"
+                />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/bar_layout"
+            android:id="@+id/frame_layout"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </RelativeLayout>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/menu_navigation"

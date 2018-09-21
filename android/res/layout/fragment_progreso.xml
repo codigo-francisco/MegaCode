@@ -20,8 +20,10 @@
             app:tabSelectedTextColor="@color/md_white_1000"
             app:tabIndicatorColor="@color/md_white_1000"
             app:tabTextColor="@color/md_grey_500"
+            android:clipToPadding="false"
             app:tabTextAppearance="@style/TextAppearance.Design.Tab"
-            app:tabBackground="@color/design_default_color_primary"
+            android:background="@color/design_default_color_primary"
+            app:tabBackground="?attr/selectableItemBackground"
             style="@style/TabViewMaterial"
             android:id="@+id/tab_progreso"/>
 

@@ -2,6 +2,7 @@ package com.megacode.screens;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -23,34 +24,39 @@ import java.util.EnumMap;
 
 public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    private Toolbar toolbarMenu;
-    private NavigationView navigationView;
     private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
     private int selectedFragment;
     private SharedPreferences sharedPreferences;
     private String currentTag;
+    private final static String SELECTED_FRAGMENT = "selectedFragment";
+    private final static String ROOTACTIVITY_SHAREDPREFERENCES = "RootActivitySharedPreferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
-        toolbarMenu = findViewById(R.id.toolbar_main);
+        Toolbar toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.menu_navigation);
+        NavigationView navigationView = findViewById(R.id.menu_navigation);
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = getSharedPreferences(ROOTACTIVITY_SHAREDPREFERENCES, MODE_PRIVATE);
 
-        selectedFragment = sharedPreferences.getInt("selectedFragment", R.id.feed);
+        int selectedFragment;
+
+        if (savedInstanceState!=null){
+            selectedFragment = savedInstanceState.getInt(SELECTED_FRAGMENT);
+        }else{
+            selectedFragment = sharedPreferences.getInt(SELECTED_FRAGMENT, R.id.feed);
+        }
 
         //Cargar el perfil por default
         selectFragment(selectedFragment);
@@ -72,46 +78,56 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
     public boolean selectFragment(int id){
 
-        FragmentManager manager = getSupportFragmentManager();
-        Fragment fragment=null;
-        String tag = null;
-        selectedFragment = id;
+        if (id!=selectedFragment) {
+            FragmentManager manager = getSupportFragmentManager();
+            Fragment fragment = null;
+            String tag = null;
+            selectedFragment = id;
 
-        //Aquí se hace el cambio de fragmento
-        switch (id){
-            case R.id.feed:
-                fragment = new FeedFragment();
-                tag = Tags.FEED.toString();
-                break;
-            case R.id.perfil:
-                fragment = new PerfilFragment();
-                tag = Tags.PERFIL.toString();
-                break;
-            case R.id.progreso:
-                fragment = new ProgresoFragment();
-                tag = Tags.PROGRESO.toString();
-                break;
-            case R.id.jugar:
-                Intent intent = new Intent(this, MegaCodeAcitivity.class);
-                startActivity(intent);
-                break;
-            default:
-                Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
+            //Aquí se hace el cambio de fragmento
+            switch (id) {
+                case R.id.feed:
+                    fragment = new FeedFragment();
+                    tag = Tags.FEED.toString();
+                    break;
+                case R.id.perfil:
+                    fragment = new PerfilFragment();
+                    tag = Tags.PERFIL.toString();
+                    break;
+                case R.id.progreso:
+                    fragment = new ProgresoFragment();
+                    tag = Tags.PROGRESO.toString();
+                    break;
+                case R.id.jugar:
+                    selectedFragment = R.id.feed;
+                    Intent intent = new Intent(this, MegaCodeAcitivity.class);
+                    startActivity(intent);
+                    break;
+                default:
+                    Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
 
+            }
+
+            currentTag = tag;
+
+            if (fragment != null) {
+                fragment.setRetainInstance(true);
+                manager.beginTransaction()
+                        .replace(R.id.frame_layout, fragment, tag)
+                        .commitNow();
+            }
+
+            drawerLayout.closeDrawer(GravityCompat.START);
         }
-
-        currentTag = tag;
-
-        if (fragment!=null) {
-            fragment.setRetainInstance(true);
-            manager.beginTransaction()
-                    .replace(R.id.frame_layout, fragment, tag)
-                    .commitNow();
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_FRAGMENT, selectedFragment);
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -119,7 +135,13 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("selectedFragment", selectedFragment);
-        editor.commit();
+        editor.putInt(SELECTED_FRAGMENT, selectedFragment);
+        editor.apply();
+    }
+
+    @Override
+    protected void onDestroy() {
+        sharedPreferences.edit().remove(SELECTED_FRAGMENT).apply();
+        super.onDestroy();
     }
 }

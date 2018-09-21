@@ -3,5 +3,5 @@
     <dimen name="card_spacing" >8dp</dimen>
     <dimen name="size_card_image_content">45dp</dimen>
     <dimen name="margin_card">5dp</dimen>
-
+    <dimen name="size_option_skilltree">60dp</dimen>
 </resources>

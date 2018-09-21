@@ -1,10 +1,8 @@
 package com.megacode.screens;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,9 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.megacode.RuleInstance;
+import com.megacode.services.RuleInstance;
 import com.megacode.adapters.model.DataModel;
-import com.megacode.base.ActivityBase;
 import com.megacode.models.FeedBack;
 import com.megacode.models.Persona;
 import com.megacode.models.response.NivelResponse;
@@ -30,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmQuery;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,17 +53,14 @@ public class FeedFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_feed, container, false);
 
         try {
-            persona = Persona.buildPersonaFromJson(PreferenceManager.getDefaultSharedPreferences(getContext()).getString(getString(R.string.persona),null));
+            persona = Persona.buildPersonaFromJson(PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .getString(getString(R.string.persona),null));
 
             RecyclerView recyclerView = view.findViewById(R.id.recycler_view_feed);
             recyclerView.setHasFixedSize(true);
-
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-            Realm realm = Realm.getDefaultInstance();
-            RealmQuery<DataModel> query = realm.where(DataModel.class);
 
             if (data==null)
                 //Datos vacios para el feed

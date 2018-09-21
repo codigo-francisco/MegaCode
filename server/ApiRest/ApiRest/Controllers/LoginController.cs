@@ -66,7 +66,10 @@ namespace ApiRest.Controllers
                     entities.Usuario.Add(usuario);
                     entities.SaveChanges();
                     //Creamos un token para el usuario que se acaba de registrar
-                    RegistroResponse response = new RegistroResponse { id=usuario.id, token=TokenGenerator.GenerateTokenJwt(usuario.email) };
+                    RegistroResponse response = new RegistroResponse {
+                        id =usuario.id,
+                        token =TokenGenerator.GenerateTokenJwt(usuario.email)
+                    };
                     return Json(response);
                 }
                 

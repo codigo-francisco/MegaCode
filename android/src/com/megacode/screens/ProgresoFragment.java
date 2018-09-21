@@ -48,7 +48,6 @@ public class ProgresoFragment extends Fragment {
                 case 1:
                     title = "Avances";
                     break;
-
             }
 
             return title;
@@ -60,7 +59,7 @@ public class ProgresoFragment extends Fragment {
 
             switch (i){
                 case 0:
-                    fragment = new FeedFragment();
+                    fragment = new SkillTree();
                     break;
                 case 1:
                     fragment = new FeedFragment();

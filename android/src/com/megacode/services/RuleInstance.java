@@ -1,10 +1,8 @@
-package com.megacode;
+package com.megacode.services;
 
 import com.megacode.models.FeedBack;
 import com.megacode.models.Persona;
 
-import org.jeasy.rules.api.Action;
-import org.jeasy.rules.api.Condition;
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
 import org.jeasy.rules.api.Rules;

@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FeedFragment">
+    tools:context=".SkillTree">
+
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_feed"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/skill_tree_recyclerview"
         android:scrollbars="vertical"
         />
 

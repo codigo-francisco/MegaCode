@@ -11,7 +11,6 @@
     <string name="jugar">Jugar</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="edad">edad</string>
     <string name="nombre">nombre</string>
     <string name="sexo">sexo</string>
@@ -36,6 +35,7 @@
     <string name="texto_registro">¿No tienes cuenta? Registrate</string>
     <string name="persona">persona</string>
     <string name="noticias">Noticias</string>
+    <string name="foto_perfil">Foto Perfil</string>
 
     <string-array name="sexos">
         <item>@string/masculino</item>

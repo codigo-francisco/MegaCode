@@ -1,13 +1,19 @@
 package com.megacode.screens;
 
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageButton;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +22,17 @@ import android.widget.TextView;
 
 import com.megacode.models.Persona;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Locale;
+
+import io.realm.Realm;
+
+import static com.badlogic.gdx.graphics.g2d.ParticleEmitter.SpawnShape.line;
 
 
 /**
@@ -29,9 +44,53 @@ public class PerfilFragment extends Fragment {
     private final static int RESULT_OK = -1;
     private final static String TAG = "PerfilFragment";
     private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
+    private Persona persona;
 
     public PerfilFragment() {
         // Required empty public constructor
+    }
+
+    private static class CargarImagen extends AsyncTask<Uri, Void, String>{
+
+        private ContentResolver contentResolver;
+        private Persona persona;
+
+        public CargarImagen(ContentResolver contentResolver, Persona persona){
+            this.contentResolver = contentResolver;
+            this.persona = persona;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(Uri... uris) {
+            String result=null;
+
+            try {
+                InputStreamReader r = new InputStreamReader(contentResolver.openInputStream(uris[0]));
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                int bit;
+                while ((bit = r.read()) != -1) {
+                    byteArrayOutputStream.write(bit);
+                }
+                result = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
+
+                persona.setFotoPerfil(result);
+
+                Realm realm = Realm.getDefaultInstance();
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(persona);
+                realm.commitTransaction();
+            } catch (IOException e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+
+            return result;
+        }
     }
 
     @Override
@@ -43,20 +102,22 @@ public class PerfilFragment extends Fragment {
                 if (data!=null){
                     fotoPerfil.setImageURI(data.getData());
                     fotoPerfil.setBackgroundResource(R.color.translucent);
+
+                    new CargarImagen(getContext().getContentResolver(), persona).execute(data.getData());
                 }
             }
         }
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull  LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         try {
-            Persona persona = Persona.buildPersonaFromJson(preferences.getString(getString(R.string.persona),null));
+            persona = Persona.buildPersonaFromJson(preferences.getString(getString(R.string.persona),null));
 
             //Se colocan los valores
             ((TextView)fragmentView.findViewById(R.id.name_view)).setText(persona.getNombre());
@@ -64,10 +125,16 @@ public class PerfilFragment extends Fragment {
             ((TextView)fragmentView.findViewById(R.id.text_sex)).setText(persona.getSexo());
 
             fotoPerfil = fragmentView.findViewById(R.id.foto_perfil);
+            //Cargar imagen
+            if (persona.getFotoPerfil()!=null) {
+                byte[] bytes = Base64.decode(persona.getFotoPerfil(), Base64.DEFAULT);
+                fotoPerfil.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            }
+
             fotoPerfil.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.setType("image/*");
                     startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
                 }

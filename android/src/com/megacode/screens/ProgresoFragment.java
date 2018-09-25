@@ -46,7 +46,7 @@ public class ProgresoFragment extends Fragment {
                     title = "Niveles";
                     break;
                 case 1:
-                    title = "Avances";
+                    title = "Puntaciones";
                     break;
             }
 
@@ -62,7 +62,7 @@ public class ProgresoFragment extends Fragment {
                     fragment = new SkillTree();
                     break;
                 case 1:
-                    fragment = new FeedFragment();
+                    fragment = new ScoreFragment();
                     break;
             }
 

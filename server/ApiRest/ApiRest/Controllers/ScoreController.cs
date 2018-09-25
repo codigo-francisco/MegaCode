@@ -15,18 +15,20 @@ namespace ApiRest.Controllers
         megacodeEntities entities = new megacodeEntities();
 
         [HttpGet]
+        [AllowAnonymous]
         public IHttpActionResult ObtenerScores()
         {
             var query = (from u in entities.Usuario
                          join c in entities.Conexion on u.id equals c.usuarioId
                          select new
                          {
-                             Nombre = u.nombre,
-                             Score = u.variables + u.si + u.para + u.mientras,
-                             Dia = c.entrada.Day,
-                             Mes = c.entrada.Month,
-                             Anio = c.entrada.Year
-                         }).OrderByDescending(o => o.Score);
+                             u.nombre,
+                             score = u.variables + u.si + u.para + u.mientras,
+                             dia = c.entrada.Day,
+                             mes = c.entrada.Month,
+                             anio = c.entrada.Year,
+                             u.fotoPerfil
+                         }).Take(10).OrderByDescending(o => o.score);
 
             return Json(query);
                 

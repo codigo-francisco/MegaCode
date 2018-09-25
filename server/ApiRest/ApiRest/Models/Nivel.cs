@@ -29,6 +29,7 @@ namespace ApiRest.Models
         public int para { get; set; }
         public int mientras { get; set; }
         public int dificultad { get; set; }
+        public int grupo { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Niveles_Terminados> Niveles_Terminados { get; set; }

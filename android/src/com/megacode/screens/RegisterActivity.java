@@ -2,6 +2,9 @@ package com.megacode.screens;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ImageReader;
 import android.preference.PreferenceManager;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputEditText;
@@ -15,13 +18,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.megacode.base.ActivityBase;
+import com.megacode.helpers.ImageProfileHelper;
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
 import com.megacode.services.MegaCodeServiceInstance;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -134,6 +142,8 @@ public class RegisterActivity extends ActivityBase {
         persona.setSexo(spinnerSex.getText().toString());
         persona.setEmail(emailTextEdit.getText().toString());
         persona.setContrasena(contrasenaTextEdit.getText().toString());
+        //Establecer imagen de perfil por default
+        persona.setFotoPerfil(ImageProfileHelper.getDefaultProfileImage(getAssets()));
 
         return persona;
     }

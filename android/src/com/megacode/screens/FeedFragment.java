@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,7 +79,7 @@ public class FeedFragment extends Fragment {
     public void actualizarFeed(){
         //Posicion contra otros
         MegaCodeService megaCodeService = MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService;
-        megaCodeService.posiconContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
+        megaCodeService.posicionContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
                 new Callback<List<PosicionesResponse>>() {
                     @Override
                     public void onResponse(Call<List<PosicionesResponse>> call,

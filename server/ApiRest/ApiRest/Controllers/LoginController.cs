@@ -33,7 +33,20 @@ namespace ApiRest.Controllers
                     String token = TokenGenerator.GenerateTokenJwt(usuario.email);
                     LoginResponse loginResponse = new LoginResponse()
                     {
-                        usuario = usuarioResult,
+                        usuario = new Usuario()
+                        {
+                            id = usuarioResult.id,
+                            sexo = usuarioResult.sexo,
+                            email = usuarioResult.email,
+                            contrasena = usuarioResult.contrasena,
+                            nombre = usuarioResult.nombre,
+                            edad = usuarioResult.edad,
+                            variables = usuarioResult.variables,
+                            si = usuarioResult.si,
+                            para = usuarioResult.para,
+                            mientras = usuarioResult.mientras,
+                            fotoPerfil = usuarioResult.fotoPerfil
+                        },
                         token = token
                     };
                     return Json(loginResponse);

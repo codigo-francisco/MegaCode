@@ -45,6 +45,7 @@
           <Property Name="para" Type="int" Nullable="false" />
           <Property Name="mientras" Type="int" Nullable="false" />
           <Property Name="dificultad" Type="int" Nullable="false" />
+          <Property Name="grupo" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -82,6 +83,7 @@
           <Property Name="mientras" Type="smallint" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="contrasena" Type="varchar(max)" Nullable="false" />
+          <Property Name="fotoPerfil" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK_Conecion_UsuarioId">
           <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
@@ -276,6 +278,7 @@
           <Property Name="dificultad" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Niveles_Terminados" Relationship="Self.FK_NivelesTerminados_NivelId" FromRole="Nivel" ToRole="Niveles_Terminados" />
           <NavigationProperty Name="Sesion" Relationship="MegacodeModel.FK_Sesion_NivelId" FromRole="Nivel" ToRole="Sesion" />
+          <Property Name="grupo" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -306,6 +309,7 @@
           <Property Name="contrasena" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Conexion" Relationship="MegacodeModel.FK_Conecion_UsuarioId" FromRole="Usuario" ToRole="Conexion" />
           <NavigationProperty Name="Sesion" Relationship="MegacodeModel.FK_Sesion_UsuarioId" FromRole="Usuario" ToRole="Sesion" />
+          <Property Name="fotoPerfil" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_NivelesTerminados_NivelId">
           <End Role="Nivel" Type="Self.Nivel" Multiplicity="0..1" />
@@ -512,6 +516,7 @@
           <EntitySetMapping Name="Nivel">
             <EntityTypeMapping TypeName="MegacodeModel.Nivel">
               <MappingFragment StoreEntitySet="Nivel">
+                <ScalarProperty Name="grupo" ColumnName="grupo" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
                 <ScalarProperty Name="ruta" ColumnName="ruta" />
@@ -537,6 +542,7 @@
           <EntitySetMapping Name="Usuario">
             <EntityTypeMapping TypeName="MegacodeModel.Usuario">
               <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="fotoPerfil" ColumnName="fotoPerfil" />
                 <ScalarProperty Name="contrasena" ColumnName="contrasena" />
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="id" ColumnName="id" />

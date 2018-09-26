@@ -9,7 +9,7 @@ using System.Web.Http;
 namespace ApiRest.Controllers
 {
     [Authorize]
-    [RoutePrefix("api/score/")]
+    [RoutePrefix("api/score")]
     public class ScoreController : ApiController
     {
         megacodeEntities entities = new megacodeEntities();

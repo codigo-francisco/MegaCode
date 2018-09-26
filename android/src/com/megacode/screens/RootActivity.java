@@ -1,8 +1,10 @@
 package com.megacode.screens;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.PersistableBundle;
+import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -11,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -53,11 +56,12 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         int selectedFragment;
 
         if (savedInstanceState!=null){
-            selectedFragment = savedInstanceState.getInt(SELECTED_FRAGMENT);
+            selectedFragment = savedInstanceState.getInt(SELECTED_FRAGMENT, R.id.feed);
         }else{
             selectedFragment = sharedPreferences.getInt(SELECTED_FRAGMENT, R.id.feed);
         }
 
+        navigationView.setCheckedItem(selectedFragment);
         //Cargar el perfil por default
         selectFragment(selectedFragment);
     }
@@ -72,13 +76,12 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        menuItem.setChecked(true);
         return selectFragment(menuItem.getItemId());
     }
 
     public boolean selectFragment(int id){
 
-        if (id!=selectedFragment) {
+        if (id!=selectedFragment || selectedFragment==R.id.jugar) {
             FragmentManager manager = getSupportFragmentManager();
             Fragment fragment = null;
             String tag = null;
@@ -99,7 +102,6 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
                     tag = Tags.PROGRESO.toString();
                     break;
                 case R.id.jugar:
-                    selectedFragment = R.id.feed;
                     Intent intent = new Intent(this, MegaCodeAcitivity.class);
                     startActivity(intent);
                     break;
@@ -132,16 +134,17 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onPause() {
-        super.onPause();
-
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(SELECTED_FRAGMENT, selectedFragment);
         editor.apply();
+
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
         sharedPreferences.edit().remove(SELECTED_FRAGMENT).apply();
+
         super.onDestroy();
     }
 }

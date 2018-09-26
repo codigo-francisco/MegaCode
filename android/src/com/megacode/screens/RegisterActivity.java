@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -98,20 +99,20 @@ public class RegisterActivity extends ActivityBase {
                                         persona.setToken(response.body().getToken());
 
                                         Realm realm = Realm.getDefaultInstance();
-                                        //Se guarda en base de datos local
-                                        realm.executeTransaction(new Realm.Transaction() {
-                                            @Override
-                                            public void execute(Realm realm) {
-                                                //Se crea el objeto persona en Realm
-                                                realm.insert(persona);
+                                        realm.beginTransaction();
+                                        //Buscar si hay algún usuario en Realm, eliminarlo
+                                        RealmQuery<Persona> query = realm.where(Persona.class);
+                                        for (Persona persona : query.findAll()) {
+                                            persona.deleteFromRealm();
+                                        }
+                                        //Insertar nuevo usuario
+                                        realm.insert(persona);
+                                        realm.commitTransaction();
 
-                                                //Se manda a llamar la actividad principal
-                                                Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                                                preferences.edit().putString(getString(R.string.persona), persona.toJson()).apply();
-                                                startActivity(intentActivity);
-                                            }
-                                        });
+                                        //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
+                                        Intent intentActivity = new Intent(RegisterActivity.this, RootActivity.class);
+                                        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intentActivity);
                                     }else if (response.code()==403) {
                                         alertDialog.show();
                                     }else {

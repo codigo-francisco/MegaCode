@@ -1,5 +1,6 @@
 package com.megacode.models;
 
+import android.app.Person;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -185,5 +186,26 @@ public class Persona extends RealmObject implements Parcelable {
 
     public void setFotoPerfil(String fotoPerfil) {
         this.fotoPerfil = fotoPerfil;
+    }
+
+    public Persona buildPersonaObj(){
+        Persona persona = new Persona();
+
+        persona.setId(getId());
+        persona.setNombre(getNombre());
+        persona.setEdad(getEdad());
+        persona.setSexo(getSexo());
+        persona.setEmail(getEmail());
+        persona.setContrasena(getContrasena());
+        persona.setMientras(getMientras());
+        persona.setNombre(getNombre());
+        persona.setVariables(getVariables());
+        persona.setSi(getSi());
+        persona.setPara(getPara());
+        persona.setMientras(getMientras());
+
+        persona.setFotoPerfil(getFotoPerfil());
+
+        return persona;
     }
 }

@@ -4,6 +4,7 @@ package com.megacode.screens;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.Person;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,6 +41,7 @@ public class FeedFragment extends Fragment {
     private final static String TAG = "FeedFragment";
     private Persona persona;
     private CustomAdapter customAdapter;
+    private Realm realm;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -50,28 +53,25 @@ public class FeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_feed, container, false);
 
-        try {
-            persona = Persona.buildPersonaFromJson(PreferenceManager.getDefaultSharedPreferences(getContext())
-                    .getString(getString(R.string.persona),null));
+        realm = Realm.getDefaultInstance();
 
-            RecyclerView recyclerView = view.findViewById(R.id.recycler_view_feed);
-            recyclerView.setHasFixedSize(true);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
+        persona = realm.where(Persona.class).findFirst();
 
-            if (data==null)
-                //Datos vacios para el feed
-                data = new ArrayList<>();
-            customAdapter = new CustomAdapter(data);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_feed);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-            //actualizar el feed...
-            actualizarFeed();
+        if (data==null)
+            //Datos vacios para el feed
+            data = new ArrayList<>();
+        customAdapter = new CustomAdapter(data);
 
-            recyclerView.setAdapter(customAdapter);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
+        //actualizar el feed...
+        actualizarFeed();
+
+        recyclerView.setAdapter(customAdapter);
 
         return view;
     }
@@ -170,7 +170,8 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        realm.close();
+        super.onDestroy();
     }
 }

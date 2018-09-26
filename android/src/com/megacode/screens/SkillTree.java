@@ -1,9 +1,12 @@
 package com.megacode.screens;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.AsyncLayoutInflater;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -85,17 +89,22 @@ public class SkillTree extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull SkillTreeViewHolder skillTreeViewHolder, int i) {
+        public void onBindViewHolder(@NonNull SkillTreeViewHolder skillTreeViewHolder, int index) {
+            AsyncLayoutInflater asyncInflator = new AsyncLayoutInflater(getContext());
             //Aquí se crean los circulos
             LinearLayout linearLayout = (LinearLayout)skillTreeViewHolder.itemView;
-
-            List<SkillNode> horizontalNode = nodes.get(i);
+            List<SkillNode> horizontalNode = nodes.get(index);
 
             for(SkillNode skillNode : horizontalNode){
-                CircleImageView circleImageView = (CircleImageView)LayoutInflater.from(getContext()).inflate(R.layout.skillnode_layout, linearLayout, false);
-                circleImageView.setImageResource(R.drawable.megacode);
+                asyncInflator.inflate(R.layout.skillnode_layout, linearLayout, new AsyncLayoutInflater.OnInflateFinishedListener() {
+                    @Override
+                    public void onInflateFinished(@NonNull View view, int i, @Nullable ViewGroup viewGroup) {
+                        CircleImageView circleImageView = view.findViewById(R.id.skillnode_layout_circleimage);
+                        circleImageView.setImageResource(R.drawable.megacode);
 
-                linearLayout.addView(circleImageView);
+                        viewGroup.addView(circleImageView);
+                    }
+                });
             }
         }
 

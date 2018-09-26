@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.megacode.base.ActivityBase;
+import com.megacode.base.LoginApp;
 import com.megacode.models.Persona;
 import com.megacode.models.response.LoginResponse;
 import com.megacode.services.MegaCodeServiceInstance;
@@ -26,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class LoginActivity extends ActivityBase {
+public class LoginActivity extends LoginApp {
 
     private final static String TAG = "LoginActivity";
 
@@ -53,52 +54,15 @@ public class LoginActivity extends ActivityBase {
                 TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
                 TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
 
-                final Persona personaLogin = new Persona();
+                Persona personaLogin = new Persona();
                 personaLogin.setEmail(emailEditText.getText().toString());
                 personaLogin.setContrasena(contrasenaEditText.getText().toString());
 
-                //Realizar el registro
-                MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.login(personaLogin).enqueue(new Callback<LoginResponse>() {
-                    @Override
-                    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                        if (response.isSuccessful()) {
-                            //Obtenemos los datos del usuario desde el servidor y establecemos el token generado
-                            final Persona datosUsuario = response.body().getUsuario();
-                            datosUsuario.setToken(response.body().getToken());
+                //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
+                Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
+                intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                            Realm realm = Realm.getDefaultInstance();
-                            realm.executeTransaction(new Realm.Transaction() {
-                                @Override
-                                public void execute(Realm realm) {
-                                    //Buscar si hay algún usuario en Realm, eliminarlo
-                                    RealmQuery<Persona> query = realm.where(Persona.class);
-                                    for (Persona persona : query.findAll()) {
-                                        persona.deleteFromRealm();
-                                    }
-                                    // registrar al usuario en bd local con su nuevo token
-                                    realm.copyToRealm(datosUsuario);
-
-                                    //Se manda a llamar la actividad principal
-                                    Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                                    //intentActivity.putExtra("persona", datosUsuario);
-                                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                                    preferences.edit().putString(getString(R.string.persona), datosUsuario.toJson()).apply();
-                                    startActivity(intentActivity);
-                                }
-                            });
-                        } else if (response.code() == 403) {
-                            Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
-                        }else{
-                            errorGeneralMessage.show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<LoginResponse> call, Throwable t) {
-                        errorGeneralMessage.show();
-                        Log.e(TAG, t.getMessage(), t);
-                    }
-                });
+                loginApp(personaLogin, intentActivity);
             }
         });
     }

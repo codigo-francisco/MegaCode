@@ -7,4 +7,5 @@
     android:layout_marginStart="@dimen/margin_card"
     app:civ_border_overlay="true"
     app:civ_border_width="1dp"
+    android:id="@+id/skillnode_layout_circleimage"
     app:civ_border_color="@color/md_black_1000" />

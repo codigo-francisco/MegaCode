@@ -14,21 +14,21 @@
 
     <application
         android:name="com.megacode.base.ApplicationBase"
-        android:fullBackupContent="true"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@drawable/ico"
         android:label="@string/app_name"
         android:theme="@style/Theme.MaterialComponents.Light"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.megacode.screens.MegaCodeAcitivity"
+            android:name=".MegaCodeAcitivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/GdxTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.megacode.screens.RootActivity"
+            android:name=".RootActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
@@ -36,14 +36,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.megacode.screens.RegisterActivity"
+            android:name=".RegisterActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
-        <activity android:name="com.megacode.screens.LoginActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".LoginActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+        </activity>
+        <activity android:name=".LaunchActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

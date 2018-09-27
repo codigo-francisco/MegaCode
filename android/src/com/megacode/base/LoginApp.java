@@ -1,9 +1,11 @@
 package com.megacode.base;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.megacode.models.IDialog;
 import com.megacode.models.Persona;
 import com.megacode.models.response.LoginResponse;
 import com.megacode.screens.LoginActivity;
@@ -16,9 +18,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginApp extends ActivityBase{
+public abstract class LoginApp extends ActivityBase{
 
     private final static String TAG = "ActivityBase";
+
+    Realm realm = Realm.getDefaultInstance();
+
+    IDialog errorDialog;
+
+    public LoginApp(){
+        super();
+        errorDialog = createDialog();
+    }
+
+    public abstract IDialog createDialog();
 
     public void loginApp(Persona persona, Intent intent){
         //Realizar el registro
@@ -30,7 +43,6 @@ public class LoginApp extends ActivityBase{
                     Persona datosUsuario = response.body().getUsuario();
                     datosUsuario.setToken(response.body().getToken());
 
-                    Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
 
                     //Buscar si hay algún usuario en Realm, eliminarlo
@@ -42,23 +54,27 @@ public class LoginApp extends ActivityBase{
                     realm.copyToRealm(datosUsuario);
 
                     realm.commitTransaction();
-                    realm.close();
 
                     startActivity(intent);
 
                 } else if (response.code() == 403) {
                     Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
                 }else{
-                    errorGeneralMessage.show();
+                    errorDialog.show();
                 }
             }
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                errorGeneralMessage.show();
+                errorDialog.show();
                 Log.e(TAG, t.getMessage(), t);
             }
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        realm.close();
+        super.onDestroy();
+    }
 }

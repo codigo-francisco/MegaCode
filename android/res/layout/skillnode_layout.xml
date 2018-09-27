@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<de.hdodenhof.circleimageview.CircleImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/size_option_skilltree"
-    android:layout_height="@dimen/size_option_skilltree"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="@dimen/margin_card"
-    android:layout_marginStart="@dimen/margin_card"
-    app:civ_border_overlay="true"
-    app:civ_border_width="1dp"
-    android:id="@+id/skillnode_layout_circleimage"
-    app:civ_border_color="@color/md_black_1000" />
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:elevation="12dp"
+    app:cardCornerRadius="60dp"
+    android:layout_centerHorizontal="true"
+    android:innerRadius="0dp"
+    android:shape="ring"
+    android:layout_marginEnd="15dp"
+    android:thicknessRatio="1.9">
+    <ImageView
+        android:layout_height="60dp"
+        android:layout_width="60dp"
+        android:id="@+id/node_imageview"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center">
+    </ImageView>
+</android.support.v7.widget.CardView>

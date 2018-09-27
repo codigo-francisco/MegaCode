@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.megacode.models.Persona;
@@ -135,6 +136,24 @@ public class PerfilFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
+            }
+        });
+
+        Button button = fragmentView.findViewById(R.id.perfil_cerrarsesion);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Borrar todos los usuarios en Realm
+                try(Realm realm = Realm.getDefaultInstance()){
+                    realm.beginTransaction();
+                    realm.where(Persona.class).findFirst().deleteFromRealm();
+                    realm.commitTransaction();
+
+                    //Cambiar de actividad con una tarea nueva
+                    Intent intent = new Intent(PerfilFragment.this.getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
             }
         });
 

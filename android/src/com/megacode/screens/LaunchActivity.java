@@ -1,12 +1,15 @@
 package com.megacode.screens;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.megacode.base.LoginApp;
+import com.megacode.models.IDialog;
 import com.megacode.models.Persona;
 
 import io.realm.Realm;
@@ -55,6 +58,25 @@ public class LaunchActivity extends LoginApp {
 
         loginTask = new LoginTask();
         loginTask.execute();
+    }
+
+    @Override
+    public IDialog createDialog() {
+        return new IDialog() {
+            @Override
+            public void show() {
+                AlertDialog alertDialog = new AlertDialog.Builder(LaunchActivity.this)
+                        .setMessage("Ha ocurrido un error en el proceso de login, por favor trate de utilizar la aplicación más tarde")
+                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface) {
+                                LaunchActivity.this.finish();
+                            }
+                        })
+                        .create();
+                alertDialog.show();
+            }
+        };
     }
 
     @Override

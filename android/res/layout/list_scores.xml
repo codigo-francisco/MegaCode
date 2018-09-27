@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:rowCount="1"
     android:columnCount="3"
+    android:layout_marginTop="8dp"
     android:orientation="horizontal">
 
     <ImageView
@@ -18,17 +19,17 @@
 
     <TextView
         android:id="@+id/scores_nombre"
-        android:textSize="22sp"
+        android:textSize="20sp"
         android:layout_gravity="center_vertical"
-        android:textColor="@color/md_black_1000"
+        android:textColor="@color/md_grey_800"
         android:textStyle="bold"
         />
 
     <TextView
         android:layout_gravity="end|center_vertical"
         android:id="@+id/scores_scorenumber"
-        android:layout_marginEnd="5dp"
-        android:textSize="20sp"
+        android:layout_marginEnd="10dp"
+        android:textSize="18sp"
         />
 
 </GridLayout>

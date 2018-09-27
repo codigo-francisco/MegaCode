@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.megacode.base.ActivityBase;
 import com.megacode.base.LoginApp;
+import com.megacode.models.IDialog;
 import com.megacode.models.Persona;
 import com.megacode.models.response.LoginResponse;
 import com.megacode.services.MegaCodeServiceInstance;
@@ -65,5 +66,10 @@ public class LoginActivity extends LoginApp {
                 loginApp(personaLogin, intentActivity);
             }
         });
+    }
+
+    @Override
+    public IDialog createDialog() {
+        return () -> errorGeneralMessage.show();
     }
 }

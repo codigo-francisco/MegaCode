@@ -17,6 +17,7 @@
         android:id="@+id/node_imageview"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:contentDescription="node">
     </ImageView>
 </android.support.v7.widget.CardView>

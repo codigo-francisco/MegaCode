@@ -5,19 +5,13 @@
 
     <string name="perfil">Perfil</string>
     <string name="progreso">Progreso</string>
-    <string name="ejercicios">Ejercicios</string>
     <string name="abierto">Abierto</string>
     <string name="cerrado">Cerrado</string>
     <string name="jugar">Jugar</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="edad">edad</string>
-    <string name="nombre">nombre</string>
-    <string name="sexo">sexo</string>
     <string name="opcion_no_implementada">Opcion no implementada todavía</string>
-    <string name="estudiante">Estudiante</string>
     <string name="anios">Años</string>
-    <string name="seleccionar_fotografia">Seleccionar Fotografia</string>
     <string name="seleccionar_personaje">Selecciona un personaje</string>
     <string name="megacode">MegaCode</string>
     <string name="she_megacode">She-MegaCode</string>
@@ -33,7 +27,6 @@
     <string name="confirmar_contrasena">Confirmar Contraseña*</string>
     <string name="login">Login</string>
     <string name="texto_registro">¿No tienes cuenta? Registrate</string>
-    <string name="persona">persona</string>
     <string name="noticias">Noticias</string>
     <string name="foto_perfil">Foto Perfil</string>
 

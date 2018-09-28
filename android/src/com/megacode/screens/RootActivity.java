@@ -7,6 +7,7 @@ import android.os.PersistableBundle;
 import android.preference.DialogPreference;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -24,15 +26,16 @@ import com.megacode.models.Persona;
 import com.megacode.models.Tags;
 
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private DrawerLayout drawerLayout;
     private int selectedFragment;
-    private SharedPreferences sharedPreferences;
-    private String currentTag;
     private final static String SELECTED_FRAGMENT = "selectedFragment";
-    private final static String ROOTACTIVITY_SHAREDPREFERENCES = "RootActivitySharedPreferences";
+    private int RESULT_GAME = 1;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbarMenu);
 
         drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.menu_navigation);
+        navigationView = findViewById(R.id.menu_navigation);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
@@ -51,14 +54,12 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        sharedPreferences = getSharedPreferences(ROOTACTIVITY_SHAREDPREFERENCES, MODE_PRIVATE);
-
         int selectedFragment;
 
         if (savedInstanceState!=null){
             selectedFragment = savedInstanceState.getInt(SELECTED_FRAGMENT, R.id.feed);
         }else{
-            selectedFragment = sharedPreferences.getInt(SELECTED_FRAGMENT, R.id.feed);
+            selectedFragment = R.id.feed;
         }
 
         navigationView.setCheckedItem(selectedFragment);
@@ -79,50 +80,75 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         return selectFragment(menuItem.getItemId());
     }
 
+    private final static SparseArray<String> tags = new SparseArray<>();
+    static {
+        tags.append(R.id.feed, "FEED");
+        tags.append(R.id.perfil, "PERFIL");
+        tags.append(R.id.progreso, "PROGRESO");
+    }
+
     public boolean selectFragment(int id){
 
-        if (id!=selectedFragment || selectedFragment==R.id.jugar) {
+        boolean result=false;
+        boolean isFragment = id!=selectedFragment && id!=R.id.jugar;
+
+        if (isFragment) {
             FragmentManager manager = getSupportFragmentManager();
             Fragment fragment = null;
-            String tag = null;
             selectedFragment = id;
+            String currentTag = tags.get(id);
+            boolean iguales = (manager.getFragments().size() > 0) && (manager.getFragments().get(0).getTag().equals(currentTag));
 
-            //Aquí se hace el cambio de fragmento
-            switch (id) {
-                case R.id.feed:
-                    fragment = new FeedFragment();
-                    tag = Tags.FEED.toString();
-                    break;
-                case R.id.perfil:
-                    fragment = new PerfilFragment();
-                    tag = Tags.PERFIL.toString();
-                    break;
-                case R.id.progreso:
-                    fragment = new ProgresoFragment();
-                    tag = Tags.PROGRESO.toString();
-                    break;
-                case R.id.jugar:
-                    Intent intent = new Intent(this, MegaCodeAcitivity.class);
-                    startActivity(intent);
-                    break;
-                default:
-                    Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
+            if (!iguales) {
+                //Aquí se hace el cambio de fragmento
+                switch (id) {
+                    case R.id.feed:
+                        fragment = new FeedFragment();
+                        break;
+                    case R.id.perfil:
+                        fragment = new PerfilFragment();
+                        break;
+                    case R.id.progreso:
+                        fragment = new ProgresoFragment();
+                        break;
+                    default:
+                        Toast.makeText(getApplicationContext(), R.string.opcion_no_implementada, Toast.LENGTH_SHORT).show();
+                }
 
+                if (fragment != null) {
+                    manager.beginTransaction()
+                            .replace(R.id.frame_layout, fragment, currentTag)
+                            .commitNow();
+                }
             }
 
-            currentTag = tag;
+            result=true;
+        }else if (id==R.id.jugar){
+            Intent intent = new Intent(this, MegaCodeAcitivity.class);
+            intent.putExtra("selectedFragment", selectedFragment);
+            startActivityForResult(intent, RESULT_GAME);
 
-            if (fragment != null) {
-                fragment.setRetainInstance(true);
-                manager.beginTransaction()
-                        .replace(R.id.frame_layout, fragment, tag)
-                        .commitNow();
-            }
-
-            drawerLayout.closeDrawer(GravityCompat.START);
+            result=true;
         }
 
-        return true;
+        drawerLayout.closeDrawer(GravityCompat.START);
+
+        return result;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode==RESULT_GAME){
+            if (resultCode==RESULT_OK){
+                if (data!=null){
+                    data.getExtras().getInt("selectedFragment");
+                    navigationView.setCheckedItem(selectedFragment);
+                    selectFragment(selectedFragment);
+                }
+            }
+        }
     }
 
     @Override
@@ -130,21 +156,5 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         outState.putInt(SELECTED_FRAGMENT, selectedFragment);
 
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onPause() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(SELECTED_FRAGMENT, selectedFragment);
-        editor.apply();
-
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        sharedPreferences.edit().remove(SELECTED_FRAGMENT).apply();
-
-        super.onDestroy();
     }
 }

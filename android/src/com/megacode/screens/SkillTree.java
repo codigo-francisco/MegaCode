@@ -3,6 +3,8 @@ package com.megacode.screens;
 
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.AsyncLayoutInflater;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.megacode.adapters.model.SkillNode;
 import com.megacode.models.GeneralCallback;
+import com.megacode.models.ParcelableLinkedList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -31,11 +34,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class SkillTree extends Fragment {
 
+    private LinkedList<List<SkillNode>> nodes;
 
     public SkillTree() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,23 +50,36 @@ public class SkillTree extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //TODO: datos dummy de prueba
-        LinkedList<List<SkillNode>> nodes = new LinkedList<>();
-        for (int index=0; index < 20; index++){
-            List<SkillNode> nivel = new ArrayList<SkillNode>();
-            Random random = new Random();
-            int numero = random.nextInt(3)+1;
-            for (int index2=0; index2< numero; index2++){
-                SkillNode skillNode = new SkillNode();
-                nivel.add(skillNode);
+        if (savedInstanceState!=null){
+            if (savedInstanceState.getParcelable("nodes")!=null){
+                nodes = ((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes;
             }
-            nodes.add(nivel);
+        }else{
+            //TODO: datos dummy de prueba
+            nodes = new LinkedList<>();
+            for (int index=0; index < 20; index++) {
+                List<SkillNode> nivel = new ArrayList<SkillNode>();
+                Random random = new Random();
+                int numero = random.nextInt(3) + 1;
+                for (int index2 = 0; index2 < numero; index2++) {
+                    SkillNode skillNode = new SkillNode();
+                    nivel.add(skillNode);
+                }
+                nodes.add(nivel);
+            }
         }
 
         AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(nodes);
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        ParcelableLinkedList parcelableLinkedList = new ParcelableLinkedList(nodes);
+        outState.putParcelable("nodes", parcelableLinkedList);
+        super.onSaveInstanceState(outState);
     }
 
     class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecyclerSkillTree.SkillTreeViewHolder>{
@@ -110,8 +126,6 @@ public class SkillTree extends Fragment {
                 super(itemView);
             }
         }
-
-
     }
 
 }

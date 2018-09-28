@@ -46,13 +46,22 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ScoreViewHolder scoreViewHolder, int i) {
-        ScoreResponse scoreModel = scoreModelList.get(i);
+    public void onBindViewHolder(@NonNull ScoreViewHolder scoreViewHolder, int index) {
+        ScoreResponse scoreModel = scoreModelList.get(index);
         scoreViewHolder.scoreText.setText(String.format(Locale.getDefault(),"%d puntos", scoreModel.getScore()));
         scoreViewHolder.nameText.setText(scoreModel.getNombre());
         byte[] bytes = Base64.decode(scoreModel.getFotoPerfil(), Base64.DEFAULT);
         scoreViewHolder.profileImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
         //TODO: resaltar los 3 primeros lugares, ubicar la posicion del jugador actual y compararla contra otros jugadores (verificar si está en el top 10)
+        switch (index){
+            case 0: //Primer lugar
+
+                break;
+            case 1: //Segundo lugar
+                break;
+            case 2: //Tercer lugar
+                break;
+        }
     }
 
     @Override

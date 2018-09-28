@@ -22,7 +22,7 @@ public abstract class LoginApp extends ActivityBase{
 
     private final static String TAG = "ActivityBase";
 
-    Realm realm = Realm.getDefaultInstance();
+    Realm realm;
 
     IDialog errorDialog;
 
@@ -42,6 +42,9 @@ public abstract class LoginApp extends ActivityBase{
                     //Obtenemos los datos del usuario desde el servidor y establecemos el token generado
                     Persona datosUsuario = response.body().getUsuario();
                     datosUsuario.setToken(response.body().getToken());
+
+                    if (realm==null)
+                        realm = Realm.getDefaultInstance();
 
                     realm.beginTransaction();
 
@@ -74,7 +77,8 @@ public abstract class LoginApp extends ActivityBase{
 
     @Override
     protected void onDestroy() {
-        realm.close();
+        if (realm!=null)
+            realm.close();
         super.onDestroy();
     }
 }

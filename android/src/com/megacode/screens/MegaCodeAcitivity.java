@@ -1,6 +1,7 @@
 package com.megacode.screens;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -48,15 +49,24 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		return linearLayoutCamera;
 	}
 	public CameraBridgeViewBase getCameraBridgeViewBase() { return cameraBridgeViewBase; }
+	private int selectedFragment;
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		if (getIntent()!=null && getIntent().getExtras()!=null){
+		    selectedFragment = getIntent().getIntExtra("selectedFragment",R.id.feed);
+        }else{
+		    selectedFragment = R.id.feed;
+        }
+
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
-		}
+		}else{
+		    //Permisos de camara no otorgados
+        }
 
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
@@ -147,4 +157,12 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			Log.d(TAG, "opencv inicializado");
 		}
 	}
+
+    @Override
+    protected void onPause() {
+        Intent intent = new Intent();
+        intent.putExtra("selectedFragment", selectedFragment);
+        setResult(RESULT_OK, intent);
+        super.onPause();
+    }
 }

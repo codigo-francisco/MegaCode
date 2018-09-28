@@ -52,11 +52,25 @@ public class ScoreFragment extends Fragment {
         scoreModelList = new ArrayList<>();
         scoreAdapter = new ScoreAdapter(scoreModelList);
 
+        if (savedInstanceState!=null){
+            if (savedInstanceState.getParcelableArrayList("scores")!=null){
+                scoreModelList.addAll(savedInstanceState.getParcelableArrayList("scores"));
+                scoreAdapter.notifyDataSetChanged();
+            }
+        }else{
+            createScoreModel();
+        }
+
+
         recyclerView.setAdapter(scoreAdapter);
 
-        createScoreModel();
-
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList("scores", new ArrayList<>(scoreModelList));
+        super.onSaveInstanceState(outState);
     }
 
     private void createScoreModel(){

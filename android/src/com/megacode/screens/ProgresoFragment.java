@@ -2,6 +2,7 @@ package com.megacode.screens;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,7 @@ import android.view.ViewGroup;
 public class ProgresoFragment extends Fragment {
 
     private final static int PAGE_LIMIT = 2;
-    private TabAdapter tabAdapter = null;
+    TabLayout tabLayout;
 
     public ProgresoFragment() {
         // Required empty public constructor
@@ -30,6 +31,7 @@ public class ProgresoFragment extends Fragment {
         public TabAdapter(FragmentManager fm) {
             super(fm);
         }
+
 
         @Nullable
         @Override
@@ -49,18 +51,17 @@ public class ProgresoFragment extends Fragment {
         }
 
         @Override
-        public Fragment getItem(int i) {
+        public Fragment getItem(int index) {
             Fragment fragment = null;
 
-            switch (i){
+            switch (index){
                 case 0:
-                    fragment = new SkillTree();
+                        fragment = new SkillTree();
                     break;
                 case 1:
-                    fragment = new ScoreFragment();
+                        fragment = new ScoreFragment();
                     break;
             }
-
 
             return fragment;
         }
@@ -78,9 +79,9 @@ public class ProgresoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_progreso, container, false);
 
         ViewPager viewPager = view.findViewById(R.id.progreso_pager);
-        TabLayout tabLayout = view.findViewById(R.id.tab_progreso);
+        tabLayout = view.findViewById(R.id.tab_progreso);
 
-        tabAdapter = new TabAdapter(getChildFragmentManager());
+        TabAdapter tabAdapter = new TabAdapter(getChildFragmentManager());
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
 

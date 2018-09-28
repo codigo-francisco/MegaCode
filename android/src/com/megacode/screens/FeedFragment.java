@@ -2,7 +2,9 @@ package com.megacode.screens;
 
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.Person;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.realm.Realm;
 import retrofit2.Call;
@@ -66,10 +69,18 @@ public class FeedFragment extends Fragment {
         if (data==null)
             //Datos vacios para el feed
             data = new ArrayList<>();
+
         customAdapter = new CustomAdapter(data);
 
-        //actualizar el feed...
-        actualizarFeed();
+        if (savedInstanceState!=null){
+            if (savedInstanceState.getParcelableArrayList("feeds")!=null){
+                data.addAll(new ArrayList<>(Objects.requireNonNull(savedInstanceState.getParcelableArrayList("feeds"))));
+                customAdapter.notifyDataSetChanged();
+            }
+        }else {
+            //actualizar el feed...
+            actualizarFeed();
+        }
 
         recyclerView.setAdapter(customAdapter);
 
@@ -170,8 +181,15 @@ public class FeedFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList("feeds", new ArrayList<>(data));
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onDestroy() {
-        realm.close();
+        if (realm != null && !realm.isClosed())
+            realm.close();
         super.onDestroy();
     }
 }

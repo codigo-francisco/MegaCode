@@ -29,6 +29,7 @@
     <string name="texto_registro">¿No tienes cuenta? Registrate</string>
     <string name="noticias">Noticias</string>
     <string name="foto_perfil">Foto Perfil</string>
+    <string name="tabla_de_posiciones">Tabla de posiciones</string>
 
     <string-array name="sexos">
         <item>@string/masculino</item>

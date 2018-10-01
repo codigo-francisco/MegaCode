@@ -5,12 +5,18 @@
     android:layout_height="match_parent"
     tools:context=".FeedFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_feed"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        />
+        android:id="@+id/feed_refreshlayout">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_feed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>

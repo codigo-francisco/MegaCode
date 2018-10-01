@@ -6,11 +6,19 @@
     android:id="@+id/fragment_score"
     tools:context=".ScoreFragment">
 
-    <android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scores_recyclerview"
-        />
+        android:id="@+id/score_swiperefresh">
+
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scores_recyclerview"
+            />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </FrameLayout>

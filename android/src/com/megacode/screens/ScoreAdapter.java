@@ -55,7 +55,6 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
         //TODO: resaltar los 3 primeros lugares, ubicar la posicion del jugador actual y compararla contra otros jugadores (verificar si está en el top 10)
         switch (index){
             case 0: //Primer lugar
-
                 break;
             case 1: //Segundo lugar
                 break;

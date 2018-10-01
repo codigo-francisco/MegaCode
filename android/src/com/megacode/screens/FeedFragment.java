@@ -1,12 +1,14 @@
 package com.megacode.screens;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.Person;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.megacode.models.TypeFeed;
 import com.megacode.services.RuleInstance;
 import com.megacode.adapters.model.DataModel;
 import com.megacode.models.FeedBack;
@@ -45,13 +48,14 @@ public class FeedFragment extends Fragment {
     private Persona persona;
     private CustomAdapter customAdapter;
     private Realm realm;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public FeedFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_feed, container, false);
@@ -66,11 +70,20 @@ public class FeedFragment extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        swipeRefreshLayout = view.findViewById(R.id.feed_refreshlayout);
+        swipeRefreshLayout.setOnRefreshListener(this::actualizarFeed);
+
         if (data==null)
             //Datos vacios para el feed
             data = new ArrayList<>();
 
-        customAdapter = new CustomAdapter(data);
+        customAdapter = new CustomAdapter(data, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ScoreActivity.class);
+                startActivity(intent);
+            }
+        });
 
         if (savedInstanceState!=null){
             if (savedInstanceState.getParcelableArrayList("feeds")!=null){
@@ -82,19 +95,21 @@ public class FeedFragment extends Fragment {
             actualizarFeed();
         }
 
+
         recyclerView.setAdapter(customAdapter);
 
         return view;
     }
 
     public void actualizarFeed(){
+        data.clear();
         //Posicion contra otros
         MegaCodeService megaCodeService = MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService;
         megaCodeService.posicionContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
                 new Callback<List<PosicionesResponse>>() {
                     @Override
-                    public void onResponse(Call<List<PosicionesResponse>> call,
-                                           Response<List<PosicionesResponse>> response) {
+                    public void onResponse(@NonNull Call<List<PosicionesResponse>> call,
+                                           @NonNull Response<List<PosicionesResponse>> response) {
                         DataModel dataModel=null;
 
                         if (response.isSuccessful()){
@@ -128,6 +143,7 @@ public class FeedFragment extends Fragment {
                                 );
                             }
                             if (dataModel!=null)
+                                dataModel.setTypeFeed(TypeFeed.PUNTAJE);
                                 dataModel.setImagen(R.drawable.ic_baseline_bar_chart_24px);
                                 dataModel.setTitle("Sigue compitiendo, no te quedes atras");
                                 data.add(dataModel);
@@ -150,6 +166,7 @@ public class FeedFragment extends Fragment {
                             NivelResponse nivelResponse = response.body();
 
                             DataModel dataModel = new DataModel();
+                            dataModel.setTypeFeed(TypeFeed.JUEGO);
                             dataModel.setTitle("Vamos a jugar");
                             dataModel.setContent(String.format(Locale.getDefault(), "Comienza a jugar, prueba el nivel %s", nivelResponse.getNombre()));
                             dataModel.setImagen(R.drawable.ic_baseline_videogame_asset_24px);
@@ -170,6 +187,7 @@ public class FeedFragment extends Fragment {
         List<FeedBack> feedBacks = RuleInstance.getRuleInstance(persona).getFeedbacks();
         for (FeedBack feedBack: feedBacks){
             DataModel dataModel = new DataModel();
+            dataModel.setTypeFeed(TypeFeed.CONSEJO);
             dataModel.setTitle(feedBack.getTitulo());
             dataModel.setContent(feedBack.getContenido());
             dataModel.setImagen(R.drawable.ic_baseline_info_24px);
@@ -178,6 +196,8 @@ public class FeedFragment extends Fragment {
         }
         if (feedBacks.size()>0)
             customAdapter.notifyDataSetChanged();
+
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

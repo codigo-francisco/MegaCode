@@ -4,6 +4,7 @@ package com.megacode.screens;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class ScoreFragment extends Fragment {
     private final static String TAG = "ScoreFragment";
     private ScoreAdapter scoreAdapter;
     private List<ScoreResponse> scoreModelList;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ScoreFragment() {
         // Required empty public constructor
@@ -61,6 +63,13 @@ public class ScoreFragment extends Fragment {
             createScoreModel();
         }
 
+        swipeRefreshLayout = view.findViewById(R.id.score_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                createScoreModel();
+            }
+        });
 
         recyclerView.setAdapter(scoreAdapter);
 
@@ -74,6 +83,7 @@ public class ScoreFragment extends Fragment {
     }
 
     private void createScoreModel(){
+        scoreModelList.clear();
         MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.puntajes().enqueue(new Callback<List<ScoreResponse>>() {
             @Override
             public void onResponse(Call<List<ScoreResponse>> call, Response<List<ScoreResponse>> response) {
@@ -81,6 +91,7 @@ public class ScoreFragment extends Fragment {
                     scoreModelList.addAll(response.body());
 
                     scoreAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
 

@@ -3,14 +3,24 @@ package com.megacode.adapters.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import io.realm.RealmObject;
+import com.megacode.models.TypeFeed;
 
-public class DataModel extends RealmObject implements Parcelable {
+public class DataModel implements Parcelable {
 
     private int imagen;
     private String title;
     private String content;
     private int _id;
+
+    private TypeFeed typeFeed;
+
+    public TypeFeed getTypeFeed() {
+        return typeFeed;
+    }
+
+    public void setTypeFeed(TypeFeed typeFeed) {
+        this.typeFeed = typeFeed;
+    }
 
     public int getImagen() {
         return imagen;
@@ -44,6 +54,9 @@ public class DataModel extends RealmObject implements Parcelable {
         this._id = _id;
     }
 
+    public DataModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -55,9 +68,7 @@ public class DataModel extends RealmObject implements Parcelable {
         dest.writeString(this.title);
         dest.writeString(this.content);
         dest.writeInt(this._id);
-    }
-
-    public DataModel() {
+        dest.writeInt(this.typeFeed == null ? -1 : this.typeFeed.ordinal());
     }
 
     protected DataModel(Parcel in) {
@@ -65,9 +76,11 @@ public class DataModel extends RealmObject implements Parcelable {
         this.title = in.readString();
         this.content = in.readString();
         this._id = in.readInt();
+        int tmpTypeFeed = in.readInt();
+        this.typeFeed = tmpTypeFeed == -1 ? null : TypeFeed.values()[tmpTypeFeed];
     }
 
-    public static final Parcelable.Creator<DataModel> CREATOR = new Parcelable.Creator<DataModel>() {
+    public static final Creator<DataModel> CREATOR = new Creator<DataModel>() {
         @Override
         public DataModel createFromParcel(Parcel source) {
             return new DataModel(source);

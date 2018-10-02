@@ -118,6 +118,7 @@
     <Compile Include="Controllers\FeedController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\NivelController.cs" />
+    <Compile Include="Controllers\OpenCVController.cs" />
     <Compile Include="Controllers\ScoreController.cs" />
     <Compile Include="Generators\TokenGenerator.cs" />
     <Compile Include="Generators\TokenHandler.cs" />
@@ -175,6 +176,13 @@
     <Content Include="Models\MegaCodeModel.edmx.diagram">
       <DependentUpon>MegaCodeModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Archivos\OpenCV_Manager_arm64-v8a.apk" />
+    <Content Include="Archivos\OpenCV_Manager_armeabi-v7a.apk" />
+    <Content Include="Archivos\OpenCV_Manager_armeabi.apk" />
+    <Content Include="Archivos\OpenCV_Manager_mips.apk" />
+    <Content Include="Archivos\OpenCV_Manager_mips64.apk" />
+    <Content Include="Archivos\OpenCV_Manager_x86.apk" />
+    <Content Include="Archivos\OpenCV_Manager_x86_64.apk" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

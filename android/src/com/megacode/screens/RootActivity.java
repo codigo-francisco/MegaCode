@@ -124,9 +124,11 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
             result=true;
         }else if (id==R.id.jugar){
-            Intent intent = new Intent(this, MegaCodeAcitivity.class);
+            //Intent intent = new Intent(this, MegaCodeAcitivity.class);
+            Intent intent = new Intent(this, OpenCVDownload.class);
             intent.putExtra("selectedFragment", selectedFragment);
-            startActivityForResult(intent, RESULT_GAME);
+            //startActivityForResult(intent, RESULT_GAME);
+            startActivity(intent);
 
             result=true;
         }

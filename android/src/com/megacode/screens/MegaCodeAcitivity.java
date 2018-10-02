@@ -1,13 +1,20 @@
 package com.megacode.screens;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,6 +35,8 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+
+import java.util.Locale;
 
 public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
 
@@ -64,9 +73,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
-		}else{
-		    //Permisos de camara no otorgados
-        }
+		}
 
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
@@ -146,13 +153,30 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		}
 	};
 
+	private static boolean initOpencv(){
+		boolean result = false;
+		try{
+			System.loadLibrary("opencv_java");
+
+			result = true;
+		}catch(UnsatisfiedLinkError ex){
+			Log.e(TAG, ex.getMessage(), ex);
+		}
+
+		return result;
+	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		if (!OpenCVLoader.initDebug()){
-			Log.d(TAG, "opencv inicializado asincronicamente");
-			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, baseLoaderCallback);
+		if (!initOpencv()){
+			//Log.d(TAG, "opencv inicializado asincronicamente");
+			//Este metodo dejo de funcionar en las versiones nuevas de Android, se realiza una instalación propia
+			//OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, baseLoaderCallback);
+
+			//Verificamos las arquitecturas disponibles, dependiendo de la arquitectura se descarga el so correcto
+			//installOpenCVManager();
 		}else{
 			Log.d(TAG, "opencv inicializado");
 		}

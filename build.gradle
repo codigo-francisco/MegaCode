@@ -60,6 +60,7 @@ project(":android") {
     configurations { natives }
 
     dependencies {
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
         implementation project(":core")
         implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
@@ -82,10 +83,6 @@ project(":android") {
         implementation 'org.jeasy:easy-rules-archetype:3.2.0'
         implementation 'org.jeasy:easy-rules-support:3.2.0'
         implementation 'org.jeasy:easy-rules-tutorials:3.2.0'
-        implementation 'de.blox:graphview:0.3.0'
-
-
-        implementation project(':openCVLibrary340')
     }
 }
 

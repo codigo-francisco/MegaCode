@@ -60,7 +60,6 @@ project(":android") {
     configurations { natives }
 
     dependencies {
-        implementation fileTree(dir: 'libs', include: ['*.jar'])
         implementation project(":core")
         implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
@@ -73,6 +72,7 @@ project(":android") {
         implementation 'com.android.support:appcompat-v7:28.0.0'
         implementation 'com.android.support:cardview-v7:28.0.0'
         implementation 'com.android.support:design:28.0.0'
+        implementation 'com.android.support.constraint:constraint-layout:1.1.3'
         implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
         implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'
         implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -83,6 +83,8 @@ project(":android") {
         implementation 'org.jeasy:easy-rules-archetype:3.2.0'
         implementation 'org.jeasy:easy-rules-support:3.2.0'
         implementation 'org.jeasy:easy-rules-tutorials:3.2.0'
+
+        implementation project(':OpenCV')
     }
 }
 

@@ -1,15 +1,11 @@
 package com.megacode.screens;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ImageReader;
-import android.preference.PreferenceManager;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.megacode.base.ActivityBase;
@@ -27,9 +22,6 @@ import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
 import com.megacode.services.MegaCodeServiceInstance;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;

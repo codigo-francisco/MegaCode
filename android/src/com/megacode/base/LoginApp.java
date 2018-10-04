@@ -1,15 +1,13 @@
 package com.megacode.base;
 
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.megacode.models.IDialog;
 import com.megacode.models.Persona;
 import com.megacode.models.response.LoginResponse;
-import com.megacode.screens.LoginActivity;
-import com.megacode.screens.RootActivity;
 import com.megacode.services.MegaCodeServiceInstance;
 
 import io.realm.Realm;
@@ -22,9 +20,10 @@ public abstract class LoginApp extends ActivityBase{
 
     private final static String TAG = "ActivityBase";
 
-    Realm realm;
+    protected Realm realm;
 
-    IDialog errorDialog;
+    protected IDialog errorDialog;
+    protected IDialog datosIncorrectosDialog;
 
     public LoginApp(){
         super();
@@ -61,7 +60,10 @@ public abstract class LoginApp extends ActivityBase{
                     startActivity(intent);
 
                 } else if (response.code() == 403) {
-                    Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
+                    if (datosIncorrectosDialog==null)
+                        Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
+                    else
+                        datosIncorrectosDialog.show();
                 }else{
                     errorDialog.show();
                 }

@@ -1,10 +1,11 @@
 package com.megacode.screens;
 
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.drawable.Drawable;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +31,30 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
         TextView nameText;
         TextView scoreText;
 
+        private void changeDefaultValues(){
+            profileImage.setBackground(background);
+            nameText.setTextColor(nameTextColor);
+            scoreText.setTextColor(scoreTextColor);
+        }
+
+        Drawable background;
+        int scoreTextColor;
+        int nameTextColor;
+
+        private void saveDefaultValues(){
+            background = profileImage.getBackground();
+            scoreTextColor = scoreText.getCurrentTextColor();
+            nameTextColor = nameText.getCurrentTextColor();
+        }
+
         public ScoreViewHolder(@NonNull View itemView) {
             super(itemView);
 
             profileImage = itemView.findViewById(R.id.scores_image_profile);
             nameText = itemView.findViewById(R.id.scores_nombre);
             scoreText = itemView.findViewById(R.id.scores_scorenumber);
+
+            saveDefaultValues();
         }
     }
 
@@ -63,9 +82,17 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
                 scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_yellow_600));
                 break;
             case 1: //Segundo lugar
-
+                scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.second_place));
+                scoreViewHolder.nameText.setTextColor(resources.getColor(R.color.md_grey_600));
+                scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_grey_600));
                 break;
             case 2: //Tercer lugar
+                scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.third_place));
+                scoreViewHolder.nameText.setTextColor(resources.getColor(R.color.md_brown_700));
+                scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_brown_700));
+                break;
+            default: //Bug
+                scoreViewHolder.changeDefaultValues();
                 break;
         }
     }

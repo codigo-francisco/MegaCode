@@ -1,6 +1,6 @@
 package com.megacode.screens;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class ScoreActivity extends AppCompatActivity {
@@ -9,5 +9,19 @@ public class ScoreActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
+    }
+
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        finishAfterTransition();
     }
 }

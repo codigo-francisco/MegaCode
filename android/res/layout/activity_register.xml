@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="130dp">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/megacode_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -43,7 +43,7 @@
                 android:src="@drawable/megacode" />
         </RelativeLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="120dp"
@@ -52,14 +52,14 @@
             app:helperText="@string/requerido"
             app:errorEnabled="true">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_text_name"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:hint="@string/Nombre"
                 android:inputType="text" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:baselineAligned="false"
@@ -67,7 +67,7 @@
             android:layout_height="100dp"
             android:orientation="horizontal">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -78,20 +78,20 @@
                 app:helperText="@string/requerido"
                 app:errorEnabled="true">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/login_text_age"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/Edad"
                     android:inputType="number" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="10dp"
                 android:layout_height="match_parent" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layout_spinner"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="0dp"
@@ -108,9 +108,9 @@
                     android:hint="@string/Sexo"
                     app:met_floatingLabel="normal" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:id="@+id/layout_email"
             android:layout_width="match_parent"
@@ -120,15 +120,15 @@
             app:helperText="@string/requerido"
             >
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_text_email"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="80dp" />
 
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             app:passwordToggleEnabled="true"
             app:helperTextEnabled="true"
@@ -137,15 +137,15 @@
             android:layout_width="match_parent"
             android:layout_height="120dp">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_text_contrasena"
                 android:inputType="textPassword"
                 android:hint="@string/contrasena"
                 android:layout_width="match_parent"
                 android:layout_height="80dp" />
 
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             app:passwordToggleEnabled="true"
             app:helperTextEnabled="true"
@@ -154,15 +154,15 @@
             android:layout_width="match_parent"
             android:layout_height="120dp">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/login_text_contrasena2"
                 android:inputType="textPassword"
                 android:hint="@string/confirmar_contrasena"
                 android:layout_width="match_parent"
                 android:layout_height="80dp" />
 
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.button.MaterialButton
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"

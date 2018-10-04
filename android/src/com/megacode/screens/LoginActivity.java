@@ -1,32 +1,18 @@
 package com.megacode.screens;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.design.button.MaterialButton;
+
+import com.google.android.material.button.MaterialButton;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.util.Log;
-import android.view.View;
+import com.google.android.material.textfield.TextInputEditText;
+
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.megacode.base.ActivityBase;
 import com.megacode.base.LoginApp;
 import com.megacode.models.IDialog;
 import com.megacode.models.Persona;
-import com.megacode.models.response.LoginResponse;
-import com.megacode.services.MegaCodeServiceInstance;
-
-import java.util.Set;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmQuery;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class LoginActivity extends LoginApp {
@@ -51,6 +37,15 @@ public class LoginActivity extends LoginApp {
         });
 
         loginButton = findViewById(R.id.button_login);
+
+        datosIncorrectosDialog = new IDialog() {
+            @Override
+            public void show() {
+                progressBar.setVisibility(ProgressBar.GONE);
+                loginButton.setEnabled(true);
+                Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
+            }
+        };
 
         loginButton.setOnClickListener(view -> {
             TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);

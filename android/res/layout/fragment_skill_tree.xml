@@ -7,12 +7,19 @@
     tools:context=".SkillTree">
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/skill_tree_recyclerview"
         android:scrollbars="vertical"
         />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/skilltree_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_outline_videogame_asset_24px"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"/>
 
 </FrameLayout>

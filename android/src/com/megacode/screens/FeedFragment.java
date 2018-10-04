@@ -1,17 +1,17 @@
 package com.megacode.screens;
 
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.Person;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.core.app.Person;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,6 @@ import com.megacode.models.response.PosicionesResponse;
 import com.megacode.services.MegaCodeService;
 import com.megacode.services.MegaCodeServiceInstance;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +80,10 @@ public class FeedFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ScoreActivity.class);
-                startActivity(intent);
+                View sharedElement = view.findViewById(R.id.cards_layout_icon);
+                ActivityOptions activityOptions =
+                        ActivityOptions.makeSceneTransitionAnimation(getActivity(),sharedElement,"score_icon");
+                startActivity(intent, activityOptions.toBundle());
             }
         });
 
@@ -144,8 +146,8 @@ public class FeedFragment extends Fragment {
                             }
                             if (dataModel!=null)
                                 dataModel.setTypeFeed(TypeFeed.PUNTAJE);
-                                dataModel.setImagen(R.drawable.ic_baseline_bar_chart_24px);
-                                dataModel.setTitle("Sigue compitiendo, no te quedes atras");
+                                dataModel.setImagen(R.drawable.ic_podium);
+                                dataModel.setTitle("Sigue compitiendo");
                                 data.add(dataModel);
                                 customAdapter.notifyDataSetChanged();
                         }

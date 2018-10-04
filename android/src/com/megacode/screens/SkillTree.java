@@ -1,32 +1,27 @@
 package com.megacode.screens;
 
 
-import android.media.Image;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.AsyncLayoutInflater;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.megacode.adapters.model.SkillNode;
-import com.megacode.models.GeneralCallback;
 import com.megacode.models.ParcelableLinkedList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -45,6 +40,13 @@ public class SkillTree extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_skill_tree, container, false);
+
+        FloatingActionButton floatingActionButton =  view.findViewById(R.id.skilltree_play);
+        floatingActionButton.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getActivity(), MegaCodeAcitivity.class);
+
+            startActivity(intent);
+        });
 
         RecyclerView recyclerView = view.findViewById(R.id.skill_tree_recyclerview);
         recyclerView.setHasFixedSize(true);

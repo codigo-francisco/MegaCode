@@ -120,6 +120,7 @@
     <Compile Include="Controllers\NivelController.cs" />
     <Compile Include="Controllers\OpenCVController.cs" />
     <Compile Include="Controllers\ScoreController.cs" />
+    <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Generators\TokenGenerator.cs" />
     <Compile Include="Generators\TokenHandler.cs" />
     <Compile Include="Models\Conexion.cs">

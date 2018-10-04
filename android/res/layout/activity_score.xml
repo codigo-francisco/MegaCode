@@ -6,21 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ScoreActivity">
 
-    <TextView
-        android:id="@+id/score_textposiciones"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="85dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/tabla_de_posiciones"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintBottom_toTopOf="@+id/score_fragmento"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_podium" />
 
     <fragment
         android:id="@+id/score_fragmento"
@@ -28,13 +24,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.545"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/score_textposiciones"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:layout="@layout/fragment_score" />
+
 </android.support.constraint.ConstraintLayout>

@@ -203,6 +203,7 @@ public class Persona extends RealmObject implements Parcelable {
         persona.setSi(getSi());
         persona.setPara(getPara());
         persona.setMientras(getMientras());
+        persona.setToken(getToken());
 
         persona.setFotoPerfil(getFotoPerfil());
 

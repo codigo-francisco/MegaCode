@@ -1,8 +1,10 @@
 package com.megacode.screens;
 
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageButton;
@@ -21,16 +24,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.megacode.models.Persona;
+import com.megacode.services.MegaCodeServiceInstance;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Locale;
 
 import io.realm.Realm;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -41,6 +54,7 @@ public class PerfilFragment extends Fragment {
     private final static int REQUEST_GET_SINGLE_FILE = 1;
     private final static int RESULT_OK = -1;
     private final static String TAG = "PerfilFragment";
+    private static final int REQUEST_CAMERA = 2;
     private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
 
     public PerfilFragment() {
@@ -49,10 +63,41 @@ public class PerfilFragment extends Fragment {
 
     private static class CargarImagen extends AsyncTask<Uri, Void, String>{
 
-        private ContentResolver contentResolver;
+        private Context context;
 
-        private CargarImagen(ContentResolver contentResolver){
-            this.contentResolver = contentResolver;
+        private CargarImagen(Context context){
+            this.context = context;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            //Codigo de reto :P
+
+            /*Persona persona = null;
+
+            //Mandar la imagen a base de datos
+            try(Realm realm = Realm.getDefaultInstance()){
+                persona = realm.where(Persona.class).findFirst().buildPersonaObj();
+            }
+
+            MegaCodeServiceInstance.getMegaCodeServiceInstance().
+                    megaCodeService.registrarFotoUsuario(persona.getToken(), persona).clone().enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(context, "Guardado en base de datos", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "Guardado en base de datos, codigo:"+response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(context, "Hubo un error al guardar", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "Hubo un error al guardar");
+                }
+            });*/
         }
 
         public static String encodeTobase64(Bitmap image) {
@@ -70,7 +115,7 @@ public class PerfilFragment extends Fragment {
             String result=null;
 
             try {
-                Bitmap bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uris[0]));
+                Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uris[0]));
                 result = encodeTobase64(bitmap);
 
                 Realm realm = Realm.getDefaultInstance();
@@ -96,13 +141,32 @@ public class PerfilFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode==RESULT_OK){
-            if (requestCode == REQUEST_GET_SINGLE_FILE){
-                if (data!=null){
-                    fotoPerfil.setImageURI(data.getData());
-                    fotoPerfil.setBackgroundResource(R.color.translucent);
+            switch (requestCode){
+                case REQUEST_GET_SINGLE_FILE:
+                    if (data!=null){
+                        fotoPerfil.setImageURI(data.getData());
+                        fotoPerfil.setBackgroundResource(R.color.translucent);
 
-                    new CargarImagen(getContext().getContentResolver()).execute(data.getData());
-                }
+                        new CargarImagen(getContext()).execute(data.getData());
+                    }
+                    break;
+                case REQUEST_CAMERA:
+                    if (data!=null){
+                        Bitmap bitmap = (Bitmap)data.getExtras().get("data");
+                        Glide.with(getContext()).load(bitmap).into(fotoPerfil);
+                        //fotoPerfil.setImageBitmap(bitmap);
+                        try {
+                            File file = File.createTempFile("fotoPerfil","png");
+                            try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                                if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)){
+                                    new CargarImagen(getContext()).execute(Uri.fromFile(file));
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -133,27 +197,41 @@ public class PerfilFragment extends Fragment {
         fotoPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                startActivityForResult(Intent.createChooser(intent, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
+                AlertDialog dialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Escoga una opción")
+                        .setItems(new String[]{
+                                "Dispositivo",
+                                "Camara"
+                        }, (dialogInterface, index) -> {
+                            switch (index){
+                                case 0:
+                                    Intent intentDispositivo = new Intent(Intent.ACTION_GET_CONTENT);
+                                    intentDispositivo.setType("image/*");
+                                    startActivityForResult(Intent.createChooser(intentDispositivo, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
+                                    break;
+                                case 1:
+                                    Intent intentCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                    startActivityForResult(intentCamara, REQUEST_CAMERA);
+                            }
+                        })
+                        .create();
+
+                dialog.show();
             }
         });
 
         Button button = fragmentView.findViewById(R.id.perfil_cerrarsesion);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Borrar todos los usuarios en Realm
-                try(Realm realm = Realm.getDefaultInstance()){
-                    realm.beginTransaction();
-                    realm.where(Persona.class).findFirst().deleteFromRealm();
-                    realm.commitTransaction();
+        button.setOnClickListener(view -> {
+            //Borrar todos los usuarios en Realm
+            try(Realm realm1 = Realm.getDefaultInstance()){
+                realm1.beginTransaction();
+                realm1.where(Persona.class).findFirst().deleteFromRealm();
+                realm1.commitTransaction();
 
-                    //Cambiar de actividad con una tarea nueva
-                    Intent intent = new Intent(PerfilFragment.this.getActivity(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
+                //Cambiar de actividad con una tarea nueva
+                Intent intent = new Intent(PerfilFragment.this.getActivity(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
 

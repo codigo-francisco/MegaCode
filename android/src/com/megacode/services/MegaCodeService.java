@@ -1,5 +1,6 @@
 package com.megacode.services;
 
+import com.megacode.models.GeneralResponse;
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
 import com.megacode.models.ScoreResponse;
@@ -9,6 +10,7 @@ import com.megacode.models.response.PosicionesResponse;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -23,6 +25,9 @@ public interface MegaCodeService {
 
     @POST("api/autenticacion/login")
     Call<LoginResponse> login(@Body Persona usuario);
+
+    @POST("api/usuario/registrarFoto")
+    Call<ResponseBody> registrarFotoUsuario(@Header("Authorization") String token, @Body Persona persona);
 
     @GET("api/feed/posicionContraOtros/{id}")
     Call<List<PosicionesResponse>> posicionContraOtros(@Header("Authorization") String token, @Path("id") long id);

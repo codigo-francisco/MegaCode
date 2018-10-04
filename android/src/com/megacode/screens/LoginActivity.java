@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,44 +33,50 @@ public class LoginActivity extends LoginApp {
 
     private final static String TAG = "LoginActivity";
 
+    private ProgressBar progressBar;
+    private MaterialButton loginButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         TextView loginTextRegistrate = findViewById(R.id.login_text_registrate);
+        progressBar = findViewById(R.id.login_progressbar);
 
-        loginTextRegistrate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Abrir actividad de registro
-                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivity(intent);
-            }
+        loginTextRegistrate.setOnClickListener(view -> {
+            //Abrir actividad de registro
+            Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+            startActivity(intent);
         });
 
-        MaterialButton loginButton = findViewById(R.id.button_login);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
-                TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
+        loginButton = findViewById(R.id.button_login);
 
-                Persona personaLogin = new Persona();
-                personaLogin.setEmail(emailEditText.getText().toString());
-                personaLogin.setContrasena(contrasenaEditText.getText().toString());
+        loginButton.setOnClickListener(view -> {
+            TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
+            TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
 
-                //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
-                Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
-                intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            Persona personaLogin = new Persona();
+            personaLogin.setEmail(emailEditText.getText().toString());
+            personaLogin.setContrasena(contrasenaEditText.getText().toString());
 
-                loginApp(personaLogin, intentActivity);
-            }
+            //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
+            Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
+            intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+            progressBar.setVisibility(ProgressBar.VISIBLE);
+            loginButton.setEnabled(false);
+
+            loginApp(personaLogin, intentActivity);
         });
     }
 
     @Override
     public IDialog createDialog() {
-        return () -> errorGeneralMessage.show();
+        return () -> {
+            progressBar.setVisibility(ProgressBar.GONE);
+            loginButton.setEnabled(true);
+            errorGeneralMessage.show();
+        };
     }
 }

@@ -1,5 +1,7 @@
 package com.megacode.screens;
 
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +49,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
 
     @Override
     public void onBindViewHolder(@NonNull ScoreViewHolder scoreViewHolder, int index) {
+        Resources resources = scoreViewHolder.itemView.getResources();
         ScoreResponse scoreModel = scoreModelList.get(index);
         scoreViewHolder.scoreText.setText(String.format(Locale.getDefault(),"%d puntos", scoreModel.getScore()));
         scoreViewHolder.nameText.setText(scoreModel.getNombre());
@@ -55,8 +58,12 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
         //TODO: resaltar los 3 primeros lugares, ubicar la posicion del jugador actual y compararla contra otros jugadores (verificar si está en el top 10)
         switch (index){
             case 0: //Primer lugar
+                scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.first_place));
+                scoreViewHolder.nameText.setTextColor(resources.getColor(R.color.md_yellow_600));
+                scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_yellow_600));
                 break;
             case 1: //Segundo lugar
+
                 break;
             case 2: //Tercer lugar
                 break;

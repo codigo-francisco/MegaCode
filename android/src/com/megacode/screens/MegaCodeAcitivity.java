@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
@@ -20,14 +22,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.blockly.android.codegen.CodeGenerationRequest;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
+import com.udacity.gamedev.gigagal.GameplayScreen;
+import com.udacity.gamedev.gigagal.Level;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
 
@@ -37,34 +47,62 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	private TextView textViewEmotion;
 	private ImageView imageViewFace;
 	private LinearLayout linearLayoutCamera;
+	private Level level;
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode==0){
-
+			if (grantResults.length>0){
+				inicializarCamara();
+			}
 		}
+	}
+
+	private int idMenuCamera;
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		idMenuCamera = menu.add("Mostrar/Ocultar Camara").getItemId();
+
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int idItem = item.getItemId();
+
+		if (idItem==idMenuCamera){
+			if (linearLayoutCamera.getVisibility() == View.GONE) {
+				linearLayoutCamera.setVisibility(View.VISIBLE);
+				//camera.enableView();
+				cameraBridgeViewBase.setVisibility(View.VISIBLE);
+			}
+			else {
+				//camera.disableView();
+				cameraBridgeViewBase.setVisibility(View.GONE);
+				linearLayoutCamera.setVisibility(View.GONE);
+			}
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	public LinearLayout getLinearLayoutCamera(){
 		return linearLayoutCamera;
 	}
-	public CameraBridgeViewBase getCameraBridgeViewBase() { return cameraBridgeViewBase; }
 	private int selectedFragment;
+
+	private void inicializarCamara(){
+		OpenCVLoader.initDebug();
+
+		cameraBridgeViewBase.enableView();
+		faceRecognition = new FaceRecognition(getApplicationContext());
+	}
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		if (getIntent()!=null && getIntent().getExtras()!=null){
-		    selectedFragment = getIntent().getIntExtra("selectedFragment",R.id.feed);
-        }else{
-		    selectedFragment = R.id.feed;
-        }
-
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
-		}
 
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
@@ -74,6 +112,18 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		textViewEmotion = findViewById(R.id.text_view_emotion);
 		imageViewFace = findViewById(R.id.image_view_face);
 		linearLayoutCamera = findViewById(R.id.linear_layout_camera);
+
+		if (getIntent()!=null && getIntent().getExtras()!=null){
+		    selectedFragment = getIntent().getIntExtra("selectedFragment",R.id.feed);
+        }else{
+		    selectedFragment = R.id.feed;
+        }
+
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
+		}else{
+			inicializarCamara();
+		}
 
 		Button butonCamera = findViewById(R.id.button_camera);
 		butonCamera.setOnClickListener(new View.OnClickListener() {
@@ -97,10 +147,30 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		// Create libgdx fragment
 		GameFragment libgdxFragment = new GameFragment();
 
+		FloatingActionButton floatingActionButton = findViewById(R.id.megacode_play);
+		floatingActionButton.setOnClickListener(view -> {
+			blocklyFragment.runCode();
+		});
+
+		blocklyFragment.setCodeGeneratorCallback(generatedCode -> {
+			if (level == null) {
+				level = ((GameplayScreen)GameFragment.GAME.getScreen()).level;
+			}
+
+			Log.d(TAG, generatedCode);
+
+			String[] comandos = generatedCode.split(",");
+
+			Log.d(TAG, "Procesando comandos: " + comandos);
+
+			level.setComandos(new LinkedList<>(Arrays.asList(comandos)));
+			level.procesarComandos();
+		});
+
+
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-		transaction
-				.add(R.id.content_blockly, blocklyFragment)
+		transaction.add(R.id.content_blockly, blocklyFragment)
 				.add(R.id.content_framelayout, libgdxFragment)
 				.commit();
 
@@ -129,48 +199,9 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		return  faceRecognition.markFace(lastFrame);
 	}
 
-	BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(this) {
-		@Override
-		public void onManagerConnected(int status) {
-			switch (status) {
-				case LoaderCallbackInterface.SUCCESS:
-					cameraBridgeViewBase.enableView();
-					faceRecognition = new FaceRecognition(getApplicationContext());
-					break;
-				default:
-					super.onManagerConnected(status);
-					break;
-			}
-		}
-	};
-
-	private static boolean initOpencv(){
-		boolean result = false;
-		try{
-			System.loadLibrary("opencv_java");
-
-			result = true;
-		}catch(UnsatisfiedLinkError ex){
-			Log.e(TAG, ex.getMessage(), ex);
-		}
-
-		return result;
-	}
-
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		if (!initOpencv()){
-			//Log.d(TAG, "opencv inicializado asincronicamente");
-			//Este metodo dejo de funcionar en las versiones nuevas de Android, se realiza una instalación propia
-			//OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, baseLoaderCallback);
-
-			//Verificamos las arquitecturas disponibles, dependiendo de la arquitectura se descarga el so correcto
-			//installOpenCVManager();
-		}else{
-			Log.d(TAG, "opencv inicializado");
-		}
 	}
 
     @Override

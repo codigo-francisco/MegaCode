@@ -11,11 +11,16 @@
 
     <style name="Cabecera">
         <item name="android:textColor">@android:color/black</item>
-        <item name="android:textSize">24dp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">@font/sawarabimincho_regular</item>
     </style>
 
     <style name="TabViewMaterial" parent="Widget.MaterialComponents.TabLayout">
+    </style>
+
+    <style name="DialogAnimationFade" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/anim_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_out</item>
     </style>
 
 </resources>

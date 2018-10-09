@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.megacode.adapters.model.SkillNode;
 import com.megacode.models.ParcelableLinkedList;
+import com.megacode.services.MenuService;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -57,18 +60,7 @@ public class SkillTree extends Fragment {
                 nodes = ((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes;
             }
         }else{
-            //TODO: datos dummy de prueba
-            nodes = new LinkedList<>();
-            for (int index=0; index < 20; index++) {
-                List<SkillNode> nivel = new ArrayList<SkillNode>();
-                Random random = new Random();
-                int numero = random.nextInt(3) + 1;
-                for (int index2 = 0; index2 < numero; index2++) {
-                    SkillNode skillNode = new SkillNode();
-                    nivel.add(skillNode);
-                }
-                nodes.add(nivel);
-            }
+            nodes = MenuService.crearRuta();
         }
 
         AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(nodes);
@@ -110,8 +102,26 @@ public class SkillTree extends Fragment {
 
             for (SkillNode skillNode : horizontalNode){
                 View cardView = layoutInflater.inflate(R.layout.skillnode_layout,linearLayout, false);
+                cardView.setOnClickListener(view->{
+                    FragmentManager fragmentManager = getChildFragmentManager();
+                    DialogFragment dialogFragment = new InfoNivel();
+                    Bundle bundle = new Bundle();
+
+                    bundle.putParcelable("node", skillNode);
+
+                    int[] locations= new int[2];
+                    view.getLocationOnScreen(locations);
+                    bundle.putInt("sourceX", locations[0]);
+                    bundle.putInt("sourceY", locations[1]);
+
+                    bundle.putInt("heightView", view.getHeight());
+
+                    dialogFragment.setArguments(bundle);
+
+                    dialogFragment.show(fragmentManager, "dialog_node");
+                });
                 ImageView imageView = cardView.findViewById(R.id.node_imageview);
-                imageView.setImageResource(R.drawable.megacode);
+                imageView.setImageResource(skillNode.getImageResource());
 
                 linearLayout.addView(cardView);
             }

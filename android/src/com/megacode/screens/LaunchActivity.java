@@ -65,13 +65,21 @@ public class LaunchActivity extends LoginApp {
             @Override
             public void show() {
                 AlertDialog alertDialog = new AlertDialog.Builder(LaunchActivity.this)
-                        .setMessage("Ha ocurrido un error en el proceso de login, por favor trate de utilizar la aplicación más tarde")
-                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        .setMessage("Ha ocurrido un error en el proceso de login")
+                        .setPositiveButton("Intentar de nuevo", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onDismiss(DialogInterface dialogInterface) {
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                loginTask = new LoginTask();
+                                loginTask.execute();
+                            }
+                        })
+                        .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
                                 LaunchActivity.this.finish();
                             }
                         })
+                        .setCancelable(false)
                         .create();
                 alertDialog.show();
             }

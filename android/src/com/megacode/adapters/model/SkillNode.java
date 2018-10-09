@@ -4,12 +4,37 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.megacode.models.TypeLevel;
+import com.megacode.screens.R;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 public class SkillNode implements Parcelable {
     private int ID;
     private int imageResource;
     private String levelPath;
     private TypeLevel typeLevel;
+    private String nombreNivel;
+    private int para;
+    private int comando;
+    private int si;
+    private int mientras;
+
+    public int getPara() {
+        return para;
+    }
+
+    public void setPara(int para) {
+        this.para = para;
+    }
+
+    public String getNombreNivel() {
+        return nombreNivel;
+    }
+
+    public void setNombreNivel(String nombreNivel) {
+        this.nombreNivel = nombreNivel;
+    }
 
     public int getID() {
         return ID;
@@ -43,6 +68,42 @@ public class SkillNode implements Parcelable {
         this.typeLevel = typeLevel;
     }
 
+    public SkillNode() {
+    }
+
+    public SkillNode(String levelPath, TypeLevel typeLevel){
+        switch (typeLevel){
+            case COMANDO:
+                imageResource = R.drawable.ic_c;
+                break;
+            case SI:
+                imageResource = R.drawable.ic_s;
+                break;
+            default:
+                imageResource = R.drawable.megacode;
+                break;
+        }
+        this.levelPath = levelPath;
+        this.typeLevel = typeLevel;
+    }
+
+    public SkillNode(int imageResource, String levelPath, TypeLevel typeLevel){
+        this.imageResource = imageResource;
+        this.levelPath = levelPath;
+        this.typeLevel = typeLevel;
+    }
+
+    public static Collection<SkillNode> buildNodes(SkillNode ...nodes){
+        int index=1;
+
+        //Agregar indices
+        for (SkillNode node: nodes){
+            node.setID(index);
+        }
+
+        return Arrays.asList(nodes);
+    };
+
     @Override
     public int describeContents() {
         return 0;
@@ -54,9 +115,11 @@ public class SkillNode implements Parcelable {
         dest.writeInt(this.imageResource);
         dest.writeString(this.levelPath);
         dest.writeInt(this.typeLevel == null ? -1 : this.typeLevel.ordinal());
-    }
-
-    public SkillNode() {
+        dest.writeString(this.nombreNivel);
+        dest.writeInt(this.getComando());
+        dest.writeInt(this.getSi());
+        dest.writeInt(this.para);
+        dest.writeInt(this.getMientras());
     }
 
     protected SkillNode(Parcel in) {
@@ -65,9 +128,14 @@ public class SkillNode implements Parcelable {
         this.levelPath = in.readString();
         int tmpTypeLevel = in.readInt();
         this.typeLevel = tmpTypeLevel == -1 ? null : TypeLevel.values()[tmpTypeLevel];
+        this.nombreNivel = in.readString();
+        this.setComando(in.readInt());
+        this.setSi(in.readInt());
+        this.para = in.readInt();
+        this.setMientras(in.readInt());
     }
 
-    public static final Parcelable.Creator<SkillNode> CREATOR = new Parcelable.Creator<SkillNode>() {
+    public static final Creator<SkillNode> CREATOR = new Creator<SkillNode>() {
         @Override
         public SkillNode createFromParcel(Parcel source) {
             return new SkillNode(source);
@@ -78,4 +146,28 @@ public class SkillNode implements Parcelable {
             return new SkillNode[size];
         }
     };
+
+    public int getComando() {
+        return comando;
+    }
+
+    public void setComando(int comando) {
+        this.comando = comando;
+    }
+
+    public int getSi() {
+        return si;
+    }
+
+    public void setSi(int si) {
+        this.si = si;
+    }
+
+    public int getMientras() {
+        return mientras;
+    }
+
+    public void setMientras(int mientras) {
+        this.mientras = mientras;
+    }
 }

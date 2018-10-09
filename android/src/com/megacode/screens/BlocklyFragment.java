@@ -28,37 +28,6 @@ import java.util.List;
 public class BlocklyFragment extends AbstractBlocklyFragment {
 
     public final static String TAG = "BlocklyFragment";
-    private int idMenuCamera;
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        idMenuCamera = menu.add("Mostrar/Ocultar Camara").getItemId();
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int idItem = item.getItemId();
-
-        if (idItem==idMenuCamera){
-            LinearLayout linearLayout = ((MegaCodeAcitivity)getActivity()).getLinearLayoutCamera();
-            CameraBridgeViewBase camera = ((MegaCodeAcitivity)getActivity()).getCameraBridgeViewBase();
-            if (linearLayout.getVisibility() == View.GONE) {
-                linearLayout.setVisibility(View.VISIBLE);
-                //camera.enableView();
-                camera.setVisibility(View.VISIBLE);
-            }
-            else {
-                //camera.disableView();
-                camera.setVisibility(View.GONE);
-                linearLayout.setVisibility(View.GONE);
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @NonNull
     @Override
@@ -88,32 +57,17 @@ public class BlocklyFragment extends AbstractBlocklyFragment {
 
     CodeGenerationRequest.CodeGeneratorCallback mCodeGeneratorCallback = null;
 
-    private static Level level;
+    public void runCode(){
+        onRunCode();
+    }
+
+    public void setCodeGeneratorCallback(CodeGenerationRequest.CodeGeneratorCallback callback){
+        mCodeGeneratorCallback = callback;
+    }
 
     @NonNull
     @Override
     protected CodeGenerationRequest.CodeGeneratorCallback getCodeGenerationCallback() {
-        if (mCodeGeneratorCallback==null) {
-            mCodeGeneratorCallback = new CodeGenerationRequest.CodeGeneratorCallback() {
-
-                @Override
-                public void onFinishCodeGeneration(String generatedCode) {
-
-                    if (level == null) {
-                        level = ((GameplayScreen)GameFragment.GAME.getScreen()).level;
-                    }
-
-                    Log.d(TAG, generatedCode);
-
-                    String[] comandos = generatedCode.split(",");
-
-                    Log.d(TAG, "Procesando comandos: " + comandos);
-
-                    level.setComandos(new LinkedList<String>(Arrays.asList(comandos)));
-                    level.procesarComandos();
-                }
-            };
-        }
         return mCodeGeneratorCallback;
     }
 }

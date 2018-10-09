@@ -74,20 +74,20 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
         scoreViewHolder.nameText.setText(scoreModel.getNombre());
         byte[] bytes = Base64.decode(scoreModel.getFotoPerfil(), Base64.DEFAULT);
         scoreViewHolder.profileImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-        //TODO: resaltar los 3 primeros lugares, ubicar la posicion del jugador actual y compararla contra otros jugadores (verificar si está en el top 10)
+
         switch (index){
             case 0: //Primer lugar
-                scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.first_place));
-                scoreViewHolder.nameText.setTextColor(resources.getColor(R.color.md_yellow_600));
-                scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_yellow_600));
+                //scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.first_place));
+                scoreViewHolder.nameText.setTextColor(resources.getColor(R.color.md_yellow_700));
+                scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_yellow_700));
                 break;
             case 1: //Segundo lugar
-                scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.second_place));
+                //scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.second_place));
                 scoreViewHolder.nameText.setTextColor(resources.getColor(R.color.md_grey_600));
                 scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_grey_600));
                 break;
             case 2: //Tercer lugar
-                scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.third_place));
+                //scoreViewHolder.profileImage.setBackground(resources.getDrawable(R.drawable.third_place));
                 scoreViewHolder.nameText.setTextColor(resources.getColor(R.color.md_brown_700));
                 scoreViewHolder.scoreText.setTextColor(resources.getColor(R.color.md_brown_700));
                 break;

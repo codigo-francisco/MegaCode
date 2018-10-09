@@ -2,6 +2,7 @@ package com.megacode.screens;
 
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -50,10 +51,10 @@ public class PerfilFragment extends Fragment {
 
     private static class CargarImagen extends AsyncTask<Uri, Void, String>{
 
-        private Context context;
+        private ContentResolver contentResolver;
 
-        private CargarImagen(Context context){
-            this.context = context;
+        private CargarImagen(ContentResolver contentResolver){
+            this.contentResolver = contentResolver;
         }
 
         @Override
@@ -102,7 +103,7 @@ public class PerfilFragment extends Fragment {
             String result=null;
 
             try {
-                Bitmap bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uris[0]));
+                Bitmap bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uris[0]));
                 result = encodeTobase64(bitmap);
 
                 Realm realm = Realm.getDefaultInstance();
@@ -134,7 +135,7 @@ public class PerfilFragment extends Fragment {
                         fotoPerfil.setImageURI(data.getData());
                         fotoPerfil.setBackgroundResource(R.color.translucent);
 
-                        new CargarImagen(getContext()).execute(data.getData());
+                        new CargarImagen(getContext().getContentResolver()).execute(data.getData());
                     }
                     break;
                 case REQUEST_CAMERA:
@@ -146,7 +147,7 @@ public class PerfilFragment extends Fragment {
                             File file = File.createTempFile("fotoPerfil","png");
                             try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                                 if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)){
-                                    new CargarImagen(getContext()).execute(Uri.fromFile(file));
+                                    new CargarImagen(getContext().getContentResolver()).execute(Uri.fromFile(file));
                                 }
                             }
                         } catch (IOException e) {

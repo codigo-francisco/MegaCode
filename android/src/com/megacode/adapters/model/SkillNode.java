@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.megacode.models.TypeLevel;
+import com.megacode.models.response.NivelesResponse;
 import com.megacode.screens.R;
 
 import java.util.Arrays;
@@ -85,6 +86,30 @@ public class SkillNode implements Parcelable {
         }
         this.levelPath = levelPath;
         this.typeLevel = typeLevel;
+    }
+
+    public SkillNode(NivelesResponse nivelResponse){
+        ID = nivelResponse.getId();
+        levelPath = nivelResponse.getRuta();
+        typeLevel = TypeLevel.values()[nivelResponse.getTipoNivel()-1];
+        comando = nivelResponse.getVariables();
+        si = nivelResponse.getSi();
+        para = nivelResponse.getPara();
+        mientras = nivelResponse.getMientras();
+        nombreNivel = nivelResponse.getNombre();
+        //Seleccionar imagen
+        switch (typeLevel){
+            case COMANDO:
+                imageResource = R.drawable.ic_c;
+                break;
+            case SI:
+                imageResource = R.drawable.ic_s;
+                break;
+            case PARA:
+            case MIENTRAS:
+            default:
+                imageResource = R.drawable.megacode;
+        }
     }
 
     public SkillNode(int imageResource, String levelPath, TypeLevel typeLevel){

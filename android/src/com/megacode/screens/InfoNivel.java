@@ -1,6 +1,8 @@
 package com.megacode.screens;
 
+import android.content.res.ColorStateList;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -10,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
 import com.megacode.adapters.model.SkillNode;
 
 import java.util.Locale;
@@ -40,19 +44,8 @@ public class InfoNivel extends DialogFragment {
         window.setWindowAnimations(R.style.DialogAnimationFade);
     }
 
-    private int getColorBackground(){
-        int color=0;
-
-        switch (node.getTypeLevel()){
-            case COMANDO:
-                color = R.color.md_brown_600;
-                break;
-            case SI:
-                color = R.color.md_blue_700;
-                break;
-        }
-
-        return color;
+    private String convertTemplateToString(int points){
+        return String.format(Locale.getDefault(), "%d puntos", points);
     }
 
     @Nullable
@@ -62,6 +55,7 @@ public class InfoNivel extends DialogFragment {
 
         node = getArguments().getParcelable("node");
 
+
         if (node!=null) {
             TextView textTitulo = view.findViewById(R.id.popup_titulo);
             textTitulo.setText(String.format(Locale.getDefault(),"Ejercicio de %s",node.getTypeLevel().toString()));
@@ -69,7 +63,7 @@ public class InfoNivel extends DialogFragment {
             //Si es mayor a 0 tiene información
             if (node.getComando()>0){
                 TextView textComando = view.findViewById(R.id.popup_comando);
-                textComando.setText(Integer.toString(node.getComando()));
+                textComando.setText(convertTemplateToString(node.getComando()));
 
                 textComando.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_comando).setVisibility(View.VISIBLE);
@@ -77,7 +71,7 @@ public class InfoNivel extends DialogFragment {
 
             if (node.getSi() > 0){
                 TextView textSi = view.findViewById(R.id.popup_si);
-                textSi.setText(Integer.toString(node.getSi()));
+                textSi.setText(convertTemplateToString(node.getSi()));
 
                 textSi.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_si).setVisibility(View.VISIBLE);
@@ -85,7 +79,7 @@ public class InfoNivel extends DialogFragment {
 
             if (node.getPara()>0){
                 TextView textPara = view.findViewById(R.id.popup_para);
-                textPara.setText(Integer.toString(node.getComando()));
+                textPara.setText(convertTemplateToString(node.getComando()));
 
                 textPara.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_para).setVisibility(View.VISIBLE);
@@ -93,14 +87,17 @@ public class InfoNivel extends DialogFragment {
 
             if (node.getMientras()>0){
                 TextView textMientras = view.findViewById(R.id.popup_mientra);
-                textMientras.setText(Integer.toString(node.getComando()));
+                textMientras.setText(convertTemplateToString(node.getComando()));
 
                 textMientras.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_mientras).setVisibility(View.VISIBLE);
             }
 
+            int backGroundColor = ContextCompat.getColor(getContext(), getColorBackground());
             RelativeLayout relativeLayout = view.findViewById(R.id.popup_relative_root);
-            ((GradientDrawable)relativeLayout.getBackground()).setColor(ContextCompat.getColor(getContext(),getColorBackground()));
+            ((GradientDrawable)relativeLayout.getBackground()).setColor(backGroundColor);
+            MaterialButton button = view.findViewById(R.id.popup_boton_comenzar);
+            button.setTextColor(backGroundColor);
 
             //Cambiar posicion
             int sourceX = getArguments().getInt("sourceX");
@@ -113,17 +110,33 @@ public class InfoNivel extends DialogFragment {
         return view;
     }
 
+    private int getColorBackground(){
+        int color=0;
+
+        switch (node.getTypeLevel()){
+            case COMANDO:
+                color = R.color.md_brown_600;
+                break;
+            case SI:
+            default:
+                color = R.color.md_blue_700;
+                break;
+        }
+
+        return color;
+    }
+
     private void setDialogPosition(int sourceX, int sourceY, int heightView) {
 
         Window window = getDialog().getWindow();
 
         // set "origin" to top left corner
-        window.setGravity(Gravity.TOP|Gravity.CENTER_VERTICAL);
+        window.setGravity(Gravity.TOP | Gravity.CENTER_VERTICAL);
 
         WindowManager.LayoutParams params = window.getAttributes();
 
         //params.x = sourceX - dpToPx(110); // about half of confirm button size left of source view
-        params.y = sourceY - dpToPx(-heightView/2+10); // above source view
+        params.y = sourceY - dpToPx((-heightView/2)+10); // below source view
 
         window.setAttributes(params);
     }

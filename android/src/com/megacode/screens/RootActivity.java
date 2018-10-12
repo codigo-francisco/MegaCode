@@ -13,24 +13,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.SparseArray;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Toolbar.OnMenuItemClickListener {
 
     private DrawerLayout drawerLayout;
     private int selectedFragment;
     private final static String SELECTED_FRAGMENT = "selectedFragment";
     private int RESULT_GAME = 1;
     private NavigationView navigationView;
+    private Toolbar toolbarMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
 
-        Toolbar toolbarMenu = findViewById(R.id.toolbar_main);
+        toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
+
+        toolbarMenu.setOnMenuItemClickListener(this);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
@@ -55,6 +59,14 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.toolbar_menu, toolbarMenu.getMenu());
+
+        return true;
+    }
+
+    @Override
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -67,17 +79,25 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         return selectFragment(menuItem.getItemId());
     }
 
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        return selectFragment(menuItem.getItemId());
+    }
+
     private final static SparseArray<String> tags = new SparseArray<>();
     static {
         tags.append(R.id.feed, "FEED");
-        tags.append(R.id.perfil, "PERFIL");
+        //tags.append(R.id.settings, "SETTINGS");
         tags.append(R.id.progreso, "PROGRESO");
     }
+
+    public final static int IDGAME = 1;
 
     public boolean selectFragment(int id){
 
         boolean result=false;
-        boolean isFragment = id!=selectedFragment && id!=R.id.jugar;
+        //boolean isFragment = id!=selectedFragment && id!=R.id.jugar;
+        boolean isFragment = tags.indexOfKey(id)>-1;
 
         if (isFragment) {
             FragmentManager manager = getSupportFragmentManager();
@@ -90,12 +110,15 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
                 //Aquí se hace el cambio de fragmento
                 switch (id) {
                     case R.id.feed:
+                        toolbarMenu.setTitle("Feed");
                         fragment = new FeedFragment();
                         break;
-                    case R.id.perfil:
+                    /*case R.id.settings:
+                        toolbarMenu.setTitle("Configuración");
                         fragment = new PerfilFragment();
-                        break;
+                        break;*/
                     case R.id.progreso:
+                        toolbarMenu.setTitle("Progreso");
                         fragment = new ProgresoFragment();
                         break;
                     default:
@@ -110,12 +133,23 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
             }
 
             result=true;
-        }else if (id==R.id.jugar){
-            Intent intent = new Intent(this, MegaCodeAcitivity.class);
-            intent.putExtra("selectedFragment", selectedFragment);
-            startActivityForResult(intent, RESULT_GAME);
+        }else{ //Actividad
+            Intent intent = null;
 
-            result=true;
+            switch(id){
+                case IDGAME:
+                    intent = new Intent(this, MegaCodeAcitivity.class);
+                    break;
+                case R.id.settings:
+                    intent = new Intent(this, SettingActivity.class);
+                    break;
+            }
+
+            if (intent!=null){
+                result=true;
+                intent.putExtra("selectedFragment", selectedFragment);
+                startActivityForResult(intent, RESULT_GAME);
+            }
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

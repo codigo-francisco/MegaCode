@@ -11,16 +11,16 @@
             android:title="@string/progreso"
             android:icon="@drawable/ic_baseline_trending_up_24px"
             />
-        <item
+        <!--<item
             android:id="@+id/perfil"
             android:title="@string/perfil"
             android:icon="@drawable/ic_baseline_account_box_24px"
-            />
-        <item
+            />-->
+        <!--<item
             android:id="@+id/jugar"
             android:checkable="false"
             android:title="@string/jugar"
             android:icon="@drawable/ic_baseline_videogame_asset_24px"
-            />
+            />-->
     </group>
 </menu>

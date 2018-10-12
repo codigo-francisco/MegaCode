@@ -1,13 +1,13 @@
 package com.megacode.base;
 
 import android.content.Intent;
-import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.megacode.models.IDialog;
 import com.megacode.models.Persona;
 import com.megacode.models.response.LoginResponse;
+import com.megacode.screens.ActivityBase;
 import com.megacode.services.MegaCodeServiceInstance;
 
 import io.realm.Realm;
@@ -16,7 +16,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public abstract class LoginApp extends ActivityBase{
+public abstract class LoginApp extends ActivityBase {
 
     private final static String TAG = "ActivityBase";
 

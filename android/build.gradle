@@ -23,13 +23,13 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     splits {
-       abi {
-           enable true
-           reset()
-           include 'armeabi-v7a' , 'x86', 'x86_64', 'arm64-v8a', 'armeabi'
-           universalApk false
-       }
-   }
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a', 'x86', 'x86_64', 'arm64-v8a', 'armeabi'
+            universalApk false
+        }
+    }
 }
 
 task run(type: Exec) {

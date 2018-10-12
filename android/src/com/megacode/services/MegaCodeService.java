@@ -1,11 +1,11 @@
 package com.megacode.services;
 
-import com.megacode.models.GeneralResponse;
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
 import com.megacode.models.ScoreResponse;
 import com.megacode.models.response.LoginResponse;
 import com.megacode.models.response.NivelResponse;
+import com.megacode.models.response.NivelesResponse;
 import com.megacode.models.response.PosicionesResponse;
 
 import java.util.List;
@@ -37,5 +37,8 @@ public interface MegaCodeService {
 
     @GET("api/score")
     Call<List<ScoreResponse>> puntajes();
+
+    @GET("api/nivel/listarNiveles")
+    Call<List<NivelesResponse>> listarNiveles();
 
 }

@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.megacode.base.ActivityBase;
 import com.megacode.helpers.ImageProfileHelper;
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;

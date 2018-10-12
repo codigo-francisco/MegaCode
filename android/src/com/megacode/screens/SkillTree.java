@@ -10,6 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +24,10 @@ import android.widget.LinearLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.megacode.adapters.model.SkillNode;
 import com.megacode.models.ParcelableLinkedList;
+import com.megacode.models.TypeLevel;
+import com.megacode.models.response.NivelResponse;
+import com.megacode.models.response.NivelesResponse;
+import com.megacode.services.MegaCodeServiceInstance;
 import com.megacode.services.MenuService;
 
 import java.util.ArrayList;
@@ -32,6 +41,7 @@ import java.util.Random;
  */
 public class SkillTree extends Fragment {
 
+    private final static String TAG = "SkillTree";
     private LinkedList<List<SkillNode>> nodes;
 
     public SkillTree() {
@@ -46,24 +56,58 @@ public class SkillTree extends Fragment {
 
         FloatingActionButton floatingActionButton =  view.findViewById(R.id.skilltree_play);
         floatingActionButton.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getActivity(), MegaCodeAcitivity.class);
-
-            startActivity(intent);
+            RootActivity rootActivity = (RootActivity)getActivity();
+            rootActivity.selectFragment(RootActivity.IDGAME);
         });
 
         RecyclerView recyclerView = view.findViewById(R.id.skill_tree_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        nodes = new LinkedList<>();
+        AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(nodes);
+
         if (savedInstanceState!=null){
             if (savedInstanceState.getParcelable("nodes")!=null){
-                nodes = ((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes;
+                nodes.addAll(((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes);
+                adapterRecyclerSkillTree.notifyDataSetChanged();
             }
         }else{
-            nodes = MenuService.crearRuta();
+            //Los datos se van a obtener de un servicio
+            MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.listarNiveles().enqueue(new Callback<List<NivelesResponse>>() {
+                @Override
+                public void onResponse(Call<List<NivelesResponse>> call, Response<List<NivelesResponse>> response) {
+                    if (response.isSuccessful()){
+                        int grupoActual = 0;
+                        List<SkillNode> skillNodes=null;
+
+                        if (response.body()!=null) {
+                            nodes.clear();
+                            for (NivelesResponse nivelResponse : response.body()) {
+                                if (nivelResponse.getGrupo() != grupoActual) {
+                                    if (skillNodes!=null && skillNodes.size() > 0){
+                                        nodes.add(skillNodes);
+                                    }
+                                    grupoActual = nivelResponse.getGrupo();
+                                    skillNodes = new ArrayList<>();
+                                }
+                                SkillNode skillNode = new SkillNode(nivelResponse);
+                                skillNodes.add(skillNode);
+                            }
+                            if (skillNodes.size()>0)
+                                nodes.add(skillNodes);
+                            adapterRecyclerSkillTree.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<NivelesResponse>> call, Throwable t) {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            });
         }
 
-        AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(nodes);
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
         return view;
@@ -102,7 +146,9 @@ public class SkillTree extends Fragment {
 
             for (SkillNode skillNode : horizontalNode){
                 View cardView = layoutInflater.inflate(R.layout.skillnode_layout,linearLayout, false);
-                cardView.setOnClickListener(view->{
+                ImageView imageView = cardView.findViewById(R.id.node_imageview);
+                imageView.setImageResource(skillNode.getImageResource());
+                imageView.setOnClickListener(view->{
                     FragmentManager fragmentManager = getChildFragmentManager();
                     DialogFragment dialogFragment = new InfoNivel();
                     Bundle bundle = new Bundle();
@@ -117,11 +163,8 @@ public class SkillTree extends Fragment {
                     bundle.putInt("heightView", view.getHeight());
 
                     dialogFragment.setArguments(bundle);
-
                     dialogFragment.show(fragmentManager, "dialog_node");
                 });
-                ImageView imageView = cardView.findViewById(R.id.node_imageview);
-                imageView.setImageResource(skillNode.getImageResource());
 
                 linearLayout.addView(cardView);
             }

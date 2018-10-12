@@ -34,6 +34,7 @@ namespace ApiRest.Models
         public virtual DbSet<Usuario> Usuario { get; set; }
         public virtual DbSet<ConexionSesion> ConexionSesion { get; set; }
         public virtual DbSet<Sesion> Sesion { get; set; }
+        public virtual DbSet<TipoNivel> TipoNivel { get; set; }
     
         [DbFunction("megacodeEntities", "obtenerMarcadorUsuario")]
         public virtual IQueryable<obtenerMarcadorUsuario_Result> obtenerMarcadorUsuario(Nullable<long> id)

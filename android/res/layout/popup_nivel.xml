@@ -6,6 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/dialogborder"
+    android:theme="@style/DialogCustomTheme"
     android:padding="16dp">
 
     <TextView
@@ -27,15 +28,16 @@
         android:layout_width="@dimen/size_display_infonivel"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Comando:"
+        android:text="Comando"
         android:layout_below="@id/popup_puntos"/>
 
     <TextView
         android:id="@+id/popup_comando"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:text=""
+        android:visibility="gone"
+        android:layout_below="@id/popup_puntos"
         android:layout_toEndOf="@id/popup_text_comando"/>
 
     <TextView
@@ -43,7 +45,7 @@
         android:layout_width="@dimen/size_display_infonivel"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Si:"
+        android:text="Si"
         android:layout_below="@id/popup_text_comando"/>
 
     <TextView
@@ -52,6 +54,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text=""
+        android:layout_below="@id/popup_text_comando"
         android:layout_toEndOf="@id/popup_text_si"/>
 
     <TextView
@@ -59,7 +62,7 @@
         android:layout_width="@dimen/size_display_infonivel"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Para:"
+        android:text="Para"
         android:layout_below="@id/popup_text_si"/>
 
     <TextView
@@ -68,6 +71,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text=""
+        android:layout_below="@id/popup_text_si"
         android:layout_toEndOf="@id/popup_text_para"/>
 
     <TextView
@@ -75,7 +79,7 @@
         android:layout_width="@dimen/size_display_infonivel"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:text="Mientras:"
+        android:text="Mientras"
         android:layout_below="@id/popup_text_para"/>
 
     <TextView
@@ -84,13 +88,15 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:text=""
+        android:layout_below="@id/popup_text_para"
         android:layout_toEndOf="@id/popup_text_mientras"/>
 
     <com.google.android.material.button.MaterialButton
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/popup_text_mientras"
-        android:layout_alignParentEnd="true"
+        android:id="@+id/popup_boton_comenzar"
+        android:backgroundTint="@color/md_white_1000"
         android:text="Comenzar"/>
 
 </RelativeLayout>

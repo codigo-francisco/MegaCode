@@ -164,6 +164,9 @@
     <Compile Include="Models\Sesion.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TipoNivel.cs">
+      <DependentUpon>MegaCodeModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Usuario.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>

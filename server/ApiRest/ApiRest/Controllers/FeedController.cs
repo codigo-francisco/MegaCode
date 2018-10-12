@@ -49,7 +49,12 @@ namespace ApiRest.Controllers
                                                   join u in entities.Usuario on nt.UsuarioId equals u.id
                                                   orderby nt.NivelId descending
                                                   select nt.NivelId).FirstOrDefault() + 1)
-                                  select n).FirstOrDefault();
+                                  select new
+                                  {
+                                      n.id,
+                                      n.nombre,
+                                      n.ruta
+                                  }).FirstOrDefault();
 
                 return Json(dataResult);
             }

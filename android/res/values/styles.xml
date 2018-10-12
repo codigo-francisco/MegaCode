@@ -23,4 +23,8 @@
         <item name="android:windowExitAnimation">@anim/anim_out</item>
     </style>
 
+    <style name="DialogCustomTheme">
+        <item name="android:textColor">@color/md_white_1000</item>
+    </style>
+
 </resources>

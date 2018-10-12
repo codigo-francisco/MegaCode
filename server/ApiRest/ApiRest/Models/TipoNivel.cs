@@ -12,30 +12,18 @@ namespace ApiRest.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Nivel
+    public partial class TipoNivel
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Nivel()
+        public TipoNivel()
         {
-            this.Niveles_Terminados = new HashSet<Niveles_Terminados>();
-            this.Sesion = new HashSet<Sesion>();
+            this.Nivel = new HashSet<Nivel>();
         }
     
-        public int id { get; set; }
+        public short id { get; set; }
         public string nombre { get; set; }
-        public string ruta { get; set; }
-        public int variables { get; set; }
-        public int si { get; set; }
-        public int para { get; set; }
-        public int mientras { get; set; }
-        public int dificultad { get; set; }
-        public int grupo { get; set; }
-        public short tipoNivel { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Niveles_Terminados> Niveles_Terminados { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Sesion> Sesion { get; set; }
-        public virtual TipoNivel TipoNivel1 { get; set; }
+        public virtual ICollection<Nivel> Nivel { get; set; }
     }
 }

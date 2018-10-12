@@ -2,36 +2,20 @@ package com.megacode.services;
 
 import com.megacode.adapters.model.SkillNode;
 import com.megacode.models.TypeLevel;
+import com.megacode.models.response.NivelResponse;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MenuService {
 
-    public static LinkedList<List<SkillNode>> crearRuta()
+    public static LinkedList<List<SkillNode>> crearRuta(LinkedList<List<SkillNode>> nodes)
     {
-        LinkedList<List<SkillNode>> nodes = new LinkedList<>();
-
-        //la raiz de ejemplo
-        nodes.add(new ArrayList<>(
-                SkillNode.buildNodes(
-                        new SkillNode("",TypeLevel.COMANDO)
-                )
-        ));
-
-        nodes.add(new ArrayList<>(
-           SkillNode.buildNodes(
-                   new SkillNode("",TypeLevel.COMANDO),
-                   new SkillNode("",TypeLevel.COMANDO)
-           )
-        ));
-
-        nodes.add(new ArrayList<>(
-                SkillNode.buildNodes(
-                        new SkillNode("",TypeLevel.SI)
-                )
-        ));
 
         return nodes;
     }

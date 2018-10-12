@@ -25,6 +25,7 @@
                 android:id="@+id/toolbar_main"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                app:title=""
                 app:layout_scrollFlags="scroll|enterAlways"
                 />
 

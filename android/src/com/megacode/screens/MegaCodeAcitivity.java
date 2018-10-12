@@ -39,7 +39,7 @@ import org.opencv.core.Mat;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
+public class MegaCodeAcitivity extends ActivityBase implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
 
 	private final static String TAG = "Launcher";
 	private CameraBridgeViewBase cameraBridgeViewBase;
@@ -90,7 +90,6 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	public LinearLayout getLinearLayoutCamera(){
 		return linearLayoutCamera;
 	}
-	private int selectedFragment;
 
 	private void inicializarCamara(){
 		OpenCVLoader.initDebug();
@@ -112,12 +111,6 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		textViewEmotion = findViewById(R.id.text_view_emotion);
 		imageViewFace = findViewById(R.id.image_view_face);
 		linearLayoutCamera = findViewById(R.id.linear_layout_camera);
-
-		if (getIntent()!=null && getIntent().getExtras()!=null){
-		    selectedFragment = getIntent().getIntExtra("selectedFragment",R.id.feed);
-        }else{
-		    selectedFragment = R.id.feed;
-        }
 
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
@@ -198,17 +191,4 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		lastFrame = cvCameraViewFrame.rgba();
 		return  faceRecognition.markFace(lastFrame);
 	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-    @Override
-    protected void onPause() {
-        Intent intent = new Intent();
-        intent.putExtra("selectedFragment", selectedFragment);
-        setResult(RESULT_OK, intent);
-        super.onPause();
-    }
 }

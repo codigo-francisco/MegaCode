@@ -20,6 +20,8 @@
         <AssociationConnector Association="MegacodeModel.FK_Emocion_Sesion_SesionId" />
         <AssociationConnector Association="MegacodeModel.FK_Sesion_NivelId" />
         <AssociationConnector Association="MegacodeModel.FK_Sesion_UsuarioId" />
+        <EntityTypeShape EntityType="MegacodeModel.TipoNivel" Width="1.5" PointX="0.75" PointY="9.75" />
+        <AssociationConnector Association="MegacodeModel.FK_Nivel_TipoNivel" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

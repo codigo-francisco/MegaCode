@@ -72,7 +72,7 @@ public class SkillNode implements Parcelable {
     public SkillNode() {
     }
 
-    public SkillNode(String levelPath, TypeLevel typeLevel){
+    private void chooseImageResource(){
         switch (typeLevel){
             case COMANDO:
                 imageResource = R.drawable.ic_c;
@@ -80,12 +80,21 @@ public class SkillNode implements Parcelable {
             case SI:
                 imageResource = R.drawable.ic_s;
                 break;
+            case PARA:
+                imageResource = R.drawable.ic_p;
+                break;
+            case MIENTRAS:
+                imageResource=R.drawable.ic_m;
+                break;
             default:
                 imageResource = R.drawable.megacode;
-                break;
         }
+    }
+
+    public SkillNode(String levelPath, TypeLevel typeLevel){
         this.levelPath = levelPath;
         this.typeLevel = typeLevel;
+        chooseImageResource();
     }
 
     public SkillNode(NivelesResponse nivelResponse){
@@ -98,18 +107,8 @@ public class SkillNode implements Parcelable {
         mientras = nivelResponse.getMientras();
         nombreNivel = nivelResponse.getNombre();
         //Seleccionar imagen
-        switch (typeLevel){
-            case COMANDO:
-                imageResource = R.drawable.ic_c;
-                break;
-            case SI:
-                imageResource = R.drawable.ic_s;
-                break;
-            case PARA:
-            case MIENTRAS:
-            default:
-                imageResource = R.drawable.megacode;
-        }
+        chooseImageResource();
+
     }
 
     public SkillNode(int imageResource, String levelPath, TypeLevel typeLevel){

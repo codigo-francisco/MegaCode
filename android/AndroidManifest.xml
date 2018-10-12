@@ -71,8 +71,6 @@
                 android:resource="@xml/providerpaths" />
         </provider>
 
-        <activity android:name=".SettingActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
     </application>
 
 </manifest>

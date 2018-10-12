@@ -17,7 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Toolbar.OnMenuItemClickListener {
+public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private int selectedFragment;
@@ -33,8 +33,6 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
         toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
-
-        toolbarMenu.setOnMenuItemClickListener(this);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
@@ -59,14 +57,6 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.toolbar_menu, toolbarMenu.getMenu());
-
-        return true;
-    }
-
-    @Override
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START))
             drawerLayout.closeDrawer(GravityCompat.START);
@@ -79,19 +69,12 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         return selectFragment(menuItem.getItemId());
     }
 
-    @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        return selectFragment(menuItem.getItemId());
-    }
-
     private final static SparseArray<String> tags = new SparseArray<>();
     static {
         tags.append(R.id.feed, "FEED");
-        //tags.append(R.id.settings, "SETTINGS");
+        tags.append(R.id.perfil, "PERFIL");
         tags.append(R.id.progreso, "PROGRESO");
     }
-
-    public final static int IDGAME = 1;
 
     public boolean selectFragment(int id){
 
@@ -113,10 +96,10 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
                         toolbarMenu.setTitle("Feed");
                         fragment = new FeedFragment();
                         break;
-                    /*case R.id.settings:
-                        toolbarMenu.setTitle("Configuración");
+                    case R.id.perfil:
+                        toolbarMenu.setTitle("Perfil");
                         fragment = new PerfilFragment();
-                        break;*/
+                        break;
                     case R.id.progreso:
                         toolbarMenu.setTitle("Progreso");
                         fragment = new ProgresoFragment();
@@ -137,11 +120,8 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = null;
 
             switch(id){
-                case IDGAME:
+                case R.id.jugar:
                     intent = new Intent(this, MegaCodeAcitivity.class);
-                    break;
-                case R.id.settings:
-                    intent = new Intent(this, SettingActivity.class);
                     break;
             }
 

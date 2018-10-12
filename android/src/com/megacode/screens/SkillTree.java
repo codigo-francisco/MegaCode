@@ -57,7 +57,7 @@ public class SkillTree extends Fragment {
         FloatingActionButton floatingActionButton =  view.findViewById(R.id.skilltree_play);
         floatingActionButton.setOnClickListener(view1 -> {
             RootActivity rootActivity = (RootActivity)getActivity();
-            rootActivity.selectFragment(RootActivity.IDGAME);
+            rootActivity.selectFragment(R.id.jugar);
         });
 
         RecyclerView recyclerView = view.findViewById(R.id.skill_tree_recyclerview);

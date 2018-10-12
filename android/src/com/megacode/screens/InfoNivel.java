@@ -44,8 +44,11 @@ public class InfoNivel extends DialogFragment {
         window.setWindowAnimations(R.style.DialogAnimationFade);
     }
 
-    private String convertTemplateToString(int points){
-        return String.format(Locale.getDefault(), "%d puntos", points);
+    private String convertTemplateToString(int points, String tema){
+        String plural="";
+        if (points>1)
+            plural="s";
+        return String.format(Locale.getDefault(), "%d punto%s", points, plural, tema);
     }
 
     @Nullable
@@ -63,7 +66,7 @@ public class InfoNivel extends DialogFragment {
             //Si es mayor a 0 tiene información
             if (node.getComando()>0){
                 TextView textComando = view.findViewById(R.id.popup_comando);
-                textComando.setText(convertTemplateToString(node.getComando()));
+                textComando.setText(convertTemplateToString(node.getComando(),"comandos"));
 
                 textComando.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_comando).setVisibility(View.VISIBLE);
@@ -71,7 +74,7 @@ public class InfoNivel extends DialogFragment {
 
             if (node.getSi() > 0){
                 TextView textSi = view.findViewById(R.id.popup_si);
-                textSi.setText(convertTemplateToString(node.getSi()));
+                textSi.setText(convertTemplateToString(node.getSi(), "si"));
 
                 textSi.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_si).setVisibility(View.VISIBLE);
@@ -79,7 +82,7 @@ public class InfoNivel extends DialogFragment {
 
             if (node.getPara()>0){
                 TextView textPara = view.findViewById(R.id.popup_para);
-                textPara.setText(convertTemplateToString(node.getComando()));
+                textPara.setText(convertTemplateToString(node.getComando(), "para"));
 
                 textPara.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_para).setVisibility(View.VISIBLE);
@@ -87,7 +90,7 @@ public class InfoNivel extends DialogFragment {
 
             if (node.getMientras()>0){
                 TextView textMientras = view.findViewById(R.id.popup_mientra);
-                textMientras.setText(convertTemplateToString(node.getComando()));
+                textMientras.setText(convertTemplateToString(node.getComando(), "mientras"));
 
                 textMientras.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_mientras).setVisibility(View.VISIBLE);
@@ -118,6 +121,14 @@ public class InfoNivel extends DialogFragment {
                 color = R.color.md_brown_600;
                 break;
             case SI:
+                color = R.color.md_blue_700;
+                break;
+            case PARA:
+                color = R.color.md_yellow_700;
+                break;
+            case MIENTRAS:
+                color = R.color.md_purple_600;
+                break;
             default:
                 color = R.color.md_blue_700;
                 break;

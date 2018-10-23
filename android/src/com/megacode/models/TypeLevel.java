@@ -1,8 +1,15 @@
 package com.megacode.models;
 
+import java.util.Locale;
+
 public enum TypeLevel {
-    VARIABLE,
+    COMANDO,
     SI,
     PARA,
-    MIENTRAS
+    MIENTRAS;
+
+    @Override
+    public String toString() {
+        return name().substring(0,1).toUpperCase().concat(name().substring(1).toLowerCase());
+    }
 }

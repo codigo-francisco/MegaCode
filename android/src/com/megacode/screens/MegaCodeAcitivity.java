@@ -1,15 +1,19 @@
 package com.megacode.screens;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -26,7 +30,8 @@ import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.megacode.base.ApplicationBase;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
-import com.megacode.utils.StringHelper;
+import com.udacity.gamedev.gigagal.GameplayScreen;
+import com.udacity.gamedev.gigagal.Level;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -35,7 +40,8 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
 
@@ -56,16 +62,18 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	public LinearLayout getLinearLayoutCamera(){
 		return linearLayoutCamera;
 	}
-	public CameraBridgeViewBase getCameraBridgeViewBase() { return cameraBridgeViewBase; }
+
+	private void inicializarCamara(){
+		OpenCVLoader.initDebug();
+
+		cameraBridgeViewBase.enableView();
+		faceRecognition = new FaceRecognition(getApplicationContext());
+	}
 
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
-		}
 
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
@@ -75,6 +83,12 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		textViewEmotion = findViewById(R.id.text_view_emotion);
 		imageViewFace = findViewById(R.id.image_view_face);
 		linearLayoutCamera = findViewById(R.id.linear_layout_camera);
+
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
+		}else{
+			inicializarCamara();
+		}
 
 		Button butonCamera = findViewById(R.id.button_camera);
 		butonCamera.setOnClickListener(new View.OnClickListener() {

@@ -10,7 +10,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".PerfilFragment">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:layout_height="100dp"
@@ -18,7 +18,7 @@
             android:id="@+id/cover_image"
             />
 
-        <android.support.v7.widget.AppCompatImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_below="@id/cover_image"
@@ -66,59 +66,74 @@
             android:layout_marginTop="10dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:text="@string/seleccionar_personaje"/>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_marginStart="30dp"
             android:layout_marginTop="30dp"
             android:layout_marginEnd="30dp"
             android:layout_below="@id/text_seleccion"
             android:id="@+id/seleccion_personaje"
+            android:baselineAligned="false"
             android:orientation="horizontal">
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
-                <android.support.v7.widget.AppCompatImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/button_megacode"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_width="120dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
                     android:background="@drawable/borders"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
                     android:src="@drawable/megacode"/>
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:text="@string/megacode"/>
             </LinearLayout>
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.AppCompatImageButton
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/button_shemegacode"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_width="120dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
                     android:scaleType="fitCenter"
                     android:adjustViewBounds="true"
-                    android:background="@color/md_white_1000"
+                    android:background="@color/translucent"
                     android:src="@drawable/she_megacode"/>
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:text="@string/she_megacode"/>
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_below="@id/seleccion_personaje"
+            android:id="@+id/perfil_cerrarsesion"
+            android:text="Cerrar Sesion"/>
 
     </RelativeLayout>
 

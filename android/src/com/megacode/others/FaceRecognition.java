@@ -39,7 +39,7 @@ public class FaceRecognition {
 
     private static FaceRecognition faceRecognition;
     private CascadeClassifier cascadeClassifier;
-    private RequestQueue queue;
+    //private RequestQueue queue;
     private static final String url  = "http:/192.168.1.96/emocion";
     private Context context;
 
@@ -70,8 +70,8 @@ public class FaceRecognition {
     private void executeRequest(Map<String, String> params, Response.Listener<String> listener, Response.ErrorListener errorListener){
         StringRequest stringRequest = new CustomRequest( Request.Method.POST, url, listener , errorListener , params );
 
-        queue.add(stringRequest);
-        queue.start();
+        //queue.add(stringRequest);
+        //queue.start();
     }
 
     public void detectEmotion(Mat image, final CustomCallback<String> callback){
@@ -148,12 +148,11 @@ public class FaceRecognition {
 
         this.context = context;
 
-        queue = Volley.newRequestQueue(context);
+        //queue = Volley.newRequestQueue(context);
 
         try {
             InputStream is = context.getAssets().open("lbpcascade_frontalface_improved.xml");
-            File cascadeDir = context.getDir("cascade", Context.MODE_PRIVATE);
-            File mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+            File mCascadeFile = File.createTempFile("cascade",".xml");
             FileOutputStream os = new FileOutputStream(mCascadeFile);
 
             byte[] buffer = new byte[is.available()];
@@ -163,7 +162,8 @@ public class FaceRecognition {
             is.close();
             os.close();
 
-            cascadeClassifier = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+            //cascadeClassifier = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+            cascadeClassifier = new CascadeClassifier();
             cascadeClassifier.load(mCascadeFile.getAbsolutePath());
 
             mCascadeFile.delete();

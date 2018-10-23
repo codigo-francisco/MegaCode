@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/gridLayout"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:padding="3dp">
+
+    <ImageView
+        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:id="@+id/scores_image_profile"
+        android:contentDescription="@string/foto_perfil"
+        />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:id="@+id/scores_nombre"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:textColor="@color/md_grey_800"
+        android:paddingStart="4dp"
+        android:paddingEnd="2dp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1.5"
+        android:layout_gravity="center"
+        android:id="@+id/scores_scorenumber"
+        android:textSize="18sp"
+        />
+
+</LinearLayout>

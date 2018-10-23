@@ -9,11 +9,9 @@
 
 namespace ApiRest.Models
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-
-    [JsonObject(IsReference = true)]
+    
     public partial class Usuario
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -34,14 +32,12 @@ namespace ApiRest.Models
         public short mientras { get; set; }
         public string email { get; set; }
         public string contrasena { get; set; }
+        public string fotoPerfil { get; set; }
     
-        [JsonIgnore]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Niveles_Terminados> Niveles_Terminados { get; set; }
-        [JsonIgnore]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Conexion> Conexion { get; set; }
-        [JsonIgnore]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Sesion> Sesion { get; set; }
     }

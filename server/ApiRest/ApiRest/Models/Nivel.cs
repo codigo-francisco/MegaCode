@@ -29,10 +29,13 @@ namespace ApiRest.Models
         public int para { get; set; }
         public int mientras { get; set; }
         public int dificultad { get; set; }
+        public int grupo { get; set; }
+        public short tipoNivel { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Niveles_Terminados> Niveles_Terminados { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Sesion> Sesion { get; set; }
+        public virtual TipoNivel TipoNivel1 { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 package com.megacode.models;
 
+import android.app.Person;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -29,6 +30,7 @@ public class Persona extends RealmObject implements Parcelable {
     public String email;
     public String contrasena;
     private String token;
+    private String fotoPerfil;
 
     /**
      * Construye una persona vacia (ideal para Realm)
@@ -114,8 +116,9 @@ public class Persona extends RealmObject implements Parcelable {
         dest.writeInt(this.variables);
         dest.writeString(this.nombre);
         dest.writeString(this.sexo);
-        dest.writeString(this.getEmail());
-        dest.writeString(this.getContrasena());
+        dest.writeString(this.email);
+        dest.writeString(this.contrasena);
+        dest.writeString(this.fotoPerfil);
     }
 
     protected Persona(Parcel in) {
@@ -129,6 +132,7 @@ public class Persona extends RealmObject implements Parcelable {
         this.sexo = in.readString();
         this.setEmail(in.readString());
         this.setContrasena(in.readString());
+        this.fotoPerfil = in.readString();
     }
 
     public static final Parcelable.Creator<Persona> CREATOR = new Parcelable.Creator<Persona>() {
@@ -174,5 +178,35 @@ public class Persona extends RealmObject implements Parcelable {
 
     public static Persona buildPersonaFromJson(String json) throws IOException {
         return moshi.adapter(Persona.class).fromJson(json);
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
+    }
+
+    public Persona buildPersonaObj(){
+        Persona persona = new Persona();
+
+        persona.setId(getId());
+        persona.setNombre(getNombre());
+        persona.setEdad(getEdad());
+        persona.setSexo(getSexo());
+        persona.setEmail(getEmail());
+        persona.setContrasena(getContrasena());
+        persona.setMientras(getMientras());
+        persona.setNombre(getNombre());
+        persona.setVariables(getVariables());
+        persona.setSi(getSi());
+        persona.setPara(getPara());
+        persona.setMientras(getMientras());
+        persona.setToken(getToken());
+
+        persona.setFotoPerfil(getFotoPerfil());
+
+        return persona;
     }
 }

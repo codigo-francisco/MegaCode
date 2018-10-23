@@ -1,21 +1,17 @@
 package com.megacode.screens;
 
 
-import android.app.ActionBar;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -24,7 +20,7 @@ import java.util.List;
 public class ProgresoFragment extends Fragment {
 
     private final static int PAGE_LIMIT = 2;
-    private TabAdapter tabAdapter = null;
+    TabLayout tabLayout;
 
     public ProgresoFragment() {
         // Required empty public constructor
@@ -36,6 +32,7 @@ public class ProgresoFragment extends Fragment {
             super(fm);
         }
 
+
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
@@ -46,7 +43,7 @@ public class ProgresoFragment extends Fragment {
                     title = "Niveles";
                     break;
                 case 1:
-                    title = "Avances";
+                    title = "Puntaciones";
                     break;
             }
 
@@ -54,18 +51,17 @@ public class ProgresoFragment extends Fragment {
         }
 
         @Override
-        public Fragment getItem(int i) {
+        public Fragment getItem(int index) {
             Fragment fragment = null;
 
-            switch (i){
+            switch (index){
                 case 0:
-                    fragment = new SkillTree();
+                        fragment = new SkillTree();
                     break;
                 case 1:
-                    fragment = new FeedFragment();
+                        fragment = new ScoreFragment();
                     break;
             }
-
 
             return fragment;
         }
@@ -83,9 +79,9 @@ public class ProgresoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_progreso, container, false);
 
         ViewPager viewPager = view.findViewById(R.id.progreso_pager);
-        TabLayout tabLayout = view.findViewById(R.id.tab_progreso);
+        tabLayout = view.findViewById(R.id.tab_progreso);
 
-        tabAdapter = new TabAdapter(getChildFragmentManager());
+        TabAdapter tabAdapter = new TabAdapter(getChildFragmentManager());
         viewPager.setAdapter(tabAdapter);
         tabLayout.setupWithViewPager(viewPager);
 

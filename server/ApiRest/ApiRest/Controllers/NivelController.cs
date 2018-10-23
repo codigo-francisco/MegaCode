@@ -14,6 +14,27 @@ namespace ApiRest.Controllers
     {
         megacodeEntities entities = new megacodeEntities();
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("listarNiveles")]
+        public IHttpActionResult listarNiveles()
+        {
+           return Json(from n in entities.Nivel
+                   select new
+                   {
+                       n.id,
+                       n.nombre,
+                       n.dificultad,
+                       n.grupo,
+                       n.mientras,
+                       n.variables,
+                       n.si,
+                       n.para,
+                       n.ruta,
+                       n.tipoNivel
+                   });
+        }
+
         [HttpGet]
         [Route("listarNiveles/{id}")]
         public IHttpActionResult listarNiveles(Int64? id)

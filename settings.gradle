@@ -1,2 +1,1 @@
-include 'desktop', 'android', 'ios', 'html', 'core'
-include ':openCVLibrary340'
+include 'desktop', 'android', 'ios', 'html', 'core', 'OpenCV'

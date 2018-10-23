@@ -45,6 +45,8 @@
           <Property Name="para" Type="int" Nullable="false" />
           <Property Name="mientras" Type="int" Nullable="false" />
           <Property Name="dificultad" Type="int" Nullable="false" />
+          <Property Name="grupo" Type="int" Nullable="false" />
+          <Property Name="tipoNivel" Type="smallint" Nullable="false" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -68,6 +70,13 @@
           <Property Name="ayudas" Type="int" />
           <Property Name="inactividad" Type="int" />
         </EntityType>
+        <EntityType Name="TipoNivel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="smallint" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="Usuario">
           <Key>
             <PropertyRef Name="id" />
@@ -82,6 +91,7 @@
           <Property Name="mientras" Type="smallint" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="contrasena" Type="varchar(max)" Nullable="false" />
+          <Property Name="fotoPerfil" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK_Conecion_UsuarioId">
           <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
@@ -128,6 +138,18 @@
             </Principal>
             <Dependent Role="Emociones_Sesion">
               <PropertyRef Name="sesionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Nivel_TipoNivel">
+          <End Role="TipoNivel" Type="Self.TipoNivel" Multiplicity="1" />
+          <End Role="Nivel" Type="Self.Nivel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoNivel">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Nivel">
+              <PropertyRef Name="tipoNivel" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -201,6 +223,7 @@
           <EntitySet Name="Nivel" EntityType="Self.Nivel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Niveles_Terminados" EntityType="Self.Niveles_Terminados" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sesion" EntityType="Self.Sesion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TipoNivel" EntityType="Self.TipoNivel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Conecion_UsuarioId" Association="Self.FK_Conecion_UsuarioId">
             <End Role="Usuario" EntitySet="Usuario" />
@@ -217,6 +240,10 @@
           <AssociationSet Name="FK_Emocion_Sesion_SesionId" Association="Self.FK_Emocion_Sesion_SesionId">
             <End Role="Sesion" EntitySet="Sesion" />
             <End Role="Emociones_Sesion" EntitySet="Emociones_Sesion" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Nivel_TipoNivel" Association="Self.FK_Nivel_TipoNivel">
+            <End Role="TipoNivel" EntitySet="TipoNivel" />
+            <End Role="Nivel" EntitySet="Nivel" />
           </AssociationSet>
           <AssociationSet Name="FK_NivelesTerminados_NivelId" Association="Self.FK_NivelesTerminados_NivelId">
             <End Role="Nivel" EntitySet="Nivel" />
@@ -276,6 +303,9 @@
           <Property Name="dificultad" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Niveles_Terminados" Relationship="Self.FK_NivelesTerminados_NivelId" FromRole="Nivel" ToRole="Niveles_Terminados" />
           <NavigationProperty Name="Sesion" Relationship="MegacodeModel.FK_Sesion_NivelId" FromRole="Nivel" ToRole="Sesion" />
+          <Property Name="grupo" Type="Int32" Nullable="false" />
+          <Property Name="tipoNivel" Type="Int16" Nullable="false" />
+          <NavigationProperty Name="TipoNivel1" Relationship="MegacodeModel.FK_Nivel_TipoNivel" FromRole="Nivel" ToRole="TipoNivel" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -306,6 +336,7 @@
           <Property Name="contrasena" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Conexion" Relationship="MegacodeModel.FK_Conecion_UsuarioId" FromRole="Usuario" ToRole="Conexion" />
           <NavigationProperty Name="Sesion" Relationship="MegacodeModel.FK_Sesion_UsuarioId" FromRole="Usuario" ToRole="Sesion" />
+          <Property Name="fotoPerfil" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_NivelesTerminados_NivelId">
           <End Role="Nivel" Type="Self.Nivel" Multiplicity="0..1" />
@@ -374,6 +405,11 @@
           <FunctionImport Name="obtenerMarcadorUsuario" IsComposable="true" ReturnType="Collection(MegacodeModel.obtenerMarcadorUsuario_Result)">
           <Parameter Name="id" Mode="In" Type="Int64" />
           </FunctionImport>
+          <EntitySet Name="TipoNivel" EntityType="MegacodeModel.TipoNivel" />
+          <AssociationSet Name="FK_Nivel_TipoNivel" Association="MegacodeModel.FK_Nivel_TipoNivel">
+            <End Role="TipoNivel" EntitySet="TipoNivel" />
+            <End Role="Nivel" EntitySet="Nivel" />
+          </AssociationSet>
         </EntityContainer>
         <Association Name="FK_Conecion_UsuarioId">
           <End Type="MegacodeModel.Usuario" Role="Usuario" Multiplicity="0..1" />
@@ -481,6 +517,26 @@
           <Property Type="Int16" Name="mientras" Nullable="false" />
           <Property Type="Int16" Name="total" Nullable="true" />
         </ComplexType>
+        <EntityType Name="TipoNivel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int16" Nullable="false" />
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Nivel" Relationship="MegacodeModel.FK_Nivel_TipoNivel" FromRole="TipoNivel" ToRole="Nivel" />
+        </EntityType>
+        <Association Name="FK_Nivel_TipoNivel">
+          <End Type="MegacodeModel.TipoNivel" Role="TipoNivel" Multiplicity="1" />
+          <End Type="MegacodeModel.Nivel" Role="Nivel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoNivel">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Nivel">
+              <PropertyRef Name="tipoNivel" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -512,6 +568,8 @@
           <EntitySetMapping Name="Nivel">
             <EntityTypeMapping TypeName="MegacodeModel.Nivel">
               <MappingFragment StoreEntitySet="Nivel">
+                <ScalarProperty Name="tipoNivel" ColumnName="tipoNivel" />
+                <ScalarProperty Name="grupo" ColumnName="grupo" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
                 <ScalarProperty Name="ruta" ColumnName="ruta" />
@@ -537,6 +595,7 @@
           <EntitySetMapping Name="Usuario">
             <EntityTypeMapping TypeName="MegacodeModel.Usuario">
               <MappingFragment StoreEntitySet="Usuario">
+                <ScalarProperty Name="fotoPerfil" ColumnName="fotoPerfil" />
                 <ScalarProperty Name="contrasena" ColumnName="contrasena" />
                 <ScalarProperty Name="email" ColumnName="email" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -584,6 +643,14 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="TipoNivel">
+            <EntityTypeMapping TypeName="MegacodeModel.TipoNivel">
+              <MappingFragment StoreEntitySet="TipoNivel">
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

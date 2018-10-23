@@ -1,12 +1,11 @@
 package com.megacode.screens;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.design.button.MaterialButton;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AlertDialog;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,13 +16,14 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.megacode.base.ActivityBase;
+import com.megacode.helpers.ImageProfileHelper;
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
 import com.megacode.services.MegaCodeServiceInstance;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -90,20 +90,20 @@ public class RegisterActivity extends ActivityBase {
                                         persona.setToken(response.body().getToken());
 
                                         Realm realm = Realm.getDefaultInstance();
-                                        //Se guarda en base de datos local
-                                        realm.executeTransaction(new Realm.Transaction() {
-                                            @Override
-                                            public void execute(Realm realm) {
-                                                //Se crea el objeto persona en Realm
-                                                realm.insert(persona);
+                                        realm.beginTransaction();
+                                        //Buscar si hay algún usuario en Realm, eliminarlo
+                                        RealmQuery<Persona> query = realm.where(Persona.class);
+                                        for (Persona persona : query.findAll()) {
+                                            persona.deleteFromRealm();
+                                        }
+                                        //Insertar nuevo usuario
+                                        realm.insert(persona);
+                                        realm.commitTransaction();
 
-                                                //Se manda a llamar la actividad principal
-                                                Intent intentActivity = new Intent(getApplication(), RootActivity.class);
-                                                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                                                preferences.edit().putString(getString(R.string.persona), persona.toJson()).apply();
-                                                startActivity(intentActivity);
-                                            }
-                                        });
+                                        //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
+                                        Intent intentActivity = new Intent(RegisterActivity.this, RootActivity.class);
+                                        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intentActivity);
                                     }else if (response.code()==403) {
                                         alertDialog.show();
                                     }else {
@@ -134,6 +134,8 @@ public class RegisterActivity extends ActivityBase {
         persona.setSexo(spinnerSex.getText().toString());
         persona.setEmail(emailTextEdit.getText().toString());
         persona.setContrasena(contrasenaTextEdit.getText().toString());
+        //Establecer imagen de perfil por default
+        persona.setFotoPerfil(ImageProfileHelper.getDefaultProfileImage(getAssets()));
 
         return persona;
     }

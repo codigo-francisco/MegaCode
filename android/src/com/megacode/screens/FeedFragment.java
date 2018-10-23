@@ -1,17 +1,23 @@
 package com.megacode.screens;
 
 
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.core.app.Person;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.megacode.models.TypeFeed;
 import com.megacode.services.RuleInstance;
 import com.megacode.adapters.model.DataModel;
 import com.megacode.models.FeedBack;
@@ -21,13 +27,12 @@ import com.megacode.models.response.PosicionesResponse;
 import com.megacode.services.MegaCodeService;
 import com.megacode.services.MegaCodeServiceInstance;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,51 +46,72 @@ public class FeedFragment extends Fragment {
     private final static String TAG = "FeedFragment";
     private Persona persona;
     private CustomAdapter customAdapter;
+    private Realm realm;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public FeedFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_feed, container, false);
 
-        try {
-            persona = Persona.buildPersonaFromJson(PreferenceManager.getDefaultSharedPreferences(getContext())
-                    .getString(getString(R.string.persona),null));
+        realm = Realm.getDefaultInstance();
 
-            RecyclerView recyclerView = view.findViewById(R.id.recycler_view_feed);
-            recyclerView.setHasFixedSize(true);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(linearLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
+        persona = realm.where(Persona.class).findFirst();
 
-            if (data==null)
-                //Datos vacios para el feed
-                data = new ArrayList<>();
-            customAdapter = new CustomAdapter(data);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_feed);
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        swipeRefreshLayout = view.findViewById(R.id.feed_refreshlayout);
+        swipeRefreshLayout.setOnRefreshListener(this::actualizarFeed);
+
+        if (data==null)
+            //Datos vacios para el feed
+            data = new ArrayList<>();
+
+        customAdapter = new CustomAdapter(data, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ScoreActivity.class);
+                View sharedElement = view.findViewById(R.id.cards_layout_icon);
+                ActivityOptions activityOptions =
+                        ActivityOptions.makeSceneTransitionAnimation(getActivity(),sharedElement,"score_icon");
+                startActivity(intent, activityOptions.toBundle());
+            }
+        });
+
+        if (savedInstanceState!=null){
+            if (savedInstanceState.getParcelableArrayList("feeds")!=null){
+                data.addAll(new ArrayList<>(Objects.requireNonNull(savedInstanceState.getParcelableArrayList("feeds"))));
+                customAdapter.notifyDataSetChanged();
+            }
+        }else {
             //actualizar el feed...
             actualizarFeed();
-
-            recyclerView.setAdapter(customAdapter);
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
         }
+
+
+        recyclerView.setAdapter(customAdapter);
 
         return view;
     }
 
     public void actualizarFeed(){
+        data.clear();
         //Posicion contra otros
         MegaCodeService megaCodeService = MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService;
-        megaCodeService.posiconContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
+        megaCodeService.posicionContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
                 new Callback<List<PosicionesResponse>>() {
                     @Override
-                    public void onResponse(Call<List<PosicionesResponse>> call,
-                                           Response<List<PosicionesResponse>> response) {
+                    public void onResponse(@NonNull Call<List<PosicionesResponse>> call,
+                                           @NonNull Response<List<PosicionesResponse>> response) {
                         DataModel dataModel=null;
 
                         if (response.isSuccessful()){
@@ -119,8 +145,9 @@ public class FeedFragment extends Fragment {
                                 );
                             }
                             if (dataModel!=null)
-                                dataModel.setImagen(R.drawable.ic_baseline_bar_chart_24px);
-                                dataModel.setTitle("Sigue compitiendo, no te quedes atras");
+                                dataModel.setTypeFeed(TypeFeed.PUNTAJE);
+                                dataModel.setImagen(R.drawable.ic_podium);
+                                dataModel.setTitle("Sigue compitiendo");
                                 data.add(dataModel);
                                 customAdapter.notifyDataSetChanged();
                         }
@@ -141,6 +168,7 @@ public class FeedFragment extends Fragment {
                             NivelResponse nivelResponse = response.body();
 
                             DataModel dataModel = new DataModel();
+                            dataModel.setTypeFeed(TypeFeed.JUEGO);
                             dataModel.setTitle("Vamos a jugar");
                             dataModel.setContent(String.format(Locale.getDefault(), "Comienza a jugar, prueba el nivel %s", nivelResponse.getNombre()));
                             dataModel.setImagen(R.drawable.ic_baseline_videogame_asset_24px);
@@ -161,6 +189,7 @@ public class FeedFragment extends Fragment {
         List<FeedBack> feedBacks = RuleInstance.getRuleInstance(persona).getFeedbacks();
         for (FeedBack feedBack: feedBacks){
             DataModel dataModel = new DataModel();
+            dataModel.setTypeFeed(TypeFeed.CONSEJO);
             dataModel.setTitle(feedBack.getTitulo());
             dataModel.setContent(feedBack.getContenido());
             dataModel.setImagen(R.drawable.ic_baseline_info_24px);
@@ -169,10 +198,20 @@ public class FeedFragment extends Fragment {
         }
         if (feedBacks.size()>0)
             customAdapter.notifyDataSetChanged();
+
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList("feeds", new ArrayList<>(data));
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (realm != null && !realm.isClosed())
+            realm.close();
+        super.onDestroy();
     }
 }

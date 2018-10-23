@@ -11,24 +11,25 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name="com.megacode.base.ApplicationBase"
-        android:fullBackupContent="true"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@drawable/ico"
         android:label="@string/app_name"
         android:theme="@style/Theme.MaterialComponents.Light"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.megacode.screens.MegaCodeAcitivity"
+            android:name=".MegaCodeAcitivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/GdxTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name="com.megacode.screens.RootActivity"
+            android:name=".RootActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
@@ -36,20 +37,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.megacode.screens.RegisterActivity"
+            android:name=".RegisterActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
-        <activity android:name="com.megacode.screens.LoginActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".LoginActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".LaunchActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ScoreActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity android:name=".OpenCVDownload" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.megacode.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/providerpaths" />
+        </provider>
+
     </application>
 
 </manifest>

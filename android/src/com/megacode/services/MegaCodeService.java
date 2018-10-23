@@ -2,12 +2,15 @@ package com.megacode.services;
 
 import com.megacode.models.Persona;
 import com.megacode.models.RegistroResponse;
+import com.megacode.models.ScoreResponse;
 import com.megacode.models.response.LoginResponse;
 import com.megacode.models.response.NivelResponse;
+import com.megacode.models.response.NivelesResponse;
 import com.megacode.models.response.PosicionesResponse;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -23,10 +26,19 @@ public interface MegaCodeService {
     @POST("api/autenticacion/login")
     Call<LoginResponse> login(@Body Persona usuario);
 
+    @POST("api/usuario/registrarFoto")
+    Call<ResponseBody> registrarFotoUsuario(@Header("Authorization") String token, @Body Persona persona);
+
     @GET("api/feed/posicionContraOtros/{id}")
-    Call<List<PosicionesResponse>> posiconContraOtros(@Header("Authorization") String token, @Path("id") long id);
+    Call<List<PosicionesResponse>> posicionContraOtros(@Header("Authorization") String token, @Path("id") long id);
 
     @GET("api/feed/siguienteEjercicio/{id}")
     Call<NivelResponse> siguienteEjercicio(@Header("Authorization") String token, @Path("id") long id);
+
+    @GET("api/score")
+    Call<List<ScoreResponse>> puntajes();
+
+    @GET("api/nivel/listarNiveles")
+    Call<List<NivelesResponse>> listarNiveles();
 
 }

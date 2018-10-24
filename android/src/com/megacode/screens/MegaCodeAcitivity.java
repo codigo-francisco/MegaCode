@@ -30,7 +30,6 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.megacode.base.ApplicationBase;
-import com.megacode.blockly.WebChromeClass;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
 import com.udacity.gamedev.gigagal.GameplayScreen;
@@ -54,7 +53,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	private TextView textViewEmotion;
 	private ImageView imageViewFace;
 	private LinearLayout linearLayoutCamera;
-	//private static Game
+	private WebView webView;
 
 
 	@Override
@@ -66,11 +65,13 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		}
 	}
 
-	private int idMenuCamera;
+	private int idMenuCamera = 0;
+	private int idRecargarBlockly = 1;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        idMenuCamera = menu.add("Mostrar/Ocultar Camara").getItemId();
+        menu.add(Menu.NONE, idMenuCamera, Menu.NONE, "Abrir/Cerrar Camara");
+        menu.add(Menu.NONE, idRecargarBlockly, Menu.NONE, "Recargar Blockly");
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -90,7 +91,9 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
                 cameraBridgeViewBase.setVisibility(View.GONE);
                 linearLayoutCamera.setVisibility(View.GONE);
             }
-        }
+        }else if (idItem==idRecargarBlockly){
+        	webView.reload();
+		}
 
         return super.onOptionsItemSelected(item);
     }
@@ -143,11 +146,16 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			}
 		});
 
-		WebView webView = findViewById(R.id.megacode_activity_webview);
-		webView.setWebChromeClient(new WebChromeClass());
+		webView = findViewById(R.id.megacode_activity_webview);
+		webView.setWebViewClient(new WebViewClient(){
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				//webView.loadUrl("javascript:onresize();");
+			}
+		});
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
-		webSettings.setAllowContentAccess(true);
+		/*webSettings.setAllowContentAccess(true);
 		webSettings.setAllowFileAccess(true);
 		webSettings.setAllowFileAccessFromFileURLs(true);
 		webSettings.setAllowUniversalAccessFromFileURLs(true);
@@ -155,7 +163,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		webSettings.setLoadsImagesAutomatically(true);
 		webSettings.setDomStorageEnabled(true);
 		webSettings.setSupportZoom(true);
-		webSettings.setDisplayZoomControls(true);
+		webSettings.setDisplayZoomControls(true);*/
 
 		webView.addJavascriptInterface(new WebViewJavaScriptInterface(this), "megacode");
 
@@ -176,22 +184,15 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
 	}
 
-    public class WebViewJavaScriptInterface{
+    class WebViewJavaScriptInterface{
 
         private Context context;
         private Level level;
 
-        /*
-         * Need a reference to the context in order to sent a post message
-         */
         public WebViewJavaScriptInterface(Context context){
             this.context = context;
         }
 
-        /*
-         * This method can be called from Android. @JavascriptInterface
-         * required after SDK version 17.
-         */
         @JavascriptInterface
         public void runBlockly(String code){
             if (level == null) {

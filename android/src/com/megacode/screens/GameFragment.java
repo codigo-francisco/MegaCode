@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.udacity.gamedev.gigagal.GameplayScreen;
 import com.udacity.gamedev.gigagal.GigaGalGame;
 
 /**
@@ -16,7 +17,7 @@ import com.udacity.gamedev.gigagal.GigaGalGame;
 
 public class GameFragment extends AndroidFragmentApplication {
 
-    public static Game GAME;
+    public static GigaGalGame GAME;
 
     @Nullable
     @Override

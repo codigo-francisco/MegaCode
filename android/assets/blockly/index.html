@@ -2,10 +2,14 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Blockly Demo: Fixed Blockly</title>
+  <title>MegaCode</title>
   <script src="./blockly_compressed.js"></script>
-  <script src="./blocks_compressed.js"></script>
-  <script src="./msg/js/en.js"></script>
+  <script src="./javascript.js"></script>
+  <script src="./blocks/math.js"></script>
+  <script src="./generators/math.js"></script>
+  <script src="./blocks.js"></script>
+  <script src="./generators.js"></script>
+
   <style>
     body {
       background-color: #fff;
@@ -17,33 +21,58 @@
     }
   </style>
 </head>
-<body>
-  <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
-    <a href="index.html">Demos</a> &gt; Fixed Blockly</h1>
+  <body>
+  <div id="blocklyArea" style="width:100%;height:300px;">
+    <div id="blocklyDiv" style="position: absolute"></div>
 
-  <p>This is a simple demo of injecting Blockly into a fixed-sized 'div' element.</p>
+    <xml id="toolbox" style="display:none;">
+      <category name="Acciones">
+        <block type="acciones"></block>
+        <block type="caminarderecha"></block>
+        <block type="caminarizquierda"></block>
+        <block type="saltar"></block>
+        <block type="disparar"></block>
+      </category>
+      <category name="Numeros">
+        <block type="math_number">
+          <field name="NUM">0</field>
+        </block>
+      </category>
+    </xml>
+  </div>
 
-  <p>&rarr; More info on <a href="https://developers.google.com/blockly/guides/configure-blockly/web/fixed-size">injecting fixed-sized Blockly</a>&hellip;</p>
+    <script>
+      var blocklyArea = document.getElementById('blocklyArea');
+      var blocklyDiv = document.getElementById('blocklyDiv');
+      var workspace = Blockly.inject(blocklyDiv,
+          {toolbox: document.getElementById('toolbox')});
+      var onresize = function(e) {
+        // Compute the absolute coordinates and dimensions of blocklyArea.
+        var element = blocklyArea;
+        var x = 0;
+        var y = 0;
+        do {
+          x += element.offsetLeft;
+          y += element.offsetTop;
+          element = element.offsetParent;
+        } while (element);
+        // Position blocklyDiv over blocklyArea.
+        blocklyDiv.style.left = x + 'px';
+        blocklyDiv.style.top = y + 'px';
+        blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+        blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+        Blockly.svgResize(workspace);
+      };
+      window.addEventListener('resize', onresize, false);
+      onresize();
+      Blockly.svgResize(workspace);
 
-  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+      function runBlockly(){
+        Blockly.JavaScript.addReservedWords('code');
+        var code = Blockly.JavaScript.workspaceToCode(workspace);
+        megacode.runBlockly(code);
+      }
+    </script>
 
-  <xml id="toolbox" style="display: none">
-    <block type="controls_if"></block>
-    <block type="logic_compare"></block>
-    <block type="controls_repeat_ext"></block>
-    <block type="math_number">
-      <field name="NUM">123</field>
-    </block>
-    <block type="math_arithmetic"></block>
-    <block type="text"></block>
-    <block type="text_print"></block>
-  </xml>
-
-  <script>
-    var demoWorkspace = Blockly.inject('blocklyDiv',
-        {media: './media/',
-         toolbox: document.getElementById('toolbox')});
-  </script>
-
-</body>
+  </body>
 </html>

@@ -1,6 +1,7 @@
 package com.megacode.screens;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.MimeTypeMap;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -28,6 +30,7 @@ import android.widget.TextView;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.megacode.base.ApplicationBase;
+import com.megacode.blockly.WebChromeClass;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
 import com.udacity.gamedev.gigagal.GameplayScreen;
@@ -51,13 +54,46 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	private TextView textViewEmotion;
 	private ImageView imageViewFace;
 	private LinearLayout linearLayoutCamera;
+	//private static Game
+
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode==0){
-
+            if (grantResults.length>0){
+                inicializarCamara();
+            }
 		}
 	}
+
+	private int idMenuCamera;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        idMenuCamera = menu.add("Mostrar/Ocultar Camara").getItemId();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int idItem = item.getItemId();
+
+        if (idItem==idMenuCamera){
+            if (linearLayoutCamera.getVisibility() == View.GONE) {
+                linearLayoutCamera.setVisibility(View.VISIBLE);
+                //camera.enableView();
+                cameraBridgeViewBase.setVisibility(View.VISIBLE);
+            }
+            else {
+                //camera.disableView();
+                cameraBridgeViewBase.setVisibility(View.GONE);
+                linearLayoutCamera.setVisibility(View.GONE);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
 	public LinearLayout getLinearLayoutCamera(){
 		return linearLayoutCamera;
@@ -108,6 +144,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		});
 
 		WebView webView = findViewById(R.id.megacode_activity_webview);
+		webView.setWebChromeClient(new WebChromeClass());
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 		webSettings.setAllowContentAccess(true);
@@ -120,7 +157,13 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		webSettings.setSupportZoom(true);
 		webSettings.setDisplayZoomControls(true);
 
+		webView.addJavascriptInterface(new WebViewJavaScriptInterface(this), "megacode");
+
 		webView.loadUrl("file:///android_asset/blockly/index.html");
+
+        findViewById(R.id.megacode_play).setOnClickListener(view -> {
+		    webView.loadUrl("javascript:runBlockly()");
+        });
 
         // Create libgdx fragment
 		GameFragment libgdxFragment = new GameFragment();
@@ -128,11 +171,43 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 		transaction
-				//.add(R.id.content_blockly, blocklyFragment)
-				.add(R.id.content_framelayout, libgdxFragment)
+                .add(R.id.game_fragment, libgdxFragment)
 				.commit();
 
 	}
+
+    public class WebViewJavaScriptInterface{
+
+        private Context context;
+        private Level level;
+
+        /*
+         * Need a reference to the context in order to sent a post message
+         */
+        public WebViewJavaScriptInterface(Context context){
+            this.context = context;
+        }
+
+        /*
+         * This method can be called from Android. @JavascriptInterface
+         * required after SDK version 17.
+         */
+        @JavascriptInterface
+        public void runBlockly(String code){
+            if (level == null) {
+                level = ((GameplayScreen)GameFragment.GAME.getScreen()).level;
+            }
+
+            Log.d(TAG, code);
+
+            String[] comandos = code.split(",");
+
+            Log.d(TAG, "Procesando comandos: " + comandos);
+
+            level.setComandos(new LinkedList<>(Arrays.asList(comandos)));
+            level.procesarComandos();
+        }
+    }
 
 	@Override
 	public void exit() {
@@ -155,32 +230,5 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame cvCameraViewFrame) {
 		lastFrame = cvCameraViewFrame.rgba();
 		return  faceRecognition.markFace(lastFrame);
-	}
-
-	BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(this) {
-		@Override
-		public void onManagerConnected(int status) {
-			switch (status) {
-				case LoaderCallbackInterface.SUCCESS:
-					cameraBridgeViewBase.enableView();
-					faceRecognition = new FaceRecognition(getApplicationContext());
-					break;
-				default:
-					super.onManagerConnected(status);
-					break;
-			}
-		}
-	};
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		if (!OpenCVLoader.initDebug()){
-			Log.d(TAG, "opencv inicializado asincronicamente");
-			OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, baseLoaderCallback);
-		}else{
-			Log.d(TAG, "opencv inicializado");
-		}
 	}
 }

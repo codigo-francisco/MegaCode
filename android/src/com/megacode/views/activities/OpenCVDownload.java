@@ -1,4 +1,4 @@
-package com.megacode.screens;
+package com.megacode.views.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -23,6 +23,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.megacode.R;
 
 import java.io.File;
 import java.util.Locale;

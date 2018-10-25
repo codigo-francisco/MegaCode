@@ -1,4 +1,4 @@
-package com.megacode.screens;
+package com.megacode.views.fragments;
 
 
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.megacode.R;
+import com.megacode.adapters.ScoreAdapter;
 import com.megacode.models.ScoreResponse;
 import com.megacode.services.MegaCodeServiceInstance;
 

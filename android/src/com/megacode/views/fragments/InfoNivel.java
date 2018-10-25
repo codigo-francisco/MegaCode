@@ -1,8 +1,6 @@
-package com.megacode.screens;
+package com.megacode.views.fragments;
 
-import android.content.res.ColorStateList;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -12,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
+import com.megacode.R;
 import com.megacode.adapters.model.SkillNode;
 
 import java.util.Locale;

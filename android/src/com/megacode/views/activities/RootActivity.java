@@ -1,9 +1,14 @@
-package com.megacode.screens;
+package com.megacode.views.activities;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.navigation.NavigationView;
+import com.megacode.R;
+import com.megacode.views.fragments.FeedFragment;
+import com.megacode.views.fragments.PerfilFragment;
+import com.megacode.views.fragments.ProgresoFragment;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.view.GravityCompat;
@@ -13,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import android.util.SparseArray;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 

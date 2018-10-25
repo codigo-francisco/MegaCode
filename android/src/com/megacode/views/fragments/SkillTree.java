@@ -1,7 +1,6 @@
-package com.megacode.screens;
+package com.megacode.views.fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,18 +21,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.megacode.R;
 import com.megacode.adapters.model.SkillNode;
 import com.megacode.models.ParcelableLinkedList;
-import com.megacode.models.TypeLevel;
-import com.megacode.models.response.NivelResponse;
 import com.megacode.models.response.NivelesResponse;
 import com.megacode.services.MegaCodeServiceInstance;
-import com.megacode.services.MenuService;
+import com.megacode.views.activities.RootActivity;
+import com.megacode.views.fragments.InfoNivel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 
 /**

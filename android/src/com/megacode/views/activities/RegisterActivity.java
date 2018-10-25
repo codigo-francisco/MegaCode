@@ -1,4 +1,4 @@
-package com.megacode.screens;
+package com.megacode.views.activities;
 
 import android.content.Intent;
 
@@ -16,14 +16,15 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.megacode.R;
 import com.megacode.helpers.ImageProfileHelper;
-import com.megacode.models.Persona;
+import com.megacode.models.database.Usuario;
 import com.megacode.models.RegistroResponse;
 import com.megacode.services.MegaCodeServiceInstance;
+import com.megacode.viewmodels.UsuarioViewModel;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
+import androidx.lifecycle.ViewModelProviders;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -33,14 +34,17 @@ public class RegisterActivity extends ActivityBase {
     private MaterialButton materialButton;
     private MaterialBetterSpinner spinnerSex;
     private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
-    Persona persona;
-    Toast message;
-    AlertDialog alertDialog;
+    private Usuario usuario;
+    private Toast message;
+    private AlertDialog alertDialog;
+    private UsuarioViewModel usuarioViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
 
         message = Toast.makeText(this, "Ocurrió un error al intentar agregar al usuario",Toast.LENGTH_LONG);
         alertDialog = new AlertDialog.Builder(this)
@@ -78,27 +82,19 @@ public class RegisterActivity extends ActivityBase {
 
                 if (todoValido) {
                     //Se guarda en base de datos remoto y se obtiene el token
-                    persona = buildPersona();
+                    usuario = buildPersona();
 
-                    MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.registrar(persona)
+                    MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.registrar(usuario)
                             .clone()
                             .enqueue(new Callback<RegistroResponse>() {
                                 @Override
                                 public void onResponse(Call<RegistroResponse> call, retrofit2.Response<RegistroResponse> response) {
                                     if (response.isSuccessful()){
-                                        persona.setId(response.body().getId());
-                                        persona.setToken(response.body().getToken());
+                                        usuario.setId(response.body().getId());
+                                        usuario.setToken(response.body().getToken());
 
-                                        Realm realm = Realm.getDefaultInstance();
-                                        realm.beginTransaction();
-                                        //Buscar si hay algún usuario en Realm, eliminarlo
-                                        RealmQuery<Persona> query = realm.where(Persona.class);
-                                        for (Persona persona : query.findAll()) {
-                                            persona.deleteFromRealm();
-                                        }
-                                        //Insertar nuevo usuario
-                                        realm.insert(persona);
-                                        realm.commitTransaction();
+                                        usuarioViewModel.borrarUsuario();
+                                        usuarioViewModel.insert(usuario);
 
                                         //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
                                         Intent intentActivity = new Intent(RegisterActivity.this, RootActivity.class);
@@ -127,17 +123,17 @@ public class RegisterActivity extends ActivityBase {
         super.onSaveInstanceState(outState);
     }
 
-    private Persona buildPersona(){
-        Persona persona = new Persona();
-        persona.setNombre(nameTextEdit.getText().toString());
-        persona.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
-        persona.setSexo(spinnerSex.getText().toString());
-        persona.setEmail(emailTextEdit.getText().toString());
-        persona.setContrasena(contrasenaTextEdit.getText().toString());
+    private Usuario buildPersona(){
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nameTextEdit.getText().toString());
+        usuario.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
+        usuario.setSexo(spinnerSex.getText().toString());
+        usuario.setEmail(emailTextEdit.getText().toString());
+        usuario.setContrasena(contrasenaTextEdit.getText().toString());
         //Establecer imagen de perfil por default
-        persona.setFotoPerfil(ImageProfileHelper.getDefaultProfileImage(getAssets()));
+        usuario.setFotoPerfil(ImageProfileHelper.getDefaultProfileImage(getAssets()));
 
-        return persona;
+        return usuario;
     }
 
     private void setFocusChildListener(View view){

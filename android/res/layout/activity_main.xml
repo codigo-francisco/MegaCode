@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:keepScreenOn="true"
-    tools:context="com.megacode.screens.MegaCodeAcitivity">
+    tools:context="com.megacode.views.activities.MegaCodeAcitivity">
 
     <LinearLayout
         android:id="@+id/linear_layout"

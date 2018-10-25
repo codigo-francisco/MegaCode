@@ -1,4 +1,4 @@
-package com.megacode.screens;
+package com.megacode.views.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.udacity.gamedev.gigagal.GameplayScreen;
 import com.udacity.gamedev.gigagal.GigaGalGame;
 
 /**

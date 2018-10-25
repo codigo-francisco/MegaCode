@@ -5,13 +5,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.megacode.models.IDialog;
-import com.megacode.models.Persona;
+import com.megacode.models.database.Usuario;
 import com.megacode.models.response.LoginResponse;
-import com.megacode.screens.ActivityBase;
+import com.megacode.viewmodels.UsuarioViewModel;
+import com.megacode.views.activities.ActivityBase;
 import com.megacode.services.MegaCodeServiceInstance;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
+import androidx.lifecycle.ViewModelProviders;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,10 +20,10 @@ public abstract class LoginApp extends ActivityBase {
 
     private final static String TAG = "ActivityBase";
 
-    protected Realm realm;
-
     protected IDialog errorDialog;
     protected IDialog datosIncorrectosDialog;
+
+    protected UsuarioViewModel usuarioViewModel;
 
     public LoginApp(){
         super();
@@ -32,30 +32,20 @@ public abstract class LoginApp extends ActivityBase {
 
     public abstract IDialog createDialog();
 
-    public void loginApp(Persona persona, Intent intent){
+    public void loginApp(Usuario usuario, Intent intent){
+        usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
+
         //Realizar el registro
-        MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.login(persona).enqueue(new Callback<LoginResponse>() {
+        MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.login(usuario).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (response.isSuccessful()) {
                     //Obtenemos los datos del usuario desde el servidor y establecemos el token generado
-                    Persona datosUsuario = response.body().getUsuario();
+                    Usuario datosUsuario = response.body().getUsuario();
                     datosUsuario.setToken(response.body().getToken());
 
-                    if (realm==null)
-                        realm = Realm.getDefaultInstance();
-
-                    realm.beginTransaction();
-
-                    //Buscar si hay algún usuario en Realm, eliminarlo
-                    RealmQuery<Persona> query = realm.where(Persona.class);
-                    for (Persona persona : query.findAll()) {
-                        persona.deleteFromRealm();
-                    }
-                    // registrar al usuario en bd local con su nuevo token
-                    realm.copyToRealm(datosUsuario);
-
-                    realm.commitTransaction();
+                    usuarioViewModel.borrarUsuario();
+                    usuarioViewModel.insert(datosUsuario);
 
                     startActivity(intent);
 
@@ -79,8 +69,6 @@ public abstract class LoginApp extends ActivityBase {
 
     @Override
     protected void onDestroy() {
-        if (realm!=null)
-            realm.close();
         super.onDestroy();
     }
 }

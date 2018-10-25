@@ -1,4 +1,4 @@
-package com.megacode.screens;
+package com.megacode.views.fragments;
 
 
 import android.app.ActivityOptions;
@@ -7,7 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.core.app.Person;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,22 +18,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.megacode.R;
+import com.megacode.adapters.CustomAdapter;
 import com.megacode.models.TypeFeed;
+import com.megacode.models.database.Usuario;
 import com.megacode.services.RuleInstance;
 import com.megacode.adapters.model.DataModel;
 import com.megacode.models.FeedBack;
-import com.megacode.models.Persona;
 import com.megacode.models.response.NivelResponse;
 import com.megacode.models.response.PosicionesResponse;
 import com.megacode.services.MegaCodeService;
 import com.megacode.services.MegaCodeServiceInstance;
+import com.megacode.viewmodels.UsuarioViewModel;
+import com.megacode.views.activities.ScoreActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import io.realm.Realm;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,10 +48,10 @@ public class FeedFragment extends Fragment {
 
     private ArrayList<DataModel> data;
     private final static String TAG = "FeedFragment";
-    private Persona persona;
     private CustomAdapter customAdapter;
-    private Realm realm;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private UsuarioViewModel usuarioViewModel;
+    private Usuario usuario;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -59,9 +63,18 @@ public class FeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_feed, container, false);
 
-        realm = Realm.getDefaultInstance();
+        usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
 
-        persona = realm.where(Persona.class).findFirst();
+        usuario = usuarioViewModel.obtenerUsuario().getValue();
+
+        usuarioViewModel.obtenerUsuario().observe(this, new Observer<Usuario>() {
+            @Override
+            public void onChanged(Usuario u) {
+                usuario = u;
+                swipeRefreshLayout.setRefreshing(true);
+                actualizarFeed();
+            }
+        });
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_feed);
         recyclerView.setHasFixedSize(true);
@@ -103,11 +116,11 @@ public class FeedFragment extends Fragment {
         return view;
     }
 
-    public void actualizarFeed(){
+    private void actualizarFeed(){
         data.clear();
         //Posicion contra otros
         MegaCodeService megaCodeService = MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService;
-        megaCodeService.posicionContraOtros(persona.getToken(), persona.getId()).clone().enqueue(
+        megaCodeService.posicionContraOtros(usuario.getToken(), usuario.getId()).clone().enqueue(
                 new Callback<List<PosicionesResponse>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<PosicionesResponse>> call,
@@ -160,7 +173,7 @@ public class FeedFragment extends Fragment {
                 }
         );
 
-        megaCodeService.siguienteEjercicio(persona.getToken(), persona.getId()).clone().enqueue(
+        megaCodeService.siguienteEjercicio(usuario.getToken(), usuario.getId()).clone().enqueue(
                 new Callback<NivelResponse>() {
                     @Override
                     public void onResponse(Call<NivelResponse> call, Response<NivelResponse> response) {
@@ -186,7 +199,7 @@ public class FeedFragment extends Fragment {
         );
 
         //Feedbacks
-        List<FeedBack> feedBacks = RuleInstance.getRuleInstance(persona).getFeedbacks();
+        List<FeedBack> feedBacks = RuleInstance.getRuleInstance(usuario).getFeedbacks();
         for (FeedBack feedBack: feedBacks){
             DataModel dataModel = new DataModel();
             dataModel.setTypeFeed(TypeFeed.CONSEJO);
@@ -206,12 +219,5 @@ public class FeedFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelableArrayList("feeds", new ArrayList<>(data));
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onDestroy() {
-        if (realm != null && !realm.isClosed())
-            realm.close();
-        super.onDestroy();
     }
 }

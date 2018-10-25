@@ -38,100 +38,68 @@
             android:textAppearance="@style/Cabecera"
             android:layout_centerHorizontal="true"
             />
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name_view"
-            android:id="@+id/view_data"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:id="@+id/text_age"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:id="@+id/text_sex"/>
-        </LinearLayout>
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/text_age"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_below="@id/name_view"
+            android:layout_alignEnd="@id/text_age"
+            android:id="@+id/text_sex"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/view_data"
+            android:layout_below="@id/text_age"
             android:id="@+id/text_seleccion"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:text="@string/seleccionar_personaje"/>
-        <LinearLayout
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/button_megacode"
+            android:layout_width="120dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:background="@drawable/borders"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:src="@drawable/megacode"/>
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_below="@id/text_seleccion"
-            android:id="@+id/seleccion_personaje"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_megacode"
-                    android:layout_width="120dp"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="5"
-                    android:background="@drawable/borders"
-                    android:scaleType="fitCenter"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/megacode"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:text="@string/megacode"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+            android:layout_height="0dp"
+            android:gravity="center_horizontal"
+            android:text="@string/megacode"/>
 
-                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/button_shemegacode"
-                    android:layout_width="120dp"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="5"
-                    android:scaleType="fitCenter"
-                    android:adjustViewBounds="true"
-                    android:background="@color/translucent"
-                    android:src="@drawable/she_megacode"/>
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/button_shemegacode"
+            android:layout_width="120dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:background="@color/translucent"
+            android:src="@drawable/she_megacode"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:text="@string/she_megacode"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center_horizontal"
+            android:text="@string/she_megacode"/>
 
         <com.google.android.material.button.MaterialButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_below="@id/seleccion_personaje"
+            android:layout_alignParentEnd="true"
             android:id="@+id/perfil_cerrarsesion"
             android:text="Cerrar Sesion"/>
 

@@ -1,4 +1,4 @@
-package com.megacode.screens;
+package com.megacode.views.activities;
 
 import android.content.Intent;
 
@@ -10,9 +10,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.megacode.R;
 import com.megacode.base.LoginApp;
 import com.megacode.models.IDialog;
-import com.megacode.models.Persona;
+import com.megacode.models.database.Usuario;
 
 
 public class LoginActivity extends LoginApp {
@@ -51,9 +52,9 @@ public class LoginActivity extends LoginApp {
             TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
             TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
 
-            Persona personaLogin = new Persona();
-            personaLogin.setEmail(emailEditText.getText().toString());
-            personaLogin.setContrasena(contrasenaEditText.getText().toString());
+            Usuario usuarioLogin = new Usuario();
+            usuarioLogin.setEmail(emailEditText.getText().toString());
+            usuarioLogin.setContrasena(contrasenaEditText.getText().toString());
 
             //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
             Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
@@ -62,7 +63,7 @@ public class LoginActivity extends LoginApp {
             progressBar.setVisibility(ProgressBar.VISIBLE);
             loginButton.setEnabled(false);
 
-            loginApp(personaLogin, intentActivity);
+            loginApp(usuarioLogin, intentActivity);
         });
     }
 

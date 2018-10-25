@@ -29,7 +29,7 @@
             android:layout_marginEnd="16dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            tools:context="com.megacode.screens.RegisterActivity">
+            tools:context="com.megacode.views.activities.RegisterActivity">
 
             <RelativeLayout
                 android:layout_width="match_parent"

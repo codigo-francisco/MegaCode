@@ -1,7 +1,7 @@
 package com.megacode.services;
 
 import com.megacode.models.FeedBack;
-import com.megacode.models.Persona;
+import com.megacode.models.database.Usuario;
 
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
@@ -17,12 +17,12 @@ public class RuleInstance {
     private static RuleInstance ruleInstance;
     private RulesEngine rulesEngine;
 
-    private Persona persona;
+    private Usuario usuario;
     private List<FeedBack> feedBacks;
     private Rules rules;
     private Facts facts;
 
-    public static RuleInstance getRuleInstance(Persona persona){
+    public static RuleInstance getRuleInstance(Usuario usuario){
         if (ruleInstance == null) {
             ruleInstance = new RuleInstance();
             ruleInstance.rules = new Rules();
@@ -33,8 +33,8 @@ public class RuleInstance {
             ruleInstance.createRules();
         }
 
-        //Se establecen las condiciones de la persona como hechos
-        ruleInstance.setPersona(persona);
+        //Se establecen las condiciones de la usuario como hechos
+        ruleInstance.setUsuario(usuario);
 
         return ruleInstance;
     }
@@ -43,8 +43,8 @@ public class RuleInstance {
         Rule noExcercise = new RuleBuilder()
                 .name("Sin ejercicios")
                 .when(facts ->{
-                        Persona persona = facts.get("persona");
-                        return persona.getVariables() + persona.getSi() + persona.getPara() + persona.getMientras() < 1 ;
+                        Usuario usuario = facts.get("usuario");
+                        return usuario.getVariables() + usuario.getSi() + usuario.getPara() + usuario.getMientras() < 1 ;
                 })
                 .then(facts -> feedBacks.add(new FeedBack("Consejo", "Te recomiendo probar un ejericio, comienza a jugar")))
                 .build();
@@ -52,15 +52,15 @@ public class RuleInstance {
 
         Rule siCompleto = new RuleBuilder()
                 .name("Si completo")
-                .when(facts -> ((Persona)facts.get("persona")).getSi()==5)
+                .when(facts -> ((Usuario)facts.get("usuario")).getSi()==5)
                 .then(facts -> feedBacks.add(new FeedBack("Consejo","Terminaste los ejercicios con si, prueba ejercicios con otro tipo de temas")))
                 .build();
         rules.register(siCompleto);
     }
 
-    public void setPersona(Persona persona){
-        this.persona = persona;
-        this.facts.put("persona", persona);
+    public void setUsuario(Usuario usuario){
+        this.usuario = usuario;
+        this.facts.put("usuario", usuario);
     }
 
     public List<FeedBack> getFeedbacks(){

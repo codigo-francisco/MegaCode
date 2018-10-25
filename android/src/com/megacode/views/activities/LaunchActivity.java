@@ -1,40 +1,32 @@
-package com.megacode.screens;
+package com.megacode.views.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+
 import android.os.Bundle;
 
+import com.megacode.R;
 import com.megacode.base.LoginApp;
 import com.megacode.models.IDialog;
-import com.megacode.models.Persona;
+import com.megacode.models.database.Usuario;
+import com.megacode.viewmodels.UsuarioViewModel;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-
-public class LaunchActivity extends LoginApp {
+public abstract class LaunchActivity extends LoginApp {
 
     private class LoginTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            //Se valida que exista el usuario, en caso de existir se pasa a la pantalla principal
-            Realm realm = Realm.getDefaultInstance();
-            RealmQuery<Persona> realmQuery = realm.where(Persona.class);
 
-            if (realmQuery.count()>0) {
-                Persona persona = realmQuery.findFirst();
-                persona = persona.buildPersonaObj();
+            Usuario usuario = usuarioViewModel.obtenerUsuario().getValue();
 
-                realm.close();
-
+            if (usuario!=null) {
                 Intent intentActivity = new Intent(LaunchActivity.this, RootActivity.class);
-                loginApp(persona, intentActivity);
+                loginApp(usuario, intentActivity);
             }else{
-                realm.close();
-
                 Intent intentActivity = new Intent(LaunchActivity.this, LoginActivity.class);
                 startActivity(intentActivity);
             }
@@ -48,12 +40,15 @@ public class LaunchActivity extends LoginApp {
         }
     }
 
-    LoginTask loginTask;
+    private LoginTask loginTask;
+    private UsuarioViewModel usuarioViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
+
+        usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
 
         loginTask = new LoginTask();
         loginTask.execute();

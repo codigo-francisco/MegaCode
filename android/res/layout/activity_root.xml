@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.megacode.screens.RootActivity" >
+        tools:context="com.megacode.views.activities.RootActivity" >
 
         <com.google.android.material.appbar.AppBarLayout
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"

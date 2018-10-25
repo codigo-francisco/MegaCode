@@ -3,9 +3,9 @@ package com.megacode.adapters.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.megacode.R;
 import com.megacode.models.TypeLevel;
 import com.megacode.models.response.NivelesResponse;
-import com.megacode.screens.R;
 
 import java.util.Arrays;
 import java.util.Collection;

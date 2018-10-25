@@ -1,15 +1,15 @@
-package com.megacode.models;
+package com.megacode.models.database;
 
-import android.app.Person;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.squareup.moshi.Moshi;
 
-import java.io.IOException;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 /**
  * Created by Francisco on 10/08/2018.
  */
@@ -17,7 +17,9 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Clase que representa a la persona que realiza la sesión en el sistema
  */
-public class Persona extends RealmObject implements Parcelable {
+@Entity(tableName = "Usuario")
+public class Usuario implements Parcelable {
+
     private int edad;
     @PrimaryKey
     private long id;
@@ -25,22 +27,45 @@ public class Persona extends RealmObject implements Parcelable {
     private int para;
     private int mientras;
     private int variables;
+    @NonNull
     public String nombre;
+    @NonNull
     private String sexo;
+    @NonNull
     public String email;
+    @NonNull
     public String contrasena;
     private String token;
     private String fotoPerfil;
 
-    /**
-     * Construye una persona vacia (ideal para Realm)
-     */
-    public Persona(){}
+    public Usuario(){
+
+    }
+
+    @Ignore
+    public Usuario(long id, int edad, int si, int para, int mientras, int variables,@NonNull String nombre,@NonNull String sexo,@NonNull String email,@NonNull String contrasena){
+        this.id = id;
+        this.edad = edad;
+        this.si = si;
+        this.para = para;
+        this.mientras = mientras;
+        this.variables = variables;
+        this.nombre = nombre;
+        this.sexo = sexo;
+        this.email = email;
+        this.contrasena = contrasena;
+    }
+
+    @Ignore
+    public Usuario(long id, int edad, int si, int para, int mientras, int variables, String nombre, String sexo, String email, String contrasena, String fotoPerfil){
+        this(id, edad, si, para, mientras, variables, nombre, sexo, email, contrasena);
+
+        this.fotoPerfil = fotoPerfil;
+    }
 
     public Integer getEdad() {
         return edad;
     }
-
     public void setEdad(int edad) {
         this.edad = edad;
     }
@@ -48,7 +73,6 @@ public class Persona extends RealmObject implements Parcelable {
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -56,7 +80,6 @@ public class Persona extends RealmObject implements Parcelable {
     public String getSexo() {
         return sexo;
     }
-
     public void setSexo(String sexo) {
         this.sexo = sexo;
     }
@@ -64,7 +87,6 @@ public class Persona extends RealmObject implements Parcelable {
     public long getId() {
         return id;
     }
-
     public void setId(long id) {
         this.id = id;
     }
@@ -72,7 +94,6 @@ public class Persona extends RealmObject implements Parcelable {
     public int getSi() {
         return si;
     }
-
     public void setSi(int si) {
         this.si = si;
     }
@@ -80,7 +101,6 @@ public class Persona extends RealmObject implements Parcelable {
     public int getPara() {
         return para;
     }
-
     public void setPara(int para) {
         this.para = para;
     }
@@ -88,7 +108,6 @@ public class Persona extends RealmObject implements Parcelable {
     public int getMientras() {
         return mientras;
     }
-
     public void setMientras(int mientras) {
         this.mientras = mientras;
     }
@@ -96,9 +115,37 @@ public class Persona extends RealmObject implements Parcelable {
     public int getVariables() {
         return variables;
     }
-
     public void setVariables(int variables) {
         this.variables = variables;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
+    public String getToken(){
+        return token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 
     @Override
@@ -121,7 +168,7 @@ public class Persona extends RealmObject implements Parcelable {
         dest.writeString(this.fotoPerfil);
     }
 
-    protected Persona(Parcel in) {
+    protected Usuario(Parcel in) {
         this.edad = in.readInt();
         this.id = in.readLong();
         this.si = in.readInt();
@@ -135,78 +182,15 @@ public class Persona extends RealmObject implements Parcelable {
         this.fotoPerfil = in.readString();
     }
 
-    public static final Parcelable.Creator<Persona> CREATOR = new Parcelable.Creator<Persona>() {
+    public static final Parcelable.Creator<Usuario> CREATOR = new Parcelable.Creator<Usuario>() {
         @Override
-        public Persona createFromParcel(Parcel source) {
-            return new Persona(source);
+        public Usuario createFromParcel(Parcel source) {
+            return new Usuario(source);
         }
 
         @Override
-        public Persona[] newArray(int size) {
-            return new Persona[size];
+        public Usuario[] newArray(int size) {
+            return new Usuario[size];
         }
     };
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
-
-    public String getToken(){
-        return token;
-    }
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    private static Moshi moshi = new Moshi.Builder().build();
-
-    public String toJson(){
-        return moshi.adapter(Persona.class).toJson(this);
-    }
-
-    public static Persona buildPersonaFromJson(String json) throws IOException {
-        return moshi.adapter(Persona.class).fromJson(json);
-    }
-
-    public String getFotoPerfil() {
-        return fotoPerfil;
-    }
-
-    public void setFotoPerfil(String fotoPerfil) {
-        this.fotoPerfil = fotoPerfil;
-    }
-
-    public Persona buildPersonaObj(){
-        Persona persona = new Persona();
-
-        persona.setId(getId());
-        persona.setNombre(getNombre());
-        persona.setEdad(getEdad());
-        persona.setSexo(getSexo());
-        persona.setEmail(getEmail());
-        persona.setContrasena(getContrasena());
-        persona.setMientras(getMientras());
-        persona.setNombre(getNombre());
-        persona.setVariables(getVariables());
-        persona.setSi(getSi());
-        persona.setPara(getPara());
-        persona.setMientras(getMientras());
-        persona.setToken(getToken());
-
-        persona.setFotoPerfil(getFotoPerfil());
-
-        return persona;
-    }
 }

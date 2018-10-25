@@ -1,4 +1,4 @@
-package com.megacode.screens;
+package com.megacode.adapters;
 
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.megacode.R;
 import com.megacode.models.ScoreResponse;
 
 import java.util.List;

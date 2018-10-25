@@ -1,10 +1,12 @@
-package com.megacode.screens;
+package com.megacode.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.megacode.R;
 
 public abstract class ActivityBase extends AppCompatActivity {
 

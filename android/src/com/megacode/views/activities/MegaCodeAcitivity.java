@@ -1,8 +1,7 @@
-package com.megacode.screens;
+package com.megacode.views.activities;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -18,8 +17,6 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.webkit.MimeTypeMap;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -29,15 +26,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.megacode.base.ApplicationBase;
+import com.megacode.R;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
+import com.megacode.views.fragments.GameFragment;
 import com.udacity.gamedev.gigagal.GameplayScreen;
 import com.udacity.gamedev.gigagal.Level;
 
-import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;

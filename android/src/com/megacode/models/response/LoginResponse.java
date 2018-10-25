@@ -1,16 +1,16 @@
 package com.megacode.models.response;
 
-import com.megacode.models.Persona;
+import com.megacode.models.database.Usuario;
 
 public class LoginResponse {
-    private Persona usuario;
+    private Usuario usuario;
     private String token;
 
-    public Persona getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(Persona usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 

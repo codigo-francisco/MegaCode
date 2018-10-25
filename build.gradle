@@ -12,7 +12,6 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
         classpath "com.badlogicgames.gdx:gdx-tools:1.9.9-SNAPSHOT"
-        classpath "io.realm:realm-gradle-plugin:5.4.1"
     }
 }
 
@@ -55,8 +54,6 @@ project(":desktop") {
 
 project(":android") {
     apply plugin: "android"
-    apply plugin: 'realm-android'
-
 
     dependencies {
         implementation project(":core")

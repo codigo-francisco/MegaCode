@@ -1,20 +1,14 @@
 package com.megacode.helpers;
 
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
-import com.megacode.screens.R;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 
 public class ImageProfileHelper {
 
@@ -35,6 +29,16 @@ public class ImageProfileHelper {
         }
 
         return result;
+    }
+
+    public static String encodeTobase64(Bitmap image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
+
+        Log.d(TAG, imageEncoded);
+        return imageEncoded;
     }
 
 }

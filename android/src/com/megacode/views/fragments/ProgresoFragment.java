@@ -1,10 +1,12 @@
-package com.megacode.screens;
+package com.megacode.views.fragments;
 
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
 import com.google.android.material.tabs.TabLayout;
+import com.megacode.R;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;

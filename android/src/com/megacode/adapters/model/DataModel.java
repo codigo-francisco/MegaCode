@@ -3,7 +3,7 @@ package com.megacode.adapters.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.megacode.models.TypeFeed;
+import com.megacode.adapters.model.enumators.TypeFeed;
 
 public class DataModel implements Parcelable {
 

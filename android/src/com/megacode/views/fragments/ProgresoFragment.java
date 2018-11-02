@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 public class ProgresoFragment extends Fragment {
 
     private final static int PAGE_LIMIT = 2;
-    TabLayout tabLayout;
+    private TabLayout tabLayout;
 
     public ProgresoFragment() {
         // Required empty public constructor

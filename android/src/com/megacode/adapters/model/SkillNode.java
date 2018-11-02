@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.megacode.R;
-import com.megacode.models.TypeLevel;
+import com.megacode.adapters.model.enumators.TypeLevel;
 import com.megacode.models.response.NivelesResponse;
 
 import java.util.Arrays;

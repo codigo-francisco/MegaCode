@@ -11,12 +11,17 @@ import android.widget.TextView;
 import com.megacode.R;
 import com.megacode.adapters.model.DataModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
-    private List<DataModel> dataModels;
+    private List<DataModel> dataModels = new ArrayList<>();
     private View.OnClickListener scoreListener;
+
+    public CustomAdapter(View.OnClickListener scoreListener){
+        this.scoreListener = scoreListener;
+    }
 
     public CustomAdapter(List<DataModel> dataModels, View.OnClickListener scoreListener){
         this.scoreListener = scoreListener;
@@ -58,6 +63,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         myViewHolder.imageView.setImageResource(dataModel.getImagen());
         myViewHolder.titleText.setText(dataModel.getTitle());
         myViewHolder.subjectText.setText(dataModel.getContent());
+    }
+
+    public void setData(List<DataModel> data){
+        this.dataModels = data;
+        notifyDataSetChanged();
     }
 
     @Override

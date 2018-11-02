@@ -62,14 +62,19 @@ project(":android") {
         implementation 'com.android.volley:volley:1.1.0'
         implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
         implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'
+
         implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-        implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
+        //implementation 'com.squareup.retrofit2:converter-moshi:2.4.0'
+        implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
         implementation 'de.hdodenhof:circleimageview:2.2.0'
+
         implementation 'org.jeasy:easy-rules-mvel:3.2.0'
         implementation 'org.jeasy:easy-rules-core:3.2.0'
         implementation 'org.jeasy:easy-rules-archetype:3.2.0'
         implementation 'org.jeasy:easy-rules-support:3.2.0'
         implementation 'org.jeasy:easy-rules-tutorials:3.2.0'
+
         implementation 'com.github.bumptech.glide:glide:4.8.0'
         annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 

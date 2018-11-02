@@ -9,32 +9,44 @@ import com.megacode.dao.UsuarioDao;
 import com.megacode.databases.DataBaseMegaCode;
 import com.megacode.models.database.Usuario;
 
+import java.util.concurrent.Executors;
+
 import androidx.lifecycle.LiveData;
 
 public class UsuarioRepository {
 
     private UsuarioDao usuarioDao;
-    private LiveData<Usuario> usuario;
 
     public UsuarioRepository(Application application){
         DataBaseMegaCode db = DataBaseMegaCode.getDataBaseMegaCode(application);
         usuarioDao = db.usuarioDao();
-        usuario = usuarioDao.obtenerUsuario();
+    }
+
+    public boolean hasUsuario(){
+        return usuarioDao.cantidadUsuario()>0;
     }
 
     public void insert(Usuario usuario){
-        new InsertAsyncTask<>(usuarioDao).execute(usuario);
+        Executors.newSingleThreadExecutor().execute(() -> usuarioDao.insert(usuario));
     }
 
     public void borrarTodos(){
-        new DeleteAsyncTask<>(usuarioDao).execute();
+        usuarioDao.borrarTodos();
     }
 
-    public void update(Usuario usuario){
-        new UpdateAsyncTask<>(usuarioDao).execute();
+    public Usuario obtenerUsuarioSync(){
+        return usuarioDao.obtenerUsuarioSync();
     }
 
     public LiveData<Usuario> obtenerUsuario() {
-        return usuario;
+        return usuarioDao.obtenerUsuario();
+    }
+
+    public int cantidadUsuario(){
+        return usuarioDao.cantidadUsuario();
+    }
+
+    public void update(Usuario usuario){
+        Executors.newSingleThreadExecutor().execute(()-> usuarioDao.update(usuario));
     }
 }

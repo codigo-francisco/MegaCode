@@ -1,44 +1,50 @@
 package com.megacode.services;
 
-import com.megacode.models.database.Usuario;
-import com.megacode.models.RegistroResponse;
-import com.megacode.models.ScoreResponse;
-import com.megacode.models.response.LoginResponse;
-import com.megacode.models.response.NivelResponse;
-import com.megacode.models.response.NivelesResponse;
-import com.megacode.models.response.PosicionesResponse;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import java.util.List;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+//import retrofit2.converter.moshi.MoshiConverterFactory;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.POST;
-import retrofit2.http.Path;
+public class MegaCodeService {
 
-public interface MegaCodeService {
+    private MegaCodeService(){}
 
-    @POST("api/autenticacion/registrar")
-    Call<RegistroResponse> registrar(@Body Usuario usuario);
+    private Map servicios = new HashMap<>();
 
-    @POST("api/autenticacion/login")
-    Call<LoginResponse> login(@Body Usuario usuario);
+    private OkHttpClient client = new OkHttpClient.Builder().
+            connectTimeout(20, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .readTimeout(20, TimeUnit.SECONDS)
+            .build();
 
-    @POST("api/usuario/registrarFoto")
-    Call<ResponseBody> registrarFotoUsuario(@Header("Authorization") String token, @Body Usuario usuario);
+    private Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl("http://192.168.1.83/megacode/")
+            //.addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build();
 
-    @GET("api/feed/posicionContraOtros/{id}")
-    Call<List<PosicionesResponse>> posicionContraOtros(@Header("Authorization") String token, @Path("id") long id);
+    private static MegaCodeService INSTANCE;
 
-    @GET("api/feed/siguienteEjercicio/{id}")
-    Call<NivelResponse> siguienteEjercicio(@Header("Authorization") String token, @Path("id") long id);
+    public static <T> T getServicio(Class<T> typeService){
+        if (INSTANCE==null){
+            INSTANCE = new MegaCodeService();
+        }
 
-    @GET("api/score")
-    Call<List<ScoreResponse>> puntajes();
+        T servicio;
 
-    @GET("api/nivel/listarNiveles")
-    Call<List<NivelesResponse>> listarNiveles();
+        if (INSTANCE.servicios.containsKey(typeService)){
+            servicio = (T) INSTANCE.servicios.get(typeService);
+        }else{
+            servicio = INSTANCE.retrofit.create(typeService);
+            INSTANCE.servicios.put(typeService, servicio);
+        }
+
+        return servicio;
+    }
 
 }

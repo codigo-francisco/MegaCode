@@ -22,14 +22,14 @@
         android:theme="@style/Theme.MaterialComponents.Light"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".MegaCodeAcitivity"
+            android:name=".views.activities.MegaCodeAcitivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/GdxTheme"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
-            android:name=".RootActivity"
+            android:name=".views.activities.RootActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
             <intent-filter>
@@ -37,16 +37,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name=".views.activities.RegisterActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".views.activities.LoginActivity"
             android:launchMode="singleTask"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
-            android:name=".LaunchActivity"
+            android:name=".views.activities.LaunchActivity"
             android:launchMode="singleTask"
             android:noHistory="true"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -57,9 +57,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ScoreActivity"
+            android:name=".views.activities.ScoreActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-        <activity android:name=".OpenCVDownload" />
+        <activity android:name=".views.activities.OpenCVDownload" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

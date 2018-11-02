@@ -1,4 +1,4 @@
-package com.megacode.models;
+package com.megacode.adapters.model.enumators;
 
 import java.util.Locale;
 

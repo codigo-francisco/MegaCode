@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey;
  * Clase que representa a la persona que realiza la sesión en el sistema
  */
 @Entity(tableName = "Usuario")
-public class Usuario implements Parcelable {
+public class Usuario extends BaseModel implements Parcelable {
 
     private int edad;
     @PrimaryKey
@@ -43,24 +43,9 @@ public class Usuario implements Parcelable {
     }
 
     @Ignore
-    public Usuario(long id, int edad, int si, int para, int mientras, int variables,@NonNull String nombre,@NonNull String sexo,@NonNull String email,@NonNull String contrasena){
-        this.id = id;
-        this.edad = edad;
-        this.si = si;
-        this.para = para;
-        this.mientras = mientras;
-        this.variables = variables;
-        this.nombre = nombre;
-        this.sexo = sexo;
-        this.email = email;
-        this.contrasena = contrasena;
-    }
-
-    @Ignore
-    public Usuario(long id, int edad, int si, int para, int mientras, int variables, String nombre, String sexo, String email, String contrasena, String fotoPerfil){
-        this(id, edad, si, para, mientras, variables, nombre, sexo, email, contrasena);
-
-        this.fotoPerfil = fotoPerfil;
+    public Usuario(String email, String contrasena){
+        setEmail(email);
+        setContrasena(contrasena);
     }
 
     public Integer getEdad() {

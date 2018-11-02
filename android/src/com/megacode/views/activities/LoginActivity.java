@@ -52,10 +52,6 @@ public class LoginActivity extends LoginApp {
             TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
             TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
 
-            Usuario usuarioLogin = new Usuario();
-            usuarioLogin.setEmail(emailEditText.getText().toString());
-            usuarioLogin.setContrasena(contrasenaEditText.getText().toString());
-
             //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
             Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
             intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -63,7 +59,10 @@ public class LoginActivity extends LoginApp {
             progressBar.setVisibility(ProgressBar.VISIBLE);
             loginButton.setEnabled(false);
 
-            loginApp(usuarioLogin, intentActivity);
+            String email = emailEditText.getText().toString();
+            String contrasena = contrasenaEditText.getText().toString();
+
+            loginApp(email, contrasena, intentActivity);
         });
     }
 

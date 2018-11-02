@@ -37,6 +37,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 
@@ -51,6 +53,7 @@ public class PerfilFragment extends Fragment {
     private final static String TAG = "PerfilFragment";
     private static final int REQUEST_CAMERA = 2;
     private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
+    private Usuario usuario;
 
     public PerfilFragment() {
         // Required empty public constructor
@@ -71,16 +74,14 @@ public class PerfilFragment extends Fragment {
 
         @Override
         protected String doInBackground(Uri... uris) {
-            String result=null;
+
+            String result = null;
 
             try {
                 Bitmap bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uris[0]));
                 result = ImageProfileHelper.encodeTobase64(bitmap);
 
-                Usuario usuario = usuarioViewModel.obtenerUsuario().getValue();
-
                 usuario.setFotoPerfil(result);
-
                 usuarioViewModel.update(usuario);
             } catch (IOException e) {
                 Log.e(TAG, e.getMessage(), e);
@@ -143,14 +144,15 @@ public class PerfilFragment extends Fragment {
 
         usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
 
+        fotoPerfil = fragmentView.findViewById(R.id.foto_perfil);
+
         usuarioViewModel.obtenerUsuario().observe(this, usuario -> {
+            this.usuario = usuario;
             //Se colocan los valores
             ((TextView)fragmentView.findViewById(R.id.name_view)).setText(usuario.getNombre());
             ((TextView)fragmentView.findViewById(R.id.text_age)).setText(String.format(Locale.getDefault(),"%d %s",
                     usuario.getEdad(), getResources().getString(R.string.anios)));
             ((TextView)fragmentView.findViewById(R.id.text_sex)).setText(usuario.getSexo());
-
-            fotoPerfil = fragmentView.findViewById(R.id.foto_perfil);
 
             //Cargar imagen
             if (usuario.getFotoPerfil()!=null) {
@@ -187,7 +189,9 @@ public class PerfilFragment extends Fragment {
 
         Button button = fragmentView.findViewById(R.id.perfil_cerrarsesion);
         button.setOnClickListener(view -> {
+
             usuarioViewModel.borrarUsuario();
+
             //Cambiar de actividad con una tarea nueva
             Intent intent = new Intent(PerfilFragment.this.getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

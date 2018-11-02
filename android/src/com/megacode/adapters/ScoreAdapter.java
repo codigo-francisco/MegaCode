@@ -16,16 +16,13 @@ import android.widget.TextView;
 import com.megacode.R;
 import com.megacode.models.ScoreResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHolder> {
 
-    private List<ScoreResponse> scoreModelList;
-
-    public ScoreAdapter(List<ScoreResponse> scoreModelList){
-        this.scoreModelList = scoreModelList;
-    }
+    private List<ScoreResponse> scoreModelList = new ArrayList<>();
 
     public static class ScoreViewHolder extends RecyclerView.ViewHolder {
         ImageView profileImage;
@@ -96,6 +93,11 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
                 scoreViewHolder.changeDefaultValues();
                 break;
         }
+    }
+
+    public void setData(List<ScoreResponse> scoreModelList){
+        this.scoreModelList = scoreModelList;
+        notifyDataSetChanged();
     }
 
     @Override

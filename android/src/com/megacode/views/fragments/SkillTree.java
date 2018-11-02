@@ -4,9 +4,9 @@ package com.megacode.views.fragments;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
@@ -17,17 +17,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.megacode.R;
+import com.megacode.adapters.AdapterRecyclerSkillTree;
 import com.megacode.adapters.model.SkillNode;
-import com.megacode.models.ParcelableLinkedList;
+import com.megacode.models.parcelables.ParcelableLinkedList;
 import com.megacode.models.response.NivelesResponse;
-import com.megacode.services.MegaCodeServiceInstance;
+import com.megacode.viewmodels.NivelViewModel;
 import com.megacode.views.activities.RootActivity;
-import com.megacode.views.fragments.InfoNivel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,8 +37,7 @@ import java.util.List;
  */
 public class SkillTree extends Fragment {
 
-    private final static String TAG = "SkillTree";
-    private LinkedList<List<SkillNode>> nodes;
+    private final static String TAG = SkillTree.class.getName();
 
     public SkillTree() {
         // Required empty public constructor
@@ -51,6 +48,7 @@ public class SkillTree extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_skill_tree, container, false);
+        NivelViewModel nivelViewModel = ViewModelProviders.of(this).get(NivelViewModel.class);
 
         FloatingActionButton floatingActionButton =  view.findViewById(R.id.skilltree_play);
         floatingActionButton.setOnClickListener(view1 -> {
@@ -62,123 +60,25 @@ public class SkillTree extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        nodes = new LinkedList<>();
-        AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(nodes);
+        AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager());
+        recyclerView.setAdapter(adapterRecyclerSkillTree);
 
         if (savedInstanceState!=null){
             if (savedInstanceState.getParcelable("nodes")!=null){
-                nodes.addAll(((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes);
-                adapterRecyclerSkillTree.notifyDataSetChanged();
+                adapterRecyclerSkillTree.setData(((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes);
             }
         }else{
-            //Los datos se van a obtener de un servicio
-            MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.listarNiveles().enqueue(new Callback<List<NivelesResponse>>() {
-                @Override
-                public void onResponse(Call<List<NivelesResponse>> call, Response<List<NivelesResponse>> response) {
-                    if (response.isSuccessful()){
-                        int grupoActual = 0;
-                        List<SkillNode> skillNodes=null;
-
-                        if (response.body()!=null) {
-                            nodes.clear();
-                            for (NivelesResponse nivelResponse : response.body()) {
-                                if (nivelResponse.getGrupo() != grupoActual) {
-                                    if (skillNodes!=null && skillNodes.size() > 0){
-                                        nodes.add(skillNodes);
-                                    }
-                                    grupoActual = nivelResponse.getGrupo();
-                                    skillNodes = new ArrayList<>();
-                                }
-                                SkillNode skillNode = new SkillNode(nivelResponse);
-                                skillNodes.add(skillNode);
-                            }
-                            if (skillNodes.size()>0)
-                                nodes.add(skillNodes);
-                            adapterRecyclerSkillTree.notifyDataSetChanged();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<NivelesResponse>> call, Throwable t) {
-                    Log.e(TAG, t.getMessage(), t);
-                }
-            });
+            nivelViewModel.listarNiveles().observe(this, adapterRecyclerSkillTree::setData);
         }
-
-        recyclerView.setAdapter(adapterRecyclerSkillTree);
 
         return view;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        ParcelableLinkedList parcelableLinkedList = new ParcelableLinkedList(nodes);
-        outState.putParcelable("nodes", parcelableLinkedList);
+        //ParcelableLinkedList parcelableLinkedList = new ParcelableLinkedList(nodes);
+        //outState.putParcelable("nodes", parcelableLinkedList);
         super.onSaveInstanceState(outState);
-    }
-
-    class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecyclerSkillTree.SkillTreeViewHolder>{
-
-        private LinkedList<List<SkillNode>> nodes;
-
-        public AdapterRecyclerSkillTree(LinkedList<List<SkillNode>> nodes){
-            this.nodes = nodes;
-        }
-
-        @NonNull
-        @Override
-        public SkillTreeViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View linearLayout = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.skillrow_layout,viewGroup,false);
-
-            return new SkillTreeViewHolder(linearLayout);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull SkillTreeViewHolder skillTreeViewHolder, int index) {
-            LinearLayout linearLayout = (LinearLayout)skillTreeViewHolder.itemView;
-            linearLayout.removeAllViews();
-            LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-
-            List<SkillNode> horizontalNode = nodes.get(index);
-
-            for (SkillNode skillNode : horizontalNode){
-                View cardView = layoutInflater.inflate(R.layout.skillnode_layout,linearLayout, false);
-                ImageView imageView = cardView.findViewById(R.id.node_imageview);
-                imageView.setImageResource(skillNode.getImageResource());
-                imageView.setOnClickListener(view->{
-                    FragmentManager fragmentManager = getChildFragmentManager();
-                    DialogFragment dialogFragment = new InfoNivel();
-                    Bundle bundle = new Bundle();
-
-                    bundle.putParcelable("node", skillNode);
-
-                    int[] locations= new int[2];
-                    view.getLocationOnScreen(locations);
-                    bundle.putInt("sourceX", locations[0]);
-                    bundle.putInt("sourceY", locations[1]);
-
-                    bundle.putInt("heightView", view.getHeight());
-
-                    dialogFragment.setArguments(bundle);
-                    dialogFragment.show(fragmentManager, "dialog_node");
-                });
-
-                linearLayout.addView(cardView);
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return nodes.size();
-        }
-
-        public class SkillTreeViewHolder extends RecyclerView.ViewHolder{
-
-            public SkillTreeViewHolder(@NonNull View itemView) {
-                super(itemView);
-            }
-        }
     }
 
 }

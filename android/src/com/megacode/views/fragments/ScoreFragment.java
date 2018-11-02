@@ -4,6 +4,8 @@ package com.megacode.views.fragments;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,7 +18,7 @@ import android.widget.Toast;
 import com.megacode.R;
 import com.megacode.adapters.ScoreAdapter;
 import com.megacode.models.ScoreResponse;
-import com.megacode.services.MegaCodeServiceInstance;
+import com.megacode.viewmodels.ScoreViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +34,6 @@ import retrofit2.Response;
 public class ScoreFragment extends Fragment {
 
     private final static String TAG = "ScoreFragment";
-    private ScoreAdapter scoreAdapter;
-    private List<ScoreResponse> scoreModelList;
-    private SwipeRefreshLayout swipeRefreshLayout;
 
     public ScoreFragment() {
         // Required empty public constructor
@@ -47,59 +46,40 @@ public class ScoreFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_score, container, false);
 
+        ScoreViewModel scoreViewModel = ViewModelProviders.of(this).get(ScoreViewModel.class);
+
         RecyclerView recyclerView = view.findViewById(R.id.scores_recyclerview);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.score_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(scoreViewModel::obtenerPuntajes);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        scoreModelList = new ArrayList<>();
-        scoreAdapter = new ScoreAdapter(scoreModelList);
+        ScoreAdapter scoreAdapter = new ScoreAdapter();
 
-        if (savedInstanceState!=null){
-            if (savedInstanceState.getParcelableArrayList("scores")!=null){
-                scoreModelList.addAll(savedInstanceState.getParcelableArrayList("scores"));
-                scoreAdapter.notifyDataSetChanged();
-            }
-        }else{
-            createScoreModel();
-        }
+        recyclerView.setAdapter(scoreAdapter);
 
-        swipeRefreshLayout = view.findViewById(R.id.score_swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        scoreViewModel.getListMutableLiveData().observe(this, new Observer<List<ScoreResponse>>() {
             @Override
-            public void onRefresh() {
-                createScoreModel();
+            public void onChanged(List<ScoreResponse> scoreResponses) {
+                scoreAdapter.setData(scoreResponses);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        recyclerView.setAdapter(scoreAdapter);
+        scoreViewModel.obtenerPuntajes();
+
+        if (savedInstanceState!=null){
+            if (savedInstanceState.getParcelableArrayList("scores")!=null){
+                scoreAdapter.setData(savedInstanceState.getParcelableArrayList("scores"));
+            }
+        }
 
         return view;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelableArrayList("scores", new ArrayList<>(scoreModelList));
+        //outState.putParcelableArrayList("scores", new ArrayList<>(scoreModelList));
         super.onSaveInstanceState(outState);
-    }
-
-    private void createScoreModel(){
-        scoreModelList.clear();
-        MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.puntajes().enqueue(new Callback<List<ScoreResponse>>() {
-            @Override
-            public void onResponse(Call<List<ScoreResponse>> call, Response<List<ScoreResponse>> response) {
-                if (response.isSuccessful()){
-                    scoreModelList.addAll(response.body());
-
-                    scoreAdapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ScoreResponse>> call, Throwable t) {
-                Log.e(TAG, t.getMessage(), t);
-                Toast.makeText(getContext(), "No se han podido cargar los puntajes", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 }

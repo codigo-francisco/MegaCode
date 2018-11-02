@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -14,34 +15,12 @@ import com.megacode.models.IDialog;
 import com.megacode.models.database.Usuario;
 import com.megacode.viewmodels.UsuarioViewModel;
 
-public abstract class LaunchActivity extends LoginApp {
+import java.util.concurrent.Executors;
 
-    private class LoginTask extends AsyncTask<Void, Void, Void> {
+public class LaunchActivity extends LoginApp {
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            Usuario usuario = usuarioViewModel.obtenerUsuario().getValue();
-
-            if (usuario!=null) {
-                Intent intentActivity = new Intent(LaunchActivity.this, RootActivity.class);
-                loginApp(usuario, intentActivity);
-            }else{
-                Intent intentActivity = new Intent(LaunchActivity.this, LoginActivity.class);
-                startActivity(intentActivity);
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
-
-    private LoginTask loginTask;
     private UsuarioViewModel usuarioViewModel;
+    private Runnable runnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +29,15 @@ public abstract class LaunchActivity extends LoginApp {
 
         usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
 
-        loginTask = new LoginTask();
-        loginTask.execute();
+        usuarioViewModel.obtenerUsuario().observe(this, usuario -> {
+            if (usuario != null) {
+                Intent intentActivity = new Intent(LaunchActivity.this, RootActivity.class);
+                loginApp(usuario.email, usuario.contrasena, intentActivity);
+            }else{
+                Intent intentActivity = new Intent(LaunchActivity.this, LoginActivity.class);
+                startActivity(intentActivity);
+            }
+        });
     }
 
     @Override
@@ -64,8 +50,7 @@ public abstract class LaunchActivity extends LoginApp {
                         .setPositiveButton("Intentar de nuevo", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                loginTask = new LoginTask();
-                                loginTask.execute();
+                                usuarioViewModel.obtenerUsuario();
                             }
                         })
                         .setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
@@ -79,13 +64,5 @@ public abstract class LaunchActivity extends LoginApp {
                 alertDialog.show();
             }
         };
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (!loginTask.isCancelled())
-            loginTask.cancel(true);
-        loginTask = null;
-        super.onDestroy();
     }
 }

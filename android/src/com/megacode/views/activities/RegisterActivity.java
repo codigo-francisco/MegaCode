@@ -20,10 +20,11 @@ import com.megacode.R;
 import com.megacode.helpers.ImageProfileHelper;
 import com.megacode.models.database.Usuario;
 import com.megacode.models.RegistroResponse;
-import com.megacode.services.MegaCodeServiceInstance;
+import com.megacode.viewmodels.LoginViewModel;
 import com.megacode.viewmodels.UsuarioViewModel;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +32,6 @@ import retrofit2.Callback;
 public class RegisterActivity extends ActivityBase {
 
     private final static String TAG = "RegisterActivity";
-    private MaterialButton materialButton;
     private MaterialBetterSpinner spinnerSex;
     private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
     private Usuario usuario;
@@ -44,7 +44,48 @@ public class RegisterActivity extends ActivityBase {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
+        LoginViewModel loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+
+        loginViewModel.getUsuarioMutableLiveData().observe(this, usuario -> {
+            if (usuario!=null){
+                if (!usuario.hasError()){
+                    Intent intentActivity = new Intent(RegisterActivity.this, RootActivity.class);
+                    intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intentActivity);
+                }else{
+                    if (usuario.getErrorCode() == 403){
+                        alertDialog.show();
+                    }else{
+                        message.show();
+                    }
+                }
+            }else{
+                message.show();
+            }
+        });
+
+        MaterialButton materialButton = findViewById(R.id.button_registrarse);
+        materialButton.setOnClickListener(view -> {
+            //Validar campos
+            boolean name, age, sex, email, contrasena, contrasena2, contrasenaDiferentes = false;
+
+            name = validationEmptyEditText(nameTextEdit, "Debe introducir un nombre");
+            age = validationEmptyEditText(ageTextEdit, "Introduzca una edad");
+            sex = validationEmptyEditText(spinnerSex, "Seleccione una opción");
+            email = validationEmptyEditText(emailTextEdit, "Introduzca un email") && validarEmail();
+            contrasena = validationEmptyEditText(contrasenaTextEdit, "Introduzca una contraseña");
+            contrasena2 = validationEmptyEditText(contrasena2TextEdit, "Confirme su contraseña");
+            contrasenaDiferentes = (contrasena && contrasena2) && validarContrasenasIguales();
+
+            boolean todoValido = name && age && sex && email && contrasena && contrasena2 && contrasenaDiferentes;
+
+            if (todoValido) {
+                //Se guarda en base de datos remoto y se obtiene el token
+                usuario = buildPersona();
+
+                loginViewModel.registrarUsuario(usuario);
+            }
+        });
 
         message = Toast.makeText(this, "Ocurrió un error al intentar agregar al usuario",Toast.LENGTH_LONG);
         alertDialog = new AlertDialog.Builder(this)
@@ -63,59 +104,6 @@ public class RegisterActivity extends ActivityBase {
         spinnerSex.setAdapter(adapter);
 
         setFocusChildListener(findViewById(R.id.login_layout_root));
-        materialButton = findViewById(R.id.button_registrarse);
-        materialButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Validar campos
-                boolean name, age, sex, email, contrasena, contrasena2, contrasenaDiferentes = false;
-
-                name = validationEmptyEditText(nameTextEdit, "Debe introducir un nombre");
-                age = validationEmptyEditText(ageTextEdit, "Introduzca una edad");
-                sex = validationEmptyEditText(spinnerSex, "Seleccione una opción");
-                email = validationEmptyEditText(emailTextEdit, "Introduzca un email") && validarEmail();
-                contrasena = validationEmptyEditText(contrasenaTextEdit, "Introduzca una contraseña");
-                contrasena2 = validationEmptyEditText(contrasena2TextEdit, "Confirme su contraseña");
-                contrasenaDiferentes = (contrasena && contrasena2) && validarContrasenasIguales();
-
-                boolean todoValido = name && age && sex && email && contrasena && contrasena2 && contrasenaDiferentes;
-
-                if (todoValido) {
-                    //Se guarda en base de datos remoto y se obtiene el token
-                    usuario = buildPersona();
-
-                    MegaCodeServiceInstance.getMegaCodeServiceInstance().megaCodeService.registrar(usuario)
-                            .clone()
-                            .enqueue(new Callback<RegistroResponse>() {
-                                @Override
-                                public void onResponse(Call<RegistroResponse> call, retrofit2.Response<RegistroResponse> response) {
-                                    if (response.isSuccessful()){
-                                        usuario.setId(response.body().getId());
-                                        usuario.setToken(response.body().getToken());
-
-                                        usuarioViewModel.borrarUsuario();
-                                        usuarioViewModel.insert(usuario);
-
-                                        //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
-                                        Intent intentActivity = new Intent(RegisterActivity.this, RootActivity.class);
-                                        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intentActivity);
-                                    }else if (response.code()==403) {
-                                        alertDialog.show();
-                                    }else {
-                                        message.show();
-                                    }
-                                }
-
-                                @Override
-                                public void onFailure(Call<RegistroResponse> call, Throwable t) {
-                                    Log.e(TAG, t.getMessage(), t);
-                                    message.show();
-                                }
-                            });
-                }
-            }
-        });
     }
 
     @Override

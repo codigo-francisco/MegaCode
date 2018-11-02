@@ -12,16 +12,18 @@ import androidx.lifecycle.LiveData;
 
 public class UsuarioViewModel extends AndroidViewModel {
     private UsuarioRepository usuarioRepository;
-    private LiveData<Usuario> usuario;
 
     public UsuarioViewModel(@NonNull Application application) {
         super(application);
         usuarioRepository = new UsuarioRepository(application);
-        usuario = usuarioRepository.obtenerUsuario();
+    }
+
+    public boolean hasUsuario(){
+        return usuarioRepository.hasUsuario();
     }
 
     public LiveData<Usuario> obtenerUsuario(){
-        return usuario;
+        return usuarioRepository.obtenerUsuario();
     }
 
     public void borrarUsuario(){

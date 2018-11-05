@@ -3,8 +3,6 @@ package com.megacode.repositories;
 import android.app.Application;
 import android.util.Log;
 
-import com.megacode.dao.UsuarioDao;
-import com.megacode.databases.DataBaseMegaCode;
 import com.megacode.models.RegistroResponse;
 import com.megacode.models.database.Usuario;
 import com.megacode.models.response.LoginResponse;

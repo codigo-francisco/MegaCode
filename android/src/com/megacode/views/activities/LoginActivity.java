@@ -11,12 +11,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.megacode.R;
-import com.megacode.base.LoginApp;
 import com.megacode.models.IDialog;
 import com.megacode.models.database.Usuario;
+import com.megacode.viewmodels.LoginViewModel;
+
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 
-public class LoginActivity extends LoginApp {
+public class LoginActivity extends ActivityBase {
 
     private final static String TAG = "LoginActivity";
 
@@ -39,22 +42,37 @@ public class LoginActivity extends LoginApp {
 
         loginButton = findViewById(R.id.button_login);
 
-        datosIncorrectosDialog = new IDialog() {
+        LoginViewModel loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+
+        loginViewModel.getUsuarioMutableLiveData().observe(this, new Observer<Usuario>() {
             @Override
-            public void show() {
-                progressBar.setVisibility(ProgressBar.GONE);
-                loginButton.setEnabled(true);
-                Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
+            public void onChanged(Usuario usuario) {
+                if (usuario!=null){
+                    if (!usuario.hasError()) {
+                        //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
+                        Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
+                        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intentActivity);
+                    }else{
+                        if (usuario.getErrorCode()==403){
+                            if (datosIncorrectosDialog==null){
+                                Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
+                            }else{
+                                datosIncorrectosDialog.show();
+                            }
+                        }
+                    }
+                } else {
+                    errorGeneralMessage.show();
+                }
             }
-        };
+        });
 
         loginButton.setOnClickListener(view -> {
             TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
             TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
 
-            //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
-            Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
-            intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
 
             progressBar.setVisibility(ProgressBar.VISIBLE);
             loginButton.setEnabled(false);
@@ -62,16 +80,25 @@ public class LoginActivity extends LoginApp {
             String email = emailEditText.getText().toString();
             String contrasena = contrasenaEditText.getText().toString();
 
-            loginApp(email, contrasena, intentActivity);
+            loginViewModel.loginUsuario(email, contrasena);
         });
     }
 
-    @Override
-    public IDialog createDialog() {
-        return () -> {
+    private IDialog datosIncorrectosDialog = new IDialog() {
+        @Override
+        public void show() {
+            progressBar.setVisibility(ProgressBar.GONE);
+            loginButton.setEnabled(true);
+            Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    public IDialog createDialog = new IDialog() {
+        @Override
+        public void show() {
             progressBar.setVisibility(ProgressBar.GONE);
             loginButton.setEnabled(true);
             errorGeneralMessage.show();
-        };
-    }
+        }
+    };
 }

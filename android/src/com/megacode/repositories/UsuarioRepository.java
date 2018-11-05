@@ -31,7 +31,7 @@ public class UsuarioRepository {
     }
 
     public void borrarTodos(){
-        usuarioDao.borrarTodos();
+        Executors.newSingleThreadExecutor().execute(() -> usuarioDao.borrarTodos());
     }
 
     public Usuario obtenerUsuarioSync(){

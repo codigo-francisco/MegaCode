@@ -149,15 +149,17 @@ public class PerfilFragment extends Fragment {
         usuarioViewModel.obtenerUsuario().observe(this, usuario -> {
             this.usuario = usuario;
             //Se colocan los valores
-            ((TextView)fragmentView.findViewById(R.id.name_view)).setText(usuario.getNombre());
-            ((TextView)fragmentView.findViewById(R.id.text_age)).setText(String.format(Locale.getDefault(),"%d %s",
-                    usuario.getEdad(), getResources().getString(R.string.anios)));
-            ((TextView)fragmentView.findViewById(R.id.text_sex)).setText(usuario.getSexo());
+            if (usuario!=null) {
+                ((TextView) fragmentView.findViewById(R.id.name_view)).setText(usuario.getNombre());
+                ((TextView) fragmentView.findViewById(R.id.text_age)).setText(String.format(Locale.getDefault(), "%d %s",
+                        usuario.getEdad(), getResources().getString(R.string.anios)));
+                ((TextView) fragmentView.findViewById(R.id.text_sex)).setText(usuario.getSexo());
 
-            //Cargar imagen
-            if (usuario.getFotoPerfil()!=null) {
-                byte[] bytes = Base64.decode(usuario.getFotoPerfil(), Base64.DEFAULT);
-                fotoPerfil.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                //Cargar imagen
+                if (usuario.getFotoPerfil() != null) {
+                    byte[] bytes = Base64.decode(usuario.getFotoPerfil(), Base64.DEFAULT);
+                    fotoPerfil.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                }
             }
         });
 

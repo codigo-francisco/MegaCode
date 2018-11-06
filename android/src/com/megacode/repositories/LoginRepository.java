@@ -10,6 +10,7 @@ import com.megacode.services.MegaCodeService;
 import com.megacode.services.interfaces.LoginService;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,11 +53,7 @@ public class LoginRepository {
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 Log.e(TAG, t.getMessage(), t);
-                if (hasUserInDB()){
-                    usuarioLiveData.postValue(usuarioRepository.obtenerUsuario().getValue());
-                }else {
-                    usuarioLiveData.postValue(null);
-                }
+                usuarioLiveData.postValue(null);
             }
         });
 
@@ -98,9 +95,5 @@ public class LoginRepository {
 
     public MutableLiveData<Usuario> getUsuarioLiveData(){
         return usuarioLiveData;
-    }
-
-    private boolean hasUserInDB(){
-        return usuarioRepository.cantidadUsuario() > 0;
     }
 }

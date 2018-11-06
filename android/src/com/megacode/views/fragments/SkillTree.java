@@ -63,12 +63,19 @@ public class SkillTree extends Fragment {
         AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager());
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
+        nivelViewModel.getListMutableLiveData().observe(this, new Observer<LinkedList<List<SkillNode>>>() {
+            @Override
+            public void onChanged(LinkedList<List<SkillNode>> lists) {
+                adapterRecyclerSkillTree.setData(lists);
+            }
+        });
+
         if (savedInstanceState!=null){
             if (savedInstanceState.getParcelable("nodes")!=null){
                 adapterRecyclerSkillTree.setData(((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes);
             }
         }else{
-            nivelViewModel.listarNiveles().observe(this, adapterRecyclerSkillTree::setData);
+            nivelViewModel.listarNiveles();
         }
 
         return view;

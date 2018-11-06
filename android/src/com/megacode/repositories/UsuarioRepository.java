@@ -22,10 +22,6 @@ public class UsuarioRepository {
         usuarioDao = db.usuarioDao();
     }
 
-    public boolean hasUsuario(){
-        return usuarioDao.cantidadUsuario()>0;
-    }
-
     public void insert(Usuario usuario){
         Executors.newSingleThreadExecutor().execute(() -> usuarioDao.insert(usuario));
     }
@@ -34,16 +30,8 @@ public class UsuarioRepository {
         Executors.newSingleThreadExecutor().execute(() -> usuarioDao.borrarTodos());
     }
 
-    public Usuario obtenerUsuarioSync(){
-        return usuarioDao.obtenerUsuarioSync();
-    }
-
     public LiveData<Usuario> obtenerUsuario() {
         return usuarioDao.obtenerUsuario();
-    }
-
-    public int cantidadUsuario(){
-        return usuarioDao.cantidadUsuario();
     }
 
     public void update(Usuario usuario){

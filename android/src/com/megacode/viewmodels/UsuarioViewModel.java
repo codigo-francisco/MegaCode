@@ -18,10 +18,6 @@ public class UsuarioViewModel extends AndroidViewModel {
         usuarioRepository = new UsuarioRepository(application);
     }
 
-    public boolean hasUsuario(){
-        return usuarioRepository.hasUsuario();
-    }
-
     public LiveData<Usuario> obtenerUsuario(){
         return usuarioRepository.obtenerUsuario();
     }

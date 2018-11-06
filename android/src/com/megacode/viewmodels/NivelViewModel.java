@@ -2,7 +2,7 @@ package com.megacode.viewmodels;
 
 import android.app.Application;
 
-import com.megacode.adapters.model.SkillNode;
+import com.megacode.models.database.Nivel;
 import com.megacode.repositories.NivelRepository;
 
 import java.util.LinkedList;
@@ -18,14 +18,14 @@ public class NivelViewModel extends AndroidViewModel {
 
     public NivelViewModel(@NonNull Application application) {
         super(application);
-        nivelRepository = new NivelRepository();
+        nivelRepository = new NivelRepository(application);
     }
 
-    public MutableLiveData<LinkedList<List<SkillNode>>> listarNiveles(){
+    public MutableLiveData<LinkedList<List<Nivel>>> listarNiveles(){
         return nivelRepository.listarNiveles();
     }
 
-    public MutableLiveData<LinkedList<List<SkillNode>>> getListMutableLiveData() {
-        return nivelRepository.getListMutableLiveData();
+    public MutableLiveData<LinkedList<List<Nivel>>> getNiveles() {
+        return nivelRepository.getNiveles();
     }
 }

@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.megacode.R;
-import com.megacode.adapters.model.SkillNode;
+import com.megacode.models.database.Nivel;
 import com.megacode.views.fragments.InfoNivel;
 
 import java.util.LinkedList;
@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecyclerSkillTree.SkillTreeViewHolder>{
 
-    private LinkedList<List<SkillNode>> nodes = new LinkedList<>();
+    private LinkedList<List<Nivel>> nodes = new LinkedList<>();
 
     private FragmentManager fragmentManager;
 
@@ -43,17 +43,17 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
         linearLayout.removeAllViews();
         LayoutInflater layoutInflater = LayoutInflater.from(linearLayout.getContext());
 
-        List<SkillNode> horizontalNode = nodes.get(index);
+        List<Nivel> horizontalNode = nodes.get(index);
 
-        for (SkillNode skillNode : horizontalNode){
+        for (Nivel nivel : horizontalNode){
             View cardView = layoutInflater.inflate(R.layout.skillnode_layout,linearLayout, false);
             ImageView imageView = cardView.findViewById(R.id.node_imageview);
-            imageView.setImageResource(skillNode.getImageResource());
+            imageView.setImageResource(nivel.getImageResource());
             imageView.setOnClickListener(view->{
                 DialogFragment dialogFragment = new InfoNivel();
                 Bundle bundle = new Bundle();
 
-                bundle.putParcelable("node", skillNode);
+                bundle.putParcelable("node", nivel);
 
                 int[] locations= new int[2];
                 view.getLocationOnScreen(locations);
@@ -70,7 +70,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
         }
     }
 
-    public void setData(LinkedList<List<SkillNode>> nodes){
+    public void setData(LinkedList<List<Nivel>> nodes){
         this.nodes = nodes;
         notifyDataSetChanged();
     }

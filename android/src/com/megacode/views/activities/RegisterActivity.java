@@ -8,7 +8,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +18,11 @@ import android.widget.Toast;
 import com.megacode.R;
 import com.megacode.helpers.ImageProfileHelper;
 import com.megacode.models.database.Usuario;
-import com.megacode.models.RegistroResponse;
 import com.megacode.viewmodels.LoginViewModel;
 import com.megacode.viewmodels.UsuarioViewModel;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import retrofit2.Call;
-import retrofit2.Callback;
 
 public class RegisterActivity extends ActivityBase {
 

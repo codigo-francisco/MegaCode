@@ -4,6 +4,7 @@ import com.megacode.models.database.Usuario;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -17,6 +18,9 @@ public abstract class UsuarioDao implements IDao<Usuario> {
 
     @Update
     public abstract  void update(Usuario usuario);
+
+    @Delete
+    public abstract void delete(Usuario element);
 
     @Query("SELECT * FROM Usuario LIMIT 1")
     public abstract LiveData<Usuario> obtenerUsuario();

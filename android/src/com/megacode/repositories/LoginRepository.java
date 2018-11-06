@@ -1,16 +1,16 @@
 package com.megacode.repositories;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.util.Log;
 
-import com.megacode.models.RegistroResponse;
+import com.megacode.models.response.RegistroResponse;
 import com.megacode.models.database.Usuario;
 import com.megacode.models.response.LoginResponse;
 import com.megacode.services.MegaCodeService;
 import com.megacode.services.interfaces.LoginService;
 
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -39,7 +39,13 @@ public class LoginRepository {
                     Usuario usuario = response.body().getUsuario();
                     usuario.setToken(token);
 
-                    usuarioRepository.insert(usuario);
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            usuarioRepository.insert(usuario);
+                        }
+                    });
+
                     usuarioLiveData.postValue(usuario);
                 }else{
                     Usuario usuario = new Usuario();
@@ -74,7 +80,13 @@ public class LoginRepository {
                     usuario.setId(registroResponse.getId());
                     usuario.setToken(registroResponse.getToken());
 
-                    usuarioRepository.insert(usuario);
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            usuarioRepository.insert(usuario);
+                        }
+                    });
+
                 }else{
                     int errorCode = response.code();
                     usuario.setErrorCode(errorCode);

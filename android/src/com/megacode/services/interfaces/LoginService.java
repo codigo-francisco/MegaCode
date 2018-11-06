@@ -1,6 +1,6 @@
 package com.megacode.services.interfaces;
 
-import com.megacode.models.RegistroResponse;
+import com.megacode.models.response.RegistroResponse;
 import com.megacode.models.database.Usuario;
 import com.megacode.models.response.LoginResponse;
 

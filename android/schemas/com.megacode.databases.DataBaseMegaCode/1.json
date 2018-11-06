@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4c3191bcf1ec6279dfc83d21b04b8160",
+    "identityHash": "6db4a9f9194eaf175c8ba4bc2355be26",
     "entities": [
       {
         "tableName": "Usuario",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`edad` INTEGER NOT NULL, `id` INTEGER NOT NULL, `si` INTEGER NOT NULL, `para` INTEGER NOT NULL, `mientras` INTEGER NOT NULL, `variables` INTEGER NOT NULL, `nombre` TEXT NOT NULL, `sexo` TEXT NOT NULL, `email` TEXT NOT NULL, `contrasena` TEXT NOT NULL, `token` TEXT, `fotoPerfil` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`edad` INTEGER NOT NULL, `id` INTEGER NOT NULL, `si` INTEGER NOT NULL, `para` INTEGER NOT NULL, `mientras` INTEGER NOT NULL, `comandos` INTEGER NOT NULL, `nombre` TEXT NOT NULL, `sexo` TEXT NOT NULL, `email` TEXT NOT NULL, `contrasena` TEXT NOT NULL, `token` TEXT, `fotoPerfil` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "edad",
@@ -39,8 +39,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "variables",
-            "columnName": "variables",
+            "fieldPath": "comandos",
+            "columnName": "comandos",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -89,12 +89,92 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "Nivel",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lastRefresh` INTEGER, `id` INTEGER NOT NULL, `nombre` TEXT, `dificultad` INTEGER NOT NULL, `grupo` INTEGER NOT NULL, `mientras` INTEGER NOT NULL, `comandos` INTEGER NOT NULL, `si` INTEGER NOT NULL, `para` INTEGER NOT NULL, `ruta` TEXT, `tipoNivel` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "lastRefresh",
+            "columnName": "lastRefresh",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dificultad",
+            "columnName": "dificultad",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "grupo",
+            "columnName": "grupo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mientras",
+            "columnName": "mientras",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comandos",
+            "columnName": "comandos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "si",
+            "columnName": "si",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "para",
+            "columnName": "para",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ruta",
+            "columnName": "ruta",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tipoNivel",
+            "columnName": "tipoNivel",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4c3191bcf1ec6279dfc83d21b04b8160\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6db4a9f9194eaf175c8ba4bc2355be26\")"
     ]
   }
 }

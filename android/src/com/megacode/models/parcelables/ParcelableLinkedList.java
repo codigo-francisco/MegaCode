@@ -3,16 +3,16 @@ package com.megacode.models.parcelables;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.megacode.adapters.model.SkillNode;
+import com.megacode.models.database.Nivel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class ParcelableLinkedList implements Parcelable {
-    public LinkedList<List<SkillNode>> nodes;
+    public LinkedList<List<Nivel>> nodes;
 
-    public ParcelableLinkedList(LinkedList<List<SkillNode>> nodes){
+    public ParcelableLinkedList(LinkedList<List<Nivel>> nodes){
         this.nodes=nodes;
     }
 

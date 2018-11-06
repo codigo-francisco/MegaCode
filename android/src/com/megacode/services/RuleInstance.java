@@ -44,7 +44,7 @@ public class RuleInstance {
                 .name("Sin ejercicios")
                 .when(facts ->{
                         Usuario usuario = facts.get("usuario");
-                        return usuario.getVariables() + usuario.getSi() + usuario.getPara() + usuario.getMientras() < 1 ;
+                        return usuario.getComandos() + usuario.getSi() + usuario.getPara() + usuario.getMientras() < 1 ;
                 })
                 .then(facts -> feedBacks.add(new FeedBack("Consejo", "Te recomiendo probar un ejericio, comienza a jugar")))
                 .build();

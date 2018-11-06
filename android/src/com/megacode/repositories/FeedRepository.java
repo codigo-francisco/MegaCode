@@ -1,6 +1,7 @@
 package com.megacode.repositories;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.megacode.R;
@@ -34,12 +35,10 @@ public class FeedRepository {
     private MutableLiveData<List<DataModel>> dataModelMutableLiveData;
     private List<DataModel> data;
     private UsuarioDao usuarioDao;
-    private LiveData<Usuario> usuarioLiveData;
     private final static String TAG = FeedRepository.class.getName();
 
     public FeedRepository(Application application){
         usuarioDao = DataBaseMegaCode.getDataBaseMegaCode(application).usuarioDao();
-        usuarioLiveData = usuarioDao.obtenerUsuario();
         data = new ArrayList<>();
         dataModelMutableLiveData = new MutableLiveData<>();
     }
@@ -49,9 +48,11 @@ public class FeedRepository {
         if (borrarFeed)
             data.clear();
 
-        usuarioLiveData.observeForever(new Observer<Usuario>() {
+        AsyncTask.execute(new Runnable() {
             @Override
-            public void onChanged(Usuario usuario) {
+            public void run() {
+                Usuario usuario = usuarioDao.obtenerUsuarioSync();
+
                 String token = usuario.getToken();
                 long id = usuario.getId();
 
@@ -147,8 +148,6 @@ public class FeedRepository {
                 }
                 if (feedBacks.size()>0)
                     dataModelMutableLiveData.postValue(data);
-
-                usuarioLiveData.removeObserver(this);
             }
         });
 

@@ -1,4 +1,4 @@
-package com.megacode.models;
+package com.megacode.models.response;
 
 public class RegistroResponse {
     private long id;

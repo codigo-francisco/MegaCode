@@ -159,6 +159,9 @@
     <Compile Include="Models\obtenerMarcadorUsuario_Result.cs">
       <DependentUpon>MegaCodeModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\obtenerMarcadorUsuario_Result1.cs">
+      <DependentUpon>MegaCodeModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Responses\LoginResponse.cs" />
     <Compile Include="Models\Responses\RegistroResponse.cs" />
     <Compile Include="Models\Sesion.cs">

@@ -37,13 +37,13 @@ namespace ApiRest.Models
         public virtual DbSet<TipoNivel> TipoNivel { get; set; }
     
         [DbFunction("megacodeEntities", "obtenerMarcadorUsuario")]
-        public virtual IQueryable<obtenerMarcadorUsuario_Result> obtenerMarcadorUsuario(Nullable<long> id)
+        public virtual IQueryable<obtenerMarcadorUsuario_Result1> obtenerMarcadorUsuario(Nullable<long> id)
         {
             var idParameter = id.HasValue ?
                 new ObjectParameter("id", id) :
                 new ObjectParameter("id", typeof(long));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<obtenerMarcadorUsuario_Result>("[megacodeEntities].[obtenerMarcadorUsuario](@id)", idParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<obtenerMarcadorUsuario_Result1>("[megacodeEntities].[obtenerMarcadorUsuario](@id)", idParameter);
         }
     }
 }

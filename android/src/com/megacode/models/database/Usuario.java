@@ -3,8 +3,6 @@ package com.megacode.models.database;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.squareup.moshi.Moshi;
-
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -26,7 +24,7 @@ public class Usuario extends BaseModel implements Parcelable {
     private int si;
     private int para;
     private int mientras;
-    private int variables;
+    private int comandos;
     @NonNull
     public String nombre;
     @NonNull
@@ -97,11 +95,11 @@ public class Usuario extends BaseModel implements Parcelable {
         this.mientras = mientras;
     }
 
-    public int getVariables() {
-        return variables;
+    public int getComandos() {
+        return comandos;
     }
-    public void setVariables(int variables) {
-        this.variables = variables;
+    public void setComandos(int comandos) {
+        this.comandos = comandos;
     }
 
     public String getEmail() {
@@ -145,7 +143,7 @@ public class Usuario extends BaseModel implements Parcelable {
         dest.writeInt(this.si);
         dest.writeInt(this.para);
         dest.writeInt(this.mientras);
-        dest.writeInt(this.variables);
+        dest.writeInt(this.comandos);
         dest.writeString(this.nombre);
         dest.writeString(this.sexo);
         dest.writeString(this.email);
@@ -159,7 +157,7 @@ public class Usuario extends BaseModel implements Parcelable {
         this.si = in.readInt();
         this.para = in.readInt();
         this.mientras = in.readInt();
-        this.variables = in.readInt();
+        this.comandos = in.readInt();
         this.nombre = in.readString();
         this.sexo = in.readString();
         this.setEmail(in.readString());

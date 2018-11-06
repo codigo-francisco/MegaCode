@@ -26,7 +26,7 @@ namespace ApiRest.Models
         public string nombre { get; set; }
         public short edad { get; set; }
         public string sexo { get; set; }
-        public short variables { get; set; }
+        public short comandos { get; set; }
         public short si { get; set; }
         public short para { get; set; }
         public short mientras { get; set; }

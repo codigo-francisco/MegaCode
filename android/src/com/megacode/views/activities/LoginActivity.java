@@ -11,15 +11,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.megacode.R;
-import com.megacode.models.IDialog;
 import com.megacode.models.database.Usuario;
 import com.megacode.viewmodels.LoginViewModel;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 
-public class LoginActivity extends ActivityBase {
+public class LoginActivity extends AppCompatActivity {
 
     private final static String TAG = "LoginActivity";
 
@@ -55,15 +55,13 @@ public class LoginActivity extends ActivityBase {
                         startActivity(intentActivity);
                     }else{
                         if (usuario.getErrorCode()==403){
-                            if (datosIncorrectosDialog==null){
-                                Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
-                            }else{
-                                datosIncorrectosDialog.show();
-                            }
+                            mostrarMensajeError("Email o contraseña incorrectos");
+                        }else{
+                            mostrarMensajeError("Ha ocurrido un error en el proceso");
                         }
                     }
                 } else {
-                    errorGeneralMessage.show();
+                    mostrarMensajeError("Ha ocurrido un error en el proceso");
                 }
             }
         });
@@ -71,8 +69,6 @@ public class LoginActivity extends ActivityBase {
         loginButton.setOnClickListener(view -> {
             TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
             TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
-
-
 
             progressBar.setVisibility(ProgressBar.VISIBLE);
             loginButton.setEnabled(false);
@@ -84,21 +80,9 @@ public class LoginActivity extends ActivityBase {
         });
     }
 
-    private IDialog datosIncorrectosDialog = new IDialog() {
-        @Override
-        public void show() {
-            progressBar.setVisibility(ProgressBar.GONE);
-            loginButton.setEnabled(true);
-            Toast.makeText(getApplicationContext(), "Email o contraseña incorrectos", Toast.LENGTH_LONG).show();
-        }
-    };
-
-    public IDialog createDialog = new IDialog() {
-        @Override
-        public void show() {
-            progressBar.setVisibility(ProgressBar.GONE);
-            loginButton.setEnabled(true);
-            errorGeneralMessage.show();
-        }
-    };
+    private void mostrarMensajeError(String mensaje){
+        progressBar.setVisibility(ProgressBar.GONE);
+        loginButton.setEnabled(true);
+        Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
+    }
 }

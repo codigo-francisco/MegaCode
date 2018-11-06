@@ -2,7 +2,6 @@ package com.megacode.viewmodels;
 
 import android.app.Application;
 
-import com.megacode.models.GeneralCallback;
 import com.megacode.models.database.Usuario;
 import com.megacode.repositories.UsuarioRepository;
 

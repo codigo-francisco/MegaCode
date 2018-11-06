@@ -24,7 +24,7 @@ namespace ApiRest.Models
         public int id { get; set; }
         public string nombre { get; set; }
         public string ruta { get; set; }
-        public int variables { get; set; }
+        public int comandos { get; set; }
         public int si { get; set; }
         public int para { get; set; }
         public int mientras { get; set; }

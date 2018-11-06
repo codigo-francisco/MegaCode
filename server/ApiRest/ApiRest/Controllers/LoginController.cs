@@ -41,7 +41,7 @@ namespace ApiRest.Controllers
                             contrasena = usuarioResult.contrasena,
                             nombre = usuarioResult.nombre,
                             edad = usuarioResult.edad,
-                            variables = usuarioResult.variables,
+                            comandos = usuarioResult.comandos,
                             si = usuarioResult.si,
                             para = usuarioResult.para,
                             mientras = usuarioResult.mientras,

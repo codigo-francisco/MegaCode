@@ -27,7 +27,7 @@ namespace ApiRest.Controllers
                        n.dificultad,
                        n.grupo,
                        n.mientras,
-                       n.variables,
+                       n.comandos,
                        n.si,
                        n.para,
                        n.ruta,
@@ -48,7 +48,7 @@ namespace ApiRest.Controllers
                         {
                             n.nombre,
                             n.ruta,
-                            n.variables,
+                            n.comandos,
                             n.si,
                             n.para,
                             n.mientras,

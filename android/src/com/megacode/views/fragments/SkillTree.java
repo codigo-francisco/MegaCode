@@ -9,11 +9,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +17,11 @@ import android.view.ViewGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.megacode.R;
 import com.megacode.adapters.AdapterRecyclerSkillTree;
-import com.megacode.adapters.model.SkillNode;
+import com.megacode.models.database.Nivel;
 import com.megacode.models.parcelables.ParcelableLinkedList;
-import com.megacode.models.response.NivelesResponse;
 import com.megacode.viewmodels.NivelViewModel;
 import com.megacode.views.activities.RootActivity;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,9 +57,9 @@ public class SkillTree extends Fragment {
         AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager());
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
-        nivelViewModel.getListMutableLiveData().observe(this, new Observer<LinkedList<List<SkillNode>>>() {
+        nivelViewModel.getNiveles().observe(this, new Observer<LinkedList<List<Nivel>>>() {
             @Override
-            public void onChanged(LinkedList<List<SkillNode>> lists) {
+            public void onChanged(LinkedList<List<Nivel>> lists) {
                 adapterRecyclerSkillTree.setData(lists);
             }
         });

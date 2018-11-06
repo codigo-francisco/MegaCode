@@ -11,7 +11,7 @@ namespace ApiRest.Models
 {
     using System;
     
-    public partial class obtenerMarcadorUsuario_Result
+    public partial class obtenerMarcadorUsuario_Result1
     {
         public string nombre { get; set; }
         public short comandos { get; set; }

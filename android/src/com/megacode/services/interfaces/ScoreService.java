@@ -1,6 +1,6 @@
 package com.megacode.services.interfaces;
 
-import com.megacode.models.ScoreResponse;
+import com.megacode.models.response.ScoreResponse;
 
 import java.util.List;
 

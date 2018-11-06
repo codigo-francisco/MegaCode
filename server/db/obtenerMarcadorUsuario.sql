@@ -7,12 +7,12 @@ RETURN
 	FROM
 		(SELECT
 			nombre,
-			variables,
+			comandos,
 			si,
 			para,
 			mientras,
-			variables + si + para + mientras AS total
+			comandos + si + para + mientras AS total
 		FROM Usuario) as Consulta
-	Where total > (select variables + si + para + mientras AS total from Usuario where Usuario.id = @id)
+	Where total > (select comandos + si + para + mientras AS total from Usuario where Usuario.id = @id)
 
 

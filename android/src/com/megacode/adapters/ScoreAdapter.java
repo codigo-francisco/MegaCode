@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.megacode.R;
-import com.megacode.models.ScoreResponse;
+import com.megacode.models.response.ScoreResponse;
 
 import java.util.ArrayList;
 import java.util.List;

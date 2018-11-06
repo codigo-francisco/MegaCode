@@ -1,4 +1,4 @@
-package com.megacode.models;
+package com.megacode.models.response;
 
 import android.os.Parcel;
 import android.os.Parcelable;

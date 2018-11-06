@@ -40,7 +40,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="ruta" Type="varchar(max)" Nullable="false" />
-          <Property Name="variables" Type="int" Nullable="false" />
+          <Property Name="comandos" Type="int" Nullable="false" />
           <Property Name="si" Type="int" Nullable="false" />
           <Property Name="para" Type="int" Nullable="false" />
           <Property Name="mientras" Type="int" Nullable="false" />
@@ -85,7 +85,7 @@
           <Property Name="nombre" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="edad" Type="smallint" Nullable="false" />
           <Property Name="sexo" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="variables" Type="smallint" Nullable="false" />
+          <Property Name="comandos" Type="smallint" Nullable="false" />
           <Property Name="si" Type="smallint" Nullable="false" />
           <Property Name="para" Type="smallint" Nullable="false" />
           <Property Name="mientras" Type="smallint" Nullable="false" />
@@ -207,7 +207,7 @@
             <CollectionType>
               <RowType>
                 <Property Name="nombre" Type="varchar" MaxLength="200" Nullable="false" />
-                <Property Name="variables" Type="smallint" Nullable="false" />
+                <Property Name="comandos" Type="smallint" Nullable="false" />
                 <Property Name="si" Type="smallint" Nullable="false" />
                 <Property Name="para" Type="smallint" Nullable="false" />
                 <Property Name="mientras" Type="smallint" Nullable="false" />
@@ -296,7 +296,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="nombre" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ruta" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="variables" Type="Int32" Nullable="false" />
+          <Property Name="comandos" Type="Int32" Nullable="false" />
           <Property Name="si" Type="Int32" Nullable="false" />
           <Property Name="para" Type="Int32" Nullable="false" />
           <Property Name="mientras" Type="Int32" Nullable="false" />
@@ -327,7 +327,7 @@
           <Property Name="nombre" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="edad" Type="Int16" Nullable="false" />
           <Property Name="sexo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="variables" Type="Int16" Nullable="false" />
+          <Property Name="comandos" Type="Int16" Nullable="false" />
           <Property Name="si" Type="Int16" Nullable="false" />
           <Property Name="para" Type="Int16" Nullable="false" />
           <Property Name="mientras" Type="Int16" Nullable="false" />
@@ -402,14 +402,14 @@
             <End Role="Usuario" EntitySet="Usuario" />
             <End Role="Sesion" EntitySet="Sesion" />
           </AssociationSet>
-          <FunctionImport Name="obtenerMarcadorUsuario" IsComposable="true" ReturnType="Collection(MegacodeModel.obtenerMarcadorUsuario_Result)">
-          <Parameter Name="id" Mode="In" Type="Int64" />
-          </FunctionImport>
           <EntitySet Name="TipoNivel" EntityType="MegacodeModel.TipoNivel" />
           <AssociationSet Name="FK_Nivel_TipoNivel" Association="MegacodeModel.FK_Nivel_TipoNivel">
             <End Role="TipoNivel" EntitySet="TipoNivel" />
             <End Role="Nivel" EntitySet="Nivel" />
           </AssociationSet>
+          <FunctionImport Name="obtenerMarcadorUsuario" IsComposable="true" ReturnType="Collection(MegacodeModel.obtenerMarcadorUsuario_Result1)">
+            <Parameter Name="id" Mode="In" Type="Int64" />
+          </FunctionImport>
         </EntityContainer>
         <Association Name="FK_Conecion_UsuarioId">
           <End Type="MegacodeModel.Usuario" Role="Usuario" Multiplicity="0..1" />
@@ -511,7 +511,7 @@
         </Association>
         <ComplexType Name="obtenerMarcadorUsuario_Result">
           <Property Type="String" Name="nombre" Nullable="false" MaxLength="200" />
-          <Property Type="Int16" Name="variables" Nullable="false" />
+          <Property Type="Int16" Name="comandos" Nullable="false" />
           <Property Type="Int16" Name="si" Nullable="false" />
           <Property Type="Int16" Name="para" Nullable="false" />
           <Property Type="Int16" Name="mientras" Nullable="false" />
@@ -537,6 +537,14 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <ComplexType Name="obtenerMarcadorUsuario_Result1">
+          <Property Type="String" Name="nombre" Nullable="false" MaxLength="200" />
+          <Property Type="Int16" Name="comandos" Nullable="false" />
+          <Property Type="Int16" Name="si" Nullable="false" />
+          <Property Type="Int16" Name="para" Nullable="false" />
+          <Property Type="Int16" Name="mientras" Nullable="false" />
+          <Property Type="Int16" Name="total" Nullable="true" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -573,7 +581,7 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
                 <ScalarProperty Name="ruta" ColumnName="ruta" />
-                <ScalarProperty Name="variables" ColumnName="variables" />
+                <ScalarProperty Name="comandos" ColumnName="comandos" />
                 <ScalarProperty Name="si" ColumnName="si" />
                 <ScalarProperty Name="para" ColumnName="para" />
                 <ScalarProperty Name="mientras" ColumnName="mientras" />
@@ -602,7 +610,7 @@
                 <ScalarProperty Name="nombre" ColumnName="nombre" />
                 <ScalarProperty Name="edad" ColumnName="edad" />
                 <ScalarProperty Name="sexo" ColumnName="sexo" />
-                <ScalarProperty Name="variables" ColumnName="variables" />
+                <ScalarProperty Name="comandos" ColumnName="comandos" />
                 <ScalarProperty Name="si" ColumnName="si" />
                 <ScalarProperty Name="para" ColumnName="para" />
                 <ScalarProperty Name="mientras" ColumnName="mientras" />
@@ -631,18 +639,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="obtenerMarcadorUsuario" FunctionName="MegacodeModel.Store.obtenerMarcadorUsuario">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="MegacodeModel.obtenerMarcadorUsuario_Result">
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="variables" ColumnName="variables" />
-                <ScalarProperty Name="si" ColumnName="si" />
-                <ScalarProperty Name="para" ColumnName="para" />
-                <ScalarProperty Name="mientras" ColumnName="mientras" />
-                <ScalarProperty Name="total" ColumnName="total" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <EntitySetMapping Name="TipoNivel">
             <EntityTypeMapping TypeName="MegacodeModel.TipoNivel">
               <MappingFragment StoreEntitySet="TipoNivel">
@@ -651,6 +647,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="obtenerMarcadorUsuario" FunctionName="MegacodeModel.Store.obtenerMarcadorUsuario">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MegacodeModel.obtenerMarcadorUsuario_Result1">
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="comandos" ColumnName="comandos" />
+                <ScalarProperty Name="si" ColumnName="si" />
+                <ScalarProperty Name="para" ColumnName="para" />
+                <ScalarProperty Name="mientras" ColumnName="mientras" />
+                <ScalarProperty Name="total" ColumnName="total" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

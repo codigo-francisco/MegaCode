@@ -23,7 +23,7 @@ namespace ApiRest.Controllers
                          select new
                          {
                              u.nombre,
-                             score = u.variables + u.si + u.para + u.mientras,
+                             score = u.comandos + u.si + u.para + u.mientras,
                              dia = c.entrada.Day,
                              mes = c.entrada.Month,
                              anio = c.entrada.Year,

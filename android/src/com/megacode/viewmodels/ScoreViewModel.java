@@ -2,7 +2,7 @@ package com.megacode.viewmodels;
 
 import android.app.Application;
 
-import com.megacode.models.ScoreResponse;
+import com.megacode.models.response.ScoreResponse;
 import com.megacode.repositories.ScoreRepository;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class ScoreViewModel extends AndroidViewModel {
     }
 
     public MutableLiveData<List<ScoreResponse>> getListMutableLiveData() {
-        return scoreRepository.getListMutableLiveData();
+        return scoreRepository.getScoreLiveData();
     }
 
 }

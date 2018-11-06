@@ -9,23 +9,17 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.megacode.R;
 import com.megacode.adapters.ScoreAdapter;
-import com.megacode.models.ScoreResponse;
+import com.megacode.models.response.ScoreResponse;
 import com.megacode.viewmodels.ScoreViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 /**

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.megacode.R;
-import com.megacode.adapters.model.SkillNode;
+import com.megacode.models.database.Nivel;
 
 import java.util.Locale;
 
@@ -30,7 +30,7 @@ public class InfoNivel extends DialogFragment {
         super();
     }
 
-    private SkillNode node;
+    private Nivel node;
 
     @Override
     public void onStart() {

@@ -1,9 +1,8 @@
 package com.megacode.repositories;
 
-import android.app.Application;
 import android.util.Log;
 
-import com.megacode.models.ScoreResponse;
+import com.megacode.models.response.ScoreResponse;
 import com.megacode.services.MegaCodeService;
 import com.megacode.services.interfaces.ScoreService;
 
@@ -19,11 +18,11 @@ public class ScoreRepository {
 
     private static final String TAG = ScoreRepository.class.getName();
     private List<ScoreResponse> scoreModelList;
-    private MutableLiveData<List<ScoreResponse>>  listMutableLiveData;
+    private MutableLiveData<List<ScoreResponse>> scoreLiveData;
 
     public ScoreRepository(){
         scoreModelList = new ArrayList<>();
-        listMutableLiveData = new MutableLiveData<>();
+        scoreLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<ScoreResponse>> obtenerPuntajes() {
@@ -37,7 +36,7 @@ public class ScoreRepository {
                     if (response.body().size()>0) {
                         scoreModelList.addAll(response.body());
 
-                        listMutableLiveData.postValue(scoreModelList);
+                        scoreLiveData.postValue(scoreModelList);
                     }
                 }
             }
@@ -45,14 +44,14 @@ public class ScoreRepository {
             @Override
             public void onFailure(Call<List<ScoreResponse>> call, Throwable t) {
                 Log.e(TAG, t.getMessage(), t);
-                listMutableLiveData.postValue(null);
+                scoreLiveData.postValue(null);
             }
         });
 
-        return listMutableLiveData;
+        return scoreLiveData;
     }
 
-    public MutableLiveData<List<ScoreResponse>> getListMutableLiveData() {
-        return listMutableLiveData;
+    public MutableLiveData<List<ScoreResponse>> getScoreLiveData() {
+        return scoreLiveData;
     }
 }

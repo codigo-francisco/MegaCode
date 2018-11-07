@@ -27,6 +27,10 @@ public class Nivel implements Parcelable {
     private int imageResource;
     @Ignore
     private TypeLevel typeLevel;
+    @Ignore
+    private boolean terminado;
+    @Ignore
+    private int puntaje;
 
     private Date lastRefresh;
     @PrimaryKey
@@ -183,28 +187,20 @@ public class Nivel implements Parcelable {
         }
     }
 
-    public static LinkedList<List<Nivel>> organizarPorNiveles(@NotNull List<Nivel> niveles){
-        LinkedList<List<Nivel>> nivelesPorGrupo = new LinkedList<>();
-        int grupoActual = 0;
+    public boolean isTerminado() {
+        return terminado;
+    }
 
-        List<Nivel> nuevoGrupo=new ArrayList<>();
+    public void setTerminado(boolean terminado) {
+        this.terminado = terminado;
+    }
 
-        for (Nivel nivel : niveles) {
-            if (nivel.getGrupo() != grupoActual) {
-                if (nuevoGrupo.size() > 0){
-                    nivelesPorGrupo.add(nuevoGrupo);
-                    nuevoGrupo = new ArrayList<>();
-                }
-                grupoActual = nivel.getGrupo();
-            }
-            nuevoGrupo.add(nivel);
-        }
+    public int getPuntaje() {
+        return puntaje;
+    }
 
-        if (nuevoGrupo.size()>0)
-            nivelesPorGrupo.add(nuevoGrupo);
-
-
-        return nivelesPorGrupo;
+    public void setPuntaje(int puntaje) {
+        this.puntaje = puntaje;
     }
 
     @Override
@@ -227,6 +223,8 @@ public class Nivel implements Parcelable {
         dest.writeInt(this.para);
         dest.writeString(this.ruta);
         dest.writeInt(this.tipoNivel);
+        dest.writeByte(this.terminado ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.puntaje);
     }
 
     protected Nivel(Parcel in) {
@@ -245,9 +243,11 @@ public class Nivel implements Parcelable {
         this.para = in.readInt();
         this.ruta = in.readString();
         this.tipoNivel = in.readInt();
+        this.terminado = in.readByte() != 0;
+        this.puntaje = in.readInt();
     }
 
-    public static final Parcelable.Creator<Nivel> CREATOR = new Parcelable.Creator<Nivel>() {
+    public static final Creator<Nivel> CREATOR = new Creator<Nivel>() {
         @Override
         public Nivel createFromParcel(Parcel source) {
             return new Nivel(source);

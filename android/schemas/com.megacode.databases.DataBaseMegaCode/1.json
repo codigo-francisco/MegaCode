@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6db4a9f9194eaf175c8ba4bc2355be26",
+    "identityHash": "bef8cc2da266fac89ff0d040f4440372",
     "entities": [
       {
         "tableName": "Usuario",
@@ -169,12 +169,96 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "NivelTerminado",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nivelId` INTEGER NOT NULL, `usuarioId` INTEGER NOT NULL, `terminado` INTEGER NOT NULL, `puntaje` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuario`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`nivelId`) REFERENCES `Nivel`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nivelId",
+            "columnName": "nivelId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "terminado",
+            "columnName": "terminado",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "puntaje",
+            "columnName": "puntaje",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_NivelTerminado_usuarioId",
+            "unique": false,
+            "columnNames": [
+              "usuarioId"
+            ],
+            "createSql": "CREATE  INDEX `index_NivelTerminado_usuarioId` ON `${TABLE_NAME}` (`usuarioId`)"
+          },
+          {
+            "name": "index_NivelTerminado_nivelId",
+            "unique": false,
+            "columnNames": [
+              "nivelId"
+            ],
+            "createSql": "CREATE  INDEX `index_NivelTerminado_nivelId` ON `${TABLE_NAME}` (`nivelId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Usuario",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "Nivel",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "nivelId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6db4a9f9194eaf175c8ba4bc2355be26\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"bef8cc2da266fac89ff0d040f4440372\")"
     ]
   }
 }

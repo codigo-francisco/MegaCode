@@ -3,6 +3,7 @@ package com.megacode.viewmodels;
 import android.app.Application;
 
 import com.megacode.models.database.Nivel;
+import com.megacode.models.database.NivelConTerminado;
 import com.megacode.repositories.NivelRepository;
 
 import java.util.LinkedList;
@@ -21,11 +22,11 @@ public class NivelViewModel extends AndroidViewModel {
         nivelRepository = new NivelRepository(application);
     }
 
-    public MutableLiveData<LinkedList<List<Nivel>>> listarNiveles(){
-        return nivelRepository.listarNiveles();
+    public void listarNiveles(){
+        nivelRepository.listarNiveles();
     }
 
-    public MutableLiveData<LinkedList<List<Nivel>>> getNiveles() {
+    public MutableLiveData<LinkedList<List<NivelConTerminado>>> getNiveles() {
         return nivelRepository.getNiveles();
     }
 }

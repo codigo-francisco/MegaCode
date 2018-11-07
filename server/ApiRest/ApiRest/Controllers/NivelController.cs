@@ -40,22 +40,39 @@ namespace ApiRest.Controllers
         public IHttpActionResult listarNiveles(Int64? id)
         {
 
-            var query = from n in entities.Nivel
-                        join nt in entities.Niveles_Terminados.Where(nt=>nt.UsuarioId==id) on n.id equals nt.NivelId
-                        into ntt
-                        from r in ntt.DefaultIfEmpty()
-                        select new
-                        {
-                            n.nombre,
-                            n.ruta,
-                            n.comandos,
-                            n.si,
-                            n.para,
-                            n.mientras,
-                            puntaje = (r==null ? 0 : r.puntaje)
-                        };
+            var niveles = from n in entities.Nivel
+                          select new
+                          {
+                              n.id,
+                              n.nombre,
+                              n.dificultad,
+                              n.grupo,
+                              n.mientras,
+                              n.comandos,
+                              n.si,
+                              n.para,
+                              n.ruta,
+                              n.tipoNivel
+                          };
 
-            return Json(query);
+            var nivelesTerminados = from nt in entities.Niveles_Terminados
+                            where nt.UsuarioId == id
+                            select new
+                            {
+                                nt.id,
+                                nivelId = nt.NivelId,
+                                usuarioId = nt.UsuarioId,
+                                nt.terminado,
+                                nt.puntaje
+                            };
+
+            return Json(
+                new
+                {
+                    niveles,
+                    nivelesTerminados
+                }
+           );
         }
     }
 }

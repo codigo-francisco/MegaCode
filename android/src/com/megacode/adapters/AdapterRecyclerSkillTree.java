@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import com.megacode.R;
 import com.megacode.models.database.Nivel;
+import com.megacode.models.database.NivelConTerminado;
 import com.megacode.views.fragments.InfoNivel;
 
 import java.util.LinkedList;
@@ -21,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecyclerSkillTree.SkillTreeViewHolder>{
 
-    private LinkedList<List<Nivel>> nodes = new LinkedList<>();
+    private LinkedList<List<NivelConTerminado>> nodes = new LinkedList<>();
 
     private FragmentManager fragmentManager;
 
@@ -43,11 +44,14 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
         linearLayout.removeAllViews();
         LayoutInflater layoutInflater = LayoutInflater.from(linearLayout.getContext());
 
-        List<Nivel> horizontalNode = nodes.get(index);
+        List<NivelConTerminado> horizontalNode = nodes.get(index);
 
-        for (Nivel nivel : horizontalNode){
+        for (NivelConTerminado nivelConTerminado : horizontalNode){
             View cardView = layoutInflater.inflate(R.layout.skillnode_layout,linearLayout, false);
             ImageView imageView = cardView.findViewById(R.id.node_imageview);
+
+            Nivel nivel = nivelConTerminado.nivel;
+
             imageView.setImageResource(nivel.getImageResource());
             imageView.setOnClickListener(view->{
                 DialogFragment dialogFragment = new InfoNivel();
@@ -70,7 +74,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
         }
     }
 
-    public void setData(LinkedList<List<Nivel>> nodes){
+    public void setData(LinkedList<List<NivelConTerminado>> nodes){
         this.nodes = nodes;
         notifyDataSetChanged();
     }

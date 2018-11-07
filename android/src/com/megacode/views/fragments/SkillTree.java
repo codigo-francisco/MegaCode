@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.megacode.R;
 import com.megacode.adapters.AdapterRecyclerSkillTree;
 import com.megacode.models.database.Nivel;
+import com.megacode.models.database.NivelConTerminado;
 import com.megacode.models.parcelables.ParcelableLinkedList;
 import com.megacode.viewmodels.NivelViewModel;
 import com.megacode.views.activities.RootActivity;
@@ -57,16 +58,16 @@ public class SkillTree extends Fragment {
         AdapterRecyclerSkillTree adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager());
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
-        nivelViewModel.getNiveles().observe(this, new Observer<LinkedList<List<Nivel>>>() {
+        nivelViewModel.getNiveles().observe(this, new Observer<LinkedList<List<NivelConTerminado>>>() {
             @Override
-            public void onChanged(LinkedList<List<Nivel>> lists) {
+            public void onChanged(LinkedList<List<NivelConTerminado>> lists) {
                 adapterRecyclerSkillTree.setData(lists);
             }
         });
 
         if (savedInstanceState!=null){
             if (savedInstanceState.getParcelable("nodes")!=null){
-                adapterRecyclerSkillTree.setData(((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes);
+                //adapterRecyclerSkillTree.setData(((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes);
             }
         }else{
             nivelViewModel.listarNiveles();

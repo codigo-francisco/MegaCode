@@ -5,8 +5,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.megacode.dao.NivelDao;
+import com.megacode.dao.NivelTerminadoDao;
+import com.megacode.dao.UsuarioDao;
 import com.megacode.databases.DataBaseMegaCode;
 import com.megacode.models.database.Nivel;
+import com.megacode.models.database.NivelConTerminado;
+import com.megacode.models.database.NivelTerminado;
+import com.megacode.models.database.Usuario;
+import com.megacode.models.response.ListarNivelesResponse;
 import com.megacode.services.MegaCodeService;
 import com.megacode.services.interfaces.NivelService;
 
@@ -24,56 +30,78 @@ import retrofit2.Response;
 
 public class NivelRepository {
 
-    private MutableLiveData<LinkedList<List<Nivel>>> nivelesLiveData;
+    private MutableLiveData<LinkedList<List<NivelConTerminado>>> nivelesLiveData;
     private NivelDao nivelDao;
+    private UsuarioDao usuarioDao;
+    private NivelTerminadoDao nivelTerminadoDao;
     private final static String TAG = NivelRepository.class.getName();
 
     public NivelRepository(Application application){
         DataBaseMegaCode dataBaseMegaCode = DataBaseMegaCode.getDataBaseMegaCode(application);
         nivelDao = dataBaseMegaCode.nivelDao();
+        usuarioDao = dataBaseMegaCode.usuarioDao();
+        nivelTerminadoDao = dataBaseMegaCode.nivelTerminadoDao();
         nivelesLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<LinkedList<List<Nivel>>> listarNiveles(){
+    public MutableLiveData<LinkedList<List<NivelConTerminado>>> listarNiveles(){
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                List < Nivel > niveles = nivelDao.getNiveles();
+                List < NivelConTerminado > niveles = nivelDao.getNivelesConTerminados();
                 boolean needRefresh = true;
 
                 if (niveles!=null && niveles.size()>0){
                     //Si no está fuera del rango de tiempo, entonces no necesita refrescar la información
-                    needRefresh = isOverMaxTime(niveles.get(0).getLastRefresh());
+                    needRefresh = isOverMaxTime(niveles.get(0).nivel.getLastRefresh());
                 }
+
                 if (!needRefresh){ //Los datos traidos de BD son organizados por niveles
-                    nivelesLiveData.postValue(Nivel.organizarPorNiveles(niveles));
+
+                    nivelesLiveData.postValue(NivelConTerminado.organizarPorNiveles(niveles));
+
                 }else{ //Traer del servidor
-                    MegaCodeService.getServicio(NivelService.class).listarNiveles().enqueue(new Callback<List<Nivel>>() {
+                    Usuario usuario = usuarioDao.obtenerUsuarioSync();
+                    MegaCodeService.getServicio(NivelService.class).listarNiveles(usuario.getToken(), usuario.getId())
+                            .enqueue(new Callback<ListarNivelesResponse>() {
                         @Override
-                        public void onResponse(Call<List<Nivel>> call, Response<List<Nivel>> response) {
+                        public void onResponse(Call<ListarNivelesResponse> call, Response<ListarNivelesResponse> response) {
+                            Log.d(TAG, "Respuesta de los datos de nivel recibidos");
                             if (response.isSuccessful()){
-                                List<Nivel> niveles = response.body();
+
+                                List<Nivel> niveles = response.body().getNiveles();
+                                List<NivelTerminado> nivelesTerminados = response.body().getNivelesTerminados();
 
                                 for (Nivel nivel : niveles) {
                                     nivel.chooseTypeLevelAndResource();
                                 }
 
-                                LinkedList<List<Nivel>> nodes = Nivel.organizarPorNiveles(niveles);
-
+                                //Se insertan ambos datos, una vez insertados se realiza la consulta
                                 AsyncTask.execute(new Runnable() {
                                     @Override
                                     public void run() {
+                                        //Se borran los niveles viejos y se agregan los nuevos
                                         nivelDao.borrarTodos();
                                         nivelDao.insertAll(niveles);
+
+                                        //Se borran los niveles_terminados viejos y se agregan los nuevos
+                                        nivelTerminadoDao.borrarTodos();
+                                        nivelTerminadoDao.insertAll(nivelesTerminados);
+
+                                        List<NivelConTerminado> nivelesConTerminados = nivelDao.getNivelesConTerminados();
+
+                                        //Se crea el arbol y se pasa a la vista
+                                        LinkedList<List<NivelConTerminado>> nodes = NivelConTerminado.organizarPorNiveles(nivelesConTerminados);
+
+                                        //Notifica los niveles terminados
+                                        nivelesLiveData.postValue(nodes);
                                     }
                                 });
-
-                                nivelesLiveData.postValue(nodes);
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<List<Nivel>> call, Throwable t) {
+                        public void onFailure(Call<ListarNivelesResponse> call, Throwable t) {
                             Log.e(TAG, t.getMessage(), t);
                         }
                     });
@@ -94,7 +122,7 @@ public class NivelRepository {
         return now.after(maxTime);
     }
 
-    public MutableLiveData<LinkedList<List<Nivel>>> getNiveles() {
+    public MutableLiveData<LinkedList<List<NivelConTerminado>>> getNiveles() {
         return nivelesLiveData;
     }
 }

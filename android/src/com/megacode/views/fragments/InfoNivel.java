@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.google.android.material.button.MaterialButton;
 import com.megacode.R;
 import com.megacode.models.database.Nivel;
+import com.megacode.models.database.NivelConTerminado;
 
 import java.util.Locale;
 
@@ -30,7 +31,8 @@ public class InfoNivel extends DialogFragment {
         super();
     }
 
-    private Nivel node;
+    private Nivel nivel;
+    private NivelConTerminado nivelConTerminado;
 
     @Override
     public void onStart() {
@@ -42,7 +44,7 @@ public class InfoNivel extends DialogFragment {
         window.setWindowAnimations(R.style.DialogAnimationFade);
     }
 
-    private String convertTemplateToString(int points, String tema){
+    private static String convertTemplateToString(int points, String tema){
         String plural="";
         if (points>1)
             plural="s";
@@ -52,43 +54,52 @@ public class InfoNivel extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.popup_nivel, container); //return super.onCreateView(inflater, container, savedInstanceState);
+        View view = null;
 
-        node = getArguments().getParcelable("node");
+        boolean bloqueado = getArguments().getBoolean("bloqueado");
+        nivelConTerminado = getArguments().getParcelable("nivel");
+        nivel = nivelConTerminado.nivel;
 
+        if (bloqueado){
+            view = inflater.inflate(R.layout.popup_nivel_block, container);
 
-        if (node!=null) {
+            TextView mensaje = view.findViewById(R.id.popup_nivel_bloqueado_mensaje);
+            mensaje.setText("¡Desbloquea todas las unidades previas para poder continuar!");
+
+        }else if (nivel !=null) {
+            view = inflater.inflate(R.layout.popup_nivel, container);
+
             TextView textTitulo = view.findViewById(R.id.popup_titulo);
-            textTitulo.setText(String.format(Locale.getDefault(),"Ejercicio de %s",node.getTypeLevel().toString()));
+            textTitulo.setText(String.format(Locale.getDefault(),"Ejercicio de %s", nivel.getTypeLevel().toString()));
 
             //Si es mayor a 0 tiene información
-            if (node.getComando()>0){
+            if (nivel.getComando()>0){
                 TextView textComando = view.findViewById(R.id.popup_comando);
-                textComando.setText(convertTemplateToString(node.getComando(),"comandos"));
+                textComando.setText(convertTemplateToString(nivel.getComando(),"comandos"));
 
                 textComando.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_comando).setVisibility(View.VISIBLE);
             }
 
-            if (node.getSi() > 0){
+            if (nivel.getSi() > 0){
                 TextView textSi = view.findViewById(R.id.popup_si);
-                textSi.setText(convertTemplateToString(node.getSi(), "si"));
+                textSi.setText(convertTemplateToString(nivel.getSi(), "si"));
 
                 textSi.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_si).setVisibility(View.VISIBLE);
             }
 
-            if (node.getPara()>0){
+            if (nivel.getPara()>0){
                 TextView textPara = view.findViewById(R.id.popup_para);
-                textPara.setText(convertTemplateToString(node.getComando(), "para"));
+                textPara.setText(convertTemplateToString(nivel.getComando(), "para"));
 
                 textPara.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_para).setVisibility(View.VISIBLE);
             }
 
-            if (node.getMientras()>0){
+            if (nivel.getMientras()>0){
                 TextView textMientras = view.findViewById(R.id.popup_mientra);
-                textMientras.setText(convertTemplateToString(node.getComando(), "mientras"));
+                textMientras.setText(convertTemplateToString(nivel.getComando(), "mientras"));
 
                 textMientras.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.popup_text_mientras).setVisibility(View.VISIBLE);
@@ -99,22 +110,22 @@ public class InfoNivel extends DialogFragment {
             ((GradientDrawable)relativeLayout.getBackground()).setColor(backGroundColor);
             MaterialButton button = view.findViewById(R.id.popup_boton_comenzar);
             button.setTextColor(backGroundColor);
-
-            //Cambiar posicion
-            int sourceX = getArguments().getInt("sourceX");
-            int sourceY = getArguments().getInt("sourceY");
-            int heightView = getArguments().getInt("heightView");
-
-            setDialogPosition(sourceX, sourceY, heightView);
         }
+
+        //Cambiar posicion
+        int sourceX = getArguments().getInt("sourceX");
+        int sourceY = getArguments().getInt("sourceY");
+        int heightView = getArguments().getInt("heightView");
+
+        setDialogPosition(sourceX, sourceY, heightView);
 
         return view;
     }
 
     private int getColorBackground(){
-        int color=0;
+        int color;
 
-        switch (node.getTypeLevel()){
+        switch (nivel.getTypeLevel()){
             case COMANDO:
                 color = R.color.md_brown_600;
                 break;

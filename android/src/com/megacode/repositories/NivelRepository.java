@@ -48,7 +48,7 @@ public class NivelRepository {
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
-                List < NivelConTerminado > niveles = nivelDao.getNivelesConTerminados();
+                List <NivelConTerminado> niveles = nivelDao.getNivelesConTerminados();
                 boolean needRefresh = true;
 
                 if (niveles!=null && niveles.size()>0){
@@ -72,8 +72,9 @@ public class NivelRepository {
                                 List<Nivel> niveles = response.body().getNiveles();
                                 List<NivelTerminado> nivelesTerminados = response.body().getNivelesTerminados();
 
+                                //Colocar el tipo de nivel... estoy considerando no utilizar el enumerador
                                 for (Nivel nivel : niveles) {
-                                    nivel.chooseTypeLevelAndResource();
+                                    nivel.chooseTypeLevel();
                                 }
 
                                 //Se insertan ambos datos, una vez insertados se realiza la consulta

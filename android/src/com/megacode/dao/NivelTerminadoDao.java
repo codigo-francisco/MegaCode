@@ -22,4 +22,7 @@ public abstract class NivelTerminadoDao {
 
     @Query("DELETE FROM NivelTerminado")
     public abstract void borrarTodos();
+
+    @Query("SELECT * FROM NivelTerminado")
+    public abstract List<NivelTerminado> obtenerNivelesTerminadosSync();
 }

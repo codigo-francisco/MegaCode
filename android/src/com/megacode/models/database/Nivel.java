@@ -24,14 +24,7 @@ import androidx.room.TypeConverters;
 @Entity(tableName = "Nivel")
 public class Nivel implements Parcelable {
     @Ignore
-    private int imageResource;
-    @Ignore
     private TypeLevel typeLevel;
-    @Ignore
-    private boolean terminado;
-    @Ignore
-    private int puntaje;
-
     private Date lastRefresh;
     @PrimaryKey
     private int id;
@@ -73,12 +66,12 @@ public class Nivel implements Parcelable {
         this.id = id;
     }
 
-    public int getImageResource() {
-        return imageResource;
-    }
-
     public TypeLevel getTypeLevel() {
         return typeLevel;
+    }
+
+    public void setTypeLevel(TypeLevel typeLevel){
+        this.typeLevel = typeLevel;
     }
 
     public Date getLastRefresh(){
@@ -159,48 +152,11 @@ public class Nivel implements Parcelable {
 
     public void setTipoNivel(int tipoNivel) {
         this.tipoNivel = tipoNivel;
-        chooseTypeLevelAndResource();
+        chooseTypeLevel();
     }
 
-    public void chooseTypeLevelAndResource(){
+    public void chooseTypeLevel(){
         this.typeLevel = TypeLevel.values()[tipoNivel - 1];
-        chooseImageResource();
-    }
-
-    private void chooseImageResource(){
-        switch (getTypeLevel()){
-            case COMANDO:
-                imageResource = R.drawable.ic_c;
-                break;
-            case SI:
-                imageResource = R.drawable.ic_s;
-                break;
-            case PARA:
-                imageResource = R.drawable.ic_p;
-                break;
-            case MIENTRAS:
-                imageResource = R.drawable.ic_m;
-                break;
-            default:
-                imageResource = R.drawable.megacode;
-                break;
-        }
-    }
-
-    public boolean isTerminado() {
-        return terminado;
-    }
-
-    public void setTerminado(boolean terminado) {
-        this.terminado = terminado;
-    }
-
-    public int getPuntaje() {
-        return puntaje;
-    }
-
-    public void setPuntaje(int puntaje) {
-        this.puntaje = puntaje;
     }
 
     @Override
@@ -210,7 +166,6 @@ public class Nivel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.imageResource);
         dest.writeInt(this.typeLevel == null ? -1 : this.typeLevel.ordinal());
         dest.writeLong(this.lastRefresh != null ? this.lastRefresh.getTime() : -1);
         dest.writeInt(this.id);
@@ -223,12 +178,9 @@ public class Nivel implements Parcelable {
         dest.writeInt(this.para);
         dest.writeString(this.ruta);
         dest.writeInt(this.tipoNivel);
-        dest.writeByte(this.terminado ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.puntaje);
     }
 
     protected Nivel(Parcel in) {
-        this.imageResource = in.readInt();
         int tmpTypeLevel = in.readInt();
         this.typeLevel = tmpTypeLevel == -1 ? null : TypeLevel.values()[tmpTypeLevel];
         long tmpLastRefresh = in.readLong();
@@ -243,8 +195,6 @@ public class Nivel implements Parcelable {
         this.para = in.readInt();
         this.ruta = in.readString();
         this.tipoNivel = in.readInt();
-        this.terminado = in.readByte() != 0;
-        this.puntaje = in.readInt();
     }
 
     public static final Creator<Nivel> CREATOR = new Creator<Nivel>() {

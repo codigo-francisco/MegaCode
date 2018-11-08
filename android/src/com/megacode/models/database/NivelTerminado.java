@@ -19,14 +19,12 @@ import static androidx.room.ForeignKey.CASCADE;
             @ForeignKey(
                     entity = Usuario.class,
                     parentColumns = "id",
-                    childColumns = "usuarioId",
-                    onDelete = CASCADE
+                    childColumns = "usuarioId"
             ),
             @ForeignKey(
                     entity = Nivel.class,
                     parentColumns = "id",
-                    childColumns = "nivelId",
-                    onDelete = CASCADE
+                    childColumns = "nivelId"
             )
     })
 public class NivelTerminado {

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "bef8cc2da266fac89ff0d040f4440372",
+    "identityHash": "0c4dda168a62ba98dbbf58b4d8f97661",
     "entities": [
       {
         "tableName": "Usuario",
@@ -172,7 +172,7 @@
       },
       {
         "tableName": "NivelTerminado",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nivelId` INTEGER NOT NULL, `usuarioId` INTEGER NOT NULL, `terminado` INTEGER NOT NULL, `puntaje` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuario`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`nivelId`) REFERENCES `Nivel`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `nivelId` INTEGER NOT NULL, `usuarioId` INTEGER NOT NULL, `terminado` INTEGER NOT NULL, `puntaje` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuario`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`nivelId`) REFERENCES `Nivel`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -232,7 +232,7 @@
         "foreignKeys": [
           {
             "table": "Usuario",
-            "onDelete": "CASCADE",
+            "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
               "usuarioId"
@@ -243,7 +243,7 @@
           },
           {
             "table": "Nivel",
-            "onDelete": "CASCADE",
+            "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
               "nivelId"
@@ -258,7 +258,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"bef8cc2da266fac89ff0d040f4440372\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0c4dda168a62ba98dbbf58b4d8f97661\")"
     ]
   }
 }

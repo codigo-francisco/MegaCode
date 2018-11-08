@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.megacode.R;
+import com.megacode.adapters.model.enumators.TypeLevel;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelConTerminado;
+import com.megacode.models.database.NivelTerminado;
 import com.megacode.views.fragments.InfoNivel;
 
 import java.util.LinkedList;
@@ -45,19 +47,34 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
         LayoutInflater layoutInflater = LayoutInflater.from(linearLayout.getContext());
 
         List<NivelConTerminado> horizontalNode = nodes.get(index);
+        int cantidadNodos = horizontalNode.size();
+        int nodosTerminados = 0;
+        final boolean bloquear = bloquearNodos;
 
         for (NivelConTerminado nivelConTerminado : horizontalNode){
             View cardView = layoutInflater.inflate(R.layout.skillnode_layout,linearLayout, false);
             ImageView imageView = cardView.findViewById(R.id.node_imageview);
 
             Nivel nivel = nivelConTerminado.nivel;
+            List<NivelTerminado> nivelesTerminados = nivelConTerminado.nivelesTerminados;
 
-            imageView.setImageResource(nivel.getImageResource());
+            if (bloquearNodos) {
+                //Cambiar el fondo de la vista a gris
+                imageView.setBackgroundColor(cardView.getResources().getColor(R.color.md_grey_300));
+            }else{
+                if (!nivelesTerminados.isEmpty() && nivelesTerminados.get(0).isTerminado()) {
+                    nodosTerminados++;
+                }
+            }
+
+            imageView.setImageResource(nivelConTerminado.getImageResource(bloquearNodos));
+
             imageView.setOnClickListener(view->{
                 DialogFragment dialogFragment = new InfoNivel();
                 Bundle bundle = new Bundle();
 
-                bundle.putParcelable("node", nivel);
+                bundle.putParcelable("nivel", nivelConTerminado);
+                bundle.putBoolean("bloqueado", bloquear);
 
                 int[] locations= new int[2];
                 view.getLocationOnScreen(locations);
@@ -72,10 +89,15 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
 
             linearLayout.addView(cardView);
         }
+
+        bloquearNodos = cantidadNodos != nodosTerminados;
     }
+
+    private boolean bloquearNodos = false;
 
     public void setData(LinkedList<List<NivelConTerminado>> nodes){
         this.nodes = nodes;
+        bloquearNodos = false;
         notifyDataSetChanged();
     }
 

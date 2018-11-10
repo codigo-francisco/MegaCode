@@ -1,5 +1,7 @@
 package com.megacode.adapters;
 
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Outline;
 import android.graphics.drawable.ClipDrawable;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.megacode.R;
 import com.megacode.adapters.model.enumators.TypeLevel;
@@ -75,16 +78,17 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
                     nodosTerminados++;
                     puntaje = nivelesTerminados.get(0).getPuntaje();
                 }
-                //Agregar circulo para mostrar el avanze
-                if ( puntaje == 0 ){
-                    imageView.setBackground(imageView.getResources().getDrawable(R.drawable.bordercircle_skilltree));
-                }else {
-                    ClipDrawable clipDrawable = (ClipDrawable)imageView.getResources().getDrawable(R.drawable.bordersemicircle_skilltree);
 
-                    imageView.setBackground(clipDrawable);
+                ProgressBar progressBar = cardView.findViewById(R.id.skillnode_layout_progress);
+                if (puntaje==100){
+                    //Cambiar a dorado
+                    Resources resources = imageView.getResources();
+                    imageView.setImageTintList(ColorStateList.valueOf(resources.getColor(R.color.md_yellow_700)));
+                    imageView.setBackgroundColor(resources.getColor(R.color.md_yellow_300));
 
-                    clipDrawable.setLevel(puntaje*100);
+                    //progressBar.setProgressBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.md_yellow_300)));
                 }
+                progressBar.setProgress(puntaje);
             }
 
             imageView.setImageResource(nivelConTerminado.getImageResource(bloquearNodos));

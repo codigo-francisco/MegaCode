@@ -1,14 +1,22 @@
 package com.megacode.adapters;
 
+import android.graphics.Color;
+import android.graphics.Outline;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.megacode.R;
 import com.megacode.adapters.model.enumators.TypeLevel;
+import com.megacode.helpers.MetricsHelper;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelConTerminado;
 import com.megacode.models.database.NivelTerminado;
@@ -62,8 +70,20 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
                 //Cambiar el fondo de la vista a gris
                 imageView.setBackgroundColor(cardView.getResources().getColor(R.color.md_grey_300));
             }else{
+                int puntaje = 0;
                 if (!nivelesTerminados.isEmpty() && nivelesTerminados.get(0).isTerminado()) {
                     nodosTerminados++;
+                    puntaje = nivelesTerminados.get(0).getPuntaje();
+                }
+                //Agregar circulo para mostrar el avanze
+                if ( puntaje == 0 ){
+                    imageView.setBackground(imageView.getResources().getDrawable(R.drawable.bordercircle_skilltree));
+                }else {
+                    ClipDrawable clipDrawable = (ClipDrawable)imageView.getResources().getDrawable(R.drawable.bordersemicircle_skilltree);
+
+                    imageView.setBackground(clipDrawable);
+
+                    clipDrawable.setLevel(puntaje*100);
                 }
             }
 

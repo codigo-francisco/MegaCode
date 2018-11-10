@@ -82,11 +82,10 @@ public class NivelRepository {
                                     @Override
                                     public void run() {
                                         //Se borran los niveles viejos y se agregan los nuevos
-                                        nivelDao.borrarTodos();
-                                        nivelDao.insertAll(niveles);
-
-                                        //Se borran los niveles_terminados viejos y se agregan los nuevos
                                         nivelTerminadoDao.borrarTodos();
+                                        nivelDao.borrarTodos();
+
+                                        nivelDao.insertAll(niveles);
                                         nivelTerminadoDao.insertAll(nivelesTerminados);
 
                                         List<NivelConTerminado> nivelesConTerminados = nivelDao.getNivelesConTerminados();

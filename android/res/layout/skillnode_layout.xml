@@ -24,6 +24,6 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:contentDescription="node">
-    </ImageView>
+        android:contentDescription="node"
+        />
 </androidx.cardview.widget.CardView>

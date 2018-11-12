@@ -25,6 +25,8 @@
 
     <style name="DialogCustomTheme">
         <item name="android:textColor">@color/md_white_1000</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

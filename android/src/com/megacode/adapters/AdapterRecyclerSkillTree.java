@@ -69,11 +69,13 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
             Nivel nivel = nivelConTerminado.nivel;
             List<NivelTerminado> nivelesTerminados = nivelConTerminado.nivelesTerminados;
 
+            int puntaje=0;
+
             if (bloquearNodos) {
                 //Cambiar el fondo de la vista a gris
                 imageView.setBackgroundColor(cardView.getResources().getColor(R.color.md_grey_300));
             }else{
-                int puntaje = 0;
+
                 if (!nivelesTerminados.isEmpty() && nivelesTerminados.get(0).isTerminado()) {
                     nodosTerminados++;
                     puntaje = nivelesTerminados.get(0).getPuntaje();
@@ -83,13 +85,15 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
                 if (puntaje==100){
                     //Cambiar a dorado
                     Resources resources = imageView.getResources();
-                    imageView.setImageTintList(ColorStateList.valueOf(resources.getColor(R.color.md_yellow_700)));
-                    imageView.setBackgroundColor(resources.getColor(R.color.md_yellow_300));
+                    imageView.setImageTintList(ColorStateList.valueOf(resources.getColor(R.color.md_yellow_900)));
+                    imageView.setBackgroundColor(resources.getColor(R.color.md_yellow_500));
 
                     //progressBar.setProgressBackgroundTintList(ColorStateList.valueOf(resources.getColor(R.color.md_yellow_300)));
                 }
                 progressBar.setProgress(puntaje);
             }
+
+            final int puntajeFinal = puntaje;
 
             imageView.setImageResource(nivelConTerminado.getImageResource(bloquearNodos));
 
@@ -99,6 +103,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
 
                 bundle.putParcelable("nivel", nivelConTerminado);
                 bundle.putBoolean("bloqueado", bloquear);
+                bundle.putInt("puntaje", puntajeFinal);
 
                 int[] locations= new int[2];
                 view.getLocationOnScreen(locations);

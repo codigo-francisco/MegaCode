@@ -14,6 +14,7 @@
         android:gravity="center"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@color/md_grey_500"/>
+        android:textColor="@color/md_grey_500"
+        android:text="¡Desbloquea todas las unidades previas para poder continuar!"/>
 
 </RelativeLayout>

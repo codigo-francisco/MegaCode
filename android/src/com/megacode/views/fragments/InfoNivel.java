@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
 import com.megacode.R;
+import com.megacode.helpers.MetricsHelper;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelConTerminado;
 
@@ -26,6 +27,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 public class InfoNivel extends DialogFragment {
+
+    private static final String LINESEPARATOR = System.lineSeparator();
 
     public InfoNivel(){
         super();
@@ -48,7 +51,7 @@ public class InfoNivel extends DialogFragment {
         String plural="";
         if (points>1)
             plural="s";
-        return String.format(Locale.getDefault(), "%d punto%s", points, plural, tema);
+        return String.format(Locale.getDefault(), "%s: %d punto%s%s", tema, points, plural, LINESEPARATOR);
     }
 
     @Nullable
@@ -58,56 +61,48 @@ public class InfoNivel extends DialogFragment {
 
         boolean bloqueado = getArguments().getBoolean("bloqueado");
         nivelConTerminado = getArguments().getParcelable("nivel");
+        int puntaje = getArguments().getInt("puntaje");
         nivel = nivelConTerminado.nivel;
 
         if (bloqueado){
             view = inflater.inflate(R.layout.popup_nivel_block, container);
-
-            TextView mensaje = view.findViewById(R.id.popup_nivel_bloqueado_mensaje);
-            mensaje.setText("¡Desbloquea todas las unidades previas para poder continuar!");
-
         }else if (nivel !=null) {
+            StringBuilder mensaje = new StringBuilder();
+
             view = inflater.inflate(R.layout.popup_nivel, container);
 
-            TextView textTitulo = view.findViewById(R.id.popup_titulo);
-            textTitulo.setText(String.format(Locale.getDefault(),"Ejercicio de %s", nivel.getTypeLevel().toString()));
+
+            mensaje.append(String.format(Locale.getDefault(),"Ejercicio de %s%s", nivel.getTypeLevel().toString(), LINESEPARATOR));
 
             //Si es mayor a 0 tiene información
             if (nivel.getComando()>0){
-                TextView textComando = view.findViewById(R.id.popup_comando);
-                textComando.setText(convertTemplateToString(nivel.getComando(),"comandos"));
-
-                textComando.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.popup_text_comando).setVisibility(View.VISIBLE);
+                mensaje.append(convertTemplateToString(nivel.getComando(),"Comandos"));
             }
 
             if (nivel.getSi() > 0){
-                TextView textSi = view.findViewById(R.id.popup_si);
-                textSi.setText(convertTemplateToString(nivel.getSi(), "si"));
-
-                textSi.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.popup_text_si).setVisibility(View.VISIBLE);
+               mensaje.append(convertTemplateToString(nivel.getSi(), "Si"));
             }
 
             if (nivel.getPara()>0){
-                TextView textPara = view.findViewById(R.id.popup_para);
-                textPara.setText(convertTemplateToString(nivel.getComando(), "para"));
-
-                textPara.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.popup_text_para).setVisibility(View.VISIBLE);
+                mensaje.append(convertTemplateToString(nivel.getComando(), "Para"));
             }
 
             if (nivel.getMientras()>0){
-                TextView textMientras = view.findViewById(R.id.popup_mientra);
-                textMientras.setText(convertTemplateToString(nivel.getComando(), "mientras"));
-
-                textMientras.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.popup_text_mientras).setVisibility(View.VISIBLE);
+                mensaje.append(convertTemplateToString(nivel.getComando(), "Mientras"));
             }
 
-            int backGroundColor = ContextCompat.getColor(getContext(), getColorBackground());
+            TextView mensajeInformacion = view.findViewById(R.id.popup_nivel_informacion);
+            mensajeInformacion.setText(mensaje);
+
+            int backGroundColor;
+            if (puntaje==100)
+                backGroundColor = ContextCompat.getColor(getContext(), R.color.md_yellow_700);
+            else
+                backGroundColor = ContextCompat.getColor(getContext(), getColorBackground());
+
             RelativeLayout relativeLayout = view.findViewById(R.id.popup_relative_root);
             ((GradientDrawable)relativeLayout.getBackground()).setColor(backGroundColor);
+
             MaterialButton button = view.findViewById(R.id.popup_boton_comenzar);
             button.setTextColor(backGroundColor);
         }
@@ -156,13 +151,8 @@ public class InfoNivel extends DialogFragment {
         WindowManager.LayoutParams params = window.getAttributes();
 
         //params.x = sourceX - dpToPx(110); // about half of confirm button size left of source view
-        params.y = sourceY - dpToPx((-heightView/2)+10); // below source view
+        params.y = sourceY - MetricsHelper.dpToPx((-heightView/2)+10, getContext()); // below source view
 
         window.setAttributes(params);
-    }
-
-    public int dpToPx(float valueInDp) {
-        DisplayMetrics metrics = getActivity().getResources().getDisplayMetrics();
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 }

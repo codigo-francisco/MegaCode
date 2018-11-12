@@ -11,85 +11,15 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/popup_nivel_informacion"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/popup_titulo"
-        android:text="Ejercicios de"
-        />
-
-    <TextView
-        android:id="@+id/popup_text_comando"
-        android:layout_width="@dimen/size_display_infonivel"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Comando"
-        android:layout_below="@id/popup_titulo"/>
-
-    <TextView
-        android:id="@+id/popup_comando"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:visibility="gone"
-        android:layout_below="@id/popup_titulo"
-        android:layout_toEndOf="@id/popup_text_comando"/>
-
-    <TextView
-        android:id="@+id/popup_text_si"
-        android:layout_width="@dimen/size_display_infonivel"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Si"
-        android:layout_below="@id/popup_text_comando"/>
-
-    <TextView
-        android:id="@+id/popup_si"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text=""
-        android:layout_below="@id/popup_text_comando"
-        android:layout_toEndOf="@id/popup_text_si"/>
-
-    <TextView
-        android:id="@+id/popup_text_para"
-        android:layout_width="@dimen/size_display_infonivel"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Para"
-        android:layout_below="@id/popup_text_si"/>
-
-    <TextView
-        android:id="@+id/popup_para"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text=""
-        android:layout_below="@id/popup_text_si"
-        android:layout_toEndOf="@id/popup_text_para"/>
-
-    <TextView
-        android:id="@+id/popup_text_mientras"
-        android:layout_width="@dimen/size_display_infonivel"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Mientras"
-        android:layout_below="@id/popup_text_para"/>
-
-    <TextView
-        android:id="@+id/popup_mientra"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text=""
-        android:layout_below="@id/popup_text_para"
-        android:layout_toEndOf="@id/popup_text_mientras"/>
+        android:layout_height="wrap_content" />
 
     <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/popup_text_mientras"
         android:id="@+id/popup_boton_comenzar"
+        android:layout_below="@+id/popup_nivel_informacion"
         android:layout_alignParentEnd="true"
         android:backgroundTint="@color/md_white_1000"
         android:text="Comenzar"/>

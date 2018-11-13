@@ -123,11 +123,11 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         }else{ //Actividad
             Intent intent = null;
 
-            switch(id){
+            /*switch(id){
                 case R.id.jugar:
                     intent = new Intent(this, MegaCodeAcitivity.class);
                     break;
-            }
+            }*/
 
             if (intent!=null){
                 result=true;

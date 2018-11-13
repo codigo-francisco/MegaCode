@@ -27,6 +27,7 @@
         android:elevation="11dp"
         app:fabCustomSize="64dp"
         app:maxImageSize="40dp"
+        android:visibility="gone"
         android:layout_margin="16dp"/>
 
 </FrameLayout>

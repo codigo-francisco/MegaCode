@@ -2,6 +2,10 @@ package com.megacode.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +14,7 @@ import android.widget.TextView;
 
 import com.megacode.R;
 import com.megacode.adapters.model.DataModel;
+import com.megacode.views.activities.ScoreActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +22,10 @@ import java.util.List;
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
     private List<DataModel> dataModels = new ArrayList<>();
-    private View.OnClickListener scoreListener;
+    private Activity activityOwner;
 
-    public CustomAdapter(View.OnClickListener scoreListener){
-        this.scoreListener = scoreListener;
-    }
-
-    public CustomAdapter(List<DataModel> dataModels, View.OnClickListener scoreListener){
-        this.scoreListener = scoreListener;
-        this.dataModels = dataModels;
+    public CustomAdapter(Activity activityOwner){
+        this.activityOwner = activityOwner;
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
@@ -56,7 +56,21 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
         switch (dataModel.getTypeFeed()){
             case PUNTAJE:
-                myViewHolder.itemView.setOnClickListener(scoreListener);
+                myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(view.getContext(), ScoreActivity.class);
+                        View sharedElement = view.findViewById(R.id.cards_layout_icon);
+                        ActivityOptions activityOptions =
+                                ActivityOptions.makeSceneTransitionAnimation(activityOwner,sharedElement,"score_icon");
+                        activityOwner.startActivity(intent, activityOptions.toBundle());
+                    }
+                });
+                break;
+            case JUEGO:
+                myViewHolder.itemView.setOnClickListener(dataModel.getClickListener());
+                break;
+            default:
                 break;
         }
 

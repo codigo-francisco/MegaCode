@@ -1,21 +1,28 @@
 package com.megacode.repositories;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 
 import com.megacode.R;
 import com.megacode.adapters.model.DataModel;
 import com.megacode.adapters.model.enumators.TypeFeed;
+import com.megacode.dao.NivelDao;
 import com.megacode.dao.UsuarioDao;
 import com.megacode.databases.DataBaseMegaCode;
 import com.megacode.models.FeedBack;
+import com.megacode.models.database.Nivel;
+import com.megacode.models.database.NivelConTerminado;
+import com.megacode.models.database.NivelTerminado;
 import com.megacode.models.database.Usuario;
 import com.megacode.models.response.NivelResponse;
 import com.megacode.models.response.PosicionesResponse;
 import com.megacode.services.MegaCodeService;
 import com.megacode.services.RuleInstance;
 import com.megacode.services.interfaces.FeedService;
+import com.megacode.views.activities.MegaCodeAcitivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +41,76 @@ public class FeedRepository {
 
     private MutableLiveData<List<DataModel>> dataModelMutableLiveData;
     private List<DataModel> data;
+    private NivelDao nivelDao;
     private UsuarioDao usuarioDao;
     private final static String TAG = FeedRepository.class.getName();
 
     public FeedRepository(Application application){
-        usuarioDao = DataBaseMegaCode.getDataBaseMegaCode(application).usuarioDao();
+        DataBaseMegaCode dataBaseMegaCode = DataBaseMegaCode.getDataBaseMegaCode(application);
+        usuarioDao = dataBaseMegaCode.usuarioDao();
+        nivelDao = dataBaseMegaCode.nivelDao();
         data = new ArrayList<>();
         dataModelMutableLiveData = new MutableLiveData<>();
+    }
+
+    public LiveData<DataModel> siguienteEjercicio(){
+        MutableLiveData<DataModel> siguienteEjercicio = new MutableLiveData<>();
+
+        AsyncTask.execute(()->{
+            List<NivelConTerminado> nivelesConTerminados = nivelDao.getNivelesConTerminados();
+
+            NivelTerminado nivelTerminado=null;
+            Nivel nivel=null;
+            int ultimoGrupo = -1;
+            int ultimoPuntaje = -1;
+
+            if (!nivelesConTerminados.isEmpty()){
+                for (NivelConTerminado nivelConTerminado : nivelesConTerminados) {
+                    if (!nivelConTerminado.nivelesTerminados.isEmpty()){
+                        nivelTerminado = nivelConTerminado.nivelesTerminados.get(0);
+                        if (nivel==null || nivel.getGrupo() >= ultimoGrupo && nivelTerminado.getPuntaje() < ultimoPuntaje){
+                            nivel = nivelConTerminado.nivel;
+                            ultimoGrupo = nivel.getGrupo();
+                            ultimoPuntaje = nivelTerminado.getPuntaje();
+                        }
+                    }
+                }
+            }
+
+            if (nivel!=null){
+                DataModel dataModel = createDataModelJuego(nivel.getNombre(), nivel.getRuta());
+
+                data.add(dataModel);
+                dataModelMutableLiveData.postValue(data);
+
+                siguienteEjercicio.postValue(dataModel);
+            }else{
+                Usuario usuario = usuarioDao.obtenerUsuarioSync();
+                FeedService feedService = MegaCodeService.getServicio(FeedService.class);
+                feedService.siguienteEjercicio(usuario.getToken(), usuario.getId()).enqueue(new Callback<NivelResponse>() {
+                    @Override
+                    public void onResponse(Call<NivelResponse> call, Response<NivelResponse> response) {
+                        if (response.isSuccessful()){
+                            NivelResponse nivelResponse = response.body();
+
+                            DataModel dataModel = createDataModelJuego(nivelResponse.getNombre(), nivelResponse.getRuta());
+
+                            data.add(dataModel);
+                            dataModelMutableLiveData.postValue(data);
+
+                            siguienteEjercicio.postValue(dataModel);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NivelResponse> call, Throwable t) {
+                        Log.e(TAG, t.getMessage(), t);
+                    }
+                });
+            }
+        });
+
+        return siguienteEjercicio;
     }
 
     public MutableLiveData<List<DataModel>> actualizarFeed(boolean borrarFeed){
@@ -113,28 +183,7 @@ public class FeedRepository {
                             }
                         });
 
-                feedService.siguienteEjercicio(token, id).enqueue(new Callback<NivelResponse>() {
-                    @Override
-                    public void onResponse(Call<NivelResponse> call, Response<NivelResponse> response) {
-                        if (response.isSuccessful()){
-                            NivelResponse nivelResponse = response.body();
-
-                            DataModel dataModel = new DataModel();
-                            dataModel.setTypeFeed(TypeFeed.JUEGO);
-                            dataModel.setTitle("Vamos a jugar");
-                            dataModel.setContent(String.format(Locale.getDefault(), "Comienza a jugar, prueba el nivel %s", nivelResponse.getNombre()));
-                            dataModel.setImagen(R.drawable.ic_baseline_videogame_asset_24px);
-
-                            data.add(dataModel);
-                            dataModelMutableLiveData.postValue(data);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<NivelResponse> call, Throwable t) {
-                        Log.e(TAG, t.getMessage(), t);
-                    }
-                });
+                siguienteEjercicio();
 
                 List<FeedBack> feedBacks = RuleInstance.getRuleInstance(usuario).getFeedbacks();
                 for (FeedBack feedBack: feedBacks){
@@ -153,6 +202,21 @@ public class FeedRepository {
 
 
         return dataModelMutableLiveData;
+    }
+
+    private DataModel createDataModelJuego(String nombreNivel, String rutaNivel){
+        DataModel dataModel = new DataModel();
+        dataModel.setTypeFeed(TypeFeed.JUEGO);
+        dataModel.setTitle("Vamos a jugar");
+        dataModel.setContent(String.format(Locale.getDefault(), "Comienza a jugar, prueba el nivel %s", nombreNivel));
+        dataModel.setClickListener(view -> {
+            Intent megaCodeIntent = new Intent(view.getContext(), MegaCodeAcitivity.class);
+            megaCodeIntent.putExtra("rutaNivel", rutaNivel);
+            view.getContext().startActivity(megaCodeIntent);
+        });
+        dataModel.setImagen(R.drawable.ic_baseline_videogame_asset_24px);
+
+        return dataModel;
     }
 
     public MutableLiveData<List<DataModel>> getDataModelMutableLiveData() {

@@ -17,11 +17,10 @@ import android.view.ViewGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.megacode.R;
 import com.megacode.adapters.AdapterRecyclerSkillTree;
+import com.megacode.adapters.model.DataModel;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelConTerminado;
-import com.megacode.models.parcelables.ParcelableLinkedList;
 import com.megacode.viewmodels.NivelViewModel;
-import com.megacode.views.activities.RootActivity;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -46,10 +45,16 @@ public class SkillTree extends Fragment {
         NivelViewModel nivelViewModel = ViewModelProviders.of(this).get(NivelViewModel.class);
 
         FloatingActionButton floatingActionButton =  view.findViewById(R.id.skilltree_play);
-        floatingActionButton.setOnClickListener(view1 -> {
-            RootActivity rootActivity = (RootActivity)getActivity();
-            rootActivity.selectFragment(R.id.jugar);
+        floatingActionButton.hide();
+
+        nivelViewModel.getSiguienteEjercicio().observe(this, new Observer<DataModel>() {
+            @Override
+            public void onChanged(DataModel dataModel) {
+                floatingActionButton.setOnClickListener(dataModel.getClickListener());
+                floatingActionButton.show();
+            }
         });
+
 
         RecyclerView recyclerView = view.findViewById(R.id.skill_tree_recyclerview);
         recyclerView.setHasFixedSize(true);

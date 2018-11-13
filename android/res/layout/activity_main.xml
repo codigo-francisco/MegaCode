@@ -17,7 +17,7 @@
             android:id="@+id/megacode_activity_webview"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.5"
+            android:layout_weight="1.2"
             />
 
         <FrameLayout

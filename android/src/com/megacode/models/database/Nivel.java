@@ -159,6 +159,30 @@ public class Nivel implements Parcelable {
         this.typeLevel = TypeLevel.values()[tipoNivel - 1];
     }
 
+    public int getColorBackground(){
+        int color;
+
+        switch (getTypeLevel()){
+            case COMANDO:
+                color = R.color.md_brown_600;
+                break;
+            case SI:
+                color = R.color.md_blue_700;
+                break;
+            case PARA:
+                color = R.color.md_yellow_700;
+                break;
+            case MIENTRAS:
+                color = R.color.md_purple_600;
+                break;
+            default:
+                color = R.color.md_blue_700;
+                break;
+        }
+
+        return color;
+    }
+
     @Override
     public int describeContents() {
         return 0;

@@ -23,14 +23,19 @@ public class GameplayScreen extends ScreenAdapter {
 
     public static final String TAG = GameplayScreen.class.getName();
 
-    OnscreenControls onscreenControls;
-    SpriteBatch batch;
-    long levelEndOverlayStartTime;
+    private OnscreenControls onscreenControls;
+    private SpriteBatch batch;
+    private long levelEndOverlayStartTime;
     public Level level;
     private ChaseCam chaseCam;
     private GigaGalHud hud;
     private VictoryOverlay victoryOverlay;
     private GameOverOverlay gameOverOverlay;
+    private String rutaNivel;
+
+    public GameplayScreen(String rutaNivel){
+        this.rutaNivel = rutaNivel;
+    }
 
     @Override
     public void show() {
@@ -132,8 +137,8 @@ public class GameplayScreen extends ScreenAdapter {
 
 //        level = Level.debugLevel();
 
-        String levelName = "levels/Tutorial.dt"; //Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
-        level = LevelLoader.load(levelName);
+        //String levelName = "levels/Tutorial.dt"; //Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
+        level = LevelLoader.load(rutaNivel);
 
         chaseCam.camera = level.viewport.getCamera();
         chaseCam.target = level.getGigaGal();
@@ -142,10 +147,10 @@ public class GameplayScreen extends ScreenAdapter {
     }
 
     public void levelComplete() {
-        startNewLevel();
+        //startNewLevel();
     }
 
     public void levelFailed() {
-        startNewLevel();
+        //startNewLevel();
     }
 }

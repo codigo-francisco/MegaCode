@@ -1,5 +1,8 @@
 package com.megacode.models.database;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,7 +30,7 @@ import static androidx.room.ForeignKey.CASCADE;
                     childColumns = "nivelId"
             )
     })
-public class NivelTerminado {
+public class NivelTerminado implements Parcelable {
     @PrimaryKey
     private long id;
     private int nivelId;
@@ -78,4 +81,38 @@ public class NivelTerminado {
     public void setPuntaje(int puntaje) {
         this.puntaje = puntaje;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeInt(this.nivelId);
+        dest.writeLong(this.usuarioId);
+        dest.writeByte(this.terminado ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.puntaje);
+    }
+
+    protected NivelTerminado(Parcel in) {
+        this.id = in.readLong();
+        this.nivelId = in.readInt();
+        this.usuarioId = in.readLong();
+        this.terminado = in.readByte() != 0;
+        this.puntaje = in.readInt();
+    }
+
+    public static final Parcelable.Creator<NivelTerminado> CREATOR = new Parcelable.Creator<NivelTerminado>() {
+        @Override
+        public NivelTerminado createFromParcel(Parcel source) {
+            return new NivelTerminado(source);
+        }
+
+        @Override
+        public NivelTerminado[] newArray(int size) {
+            return new NivelTerminado[size];
+        }
+    };
 }

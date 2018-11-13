@@ -1,5 +1,6 @@
 package com.megacode.views.fragments;
 
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -18,6 +19,7 @@ import com.megacode.R;
 import com.megacode.helpers.MetricsHelper;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelConTerminado;
+import com.megacode.views.activities.MegaCodeAcitivity;
 
 import java.util.Locale;
 
@@ -33,9 +35,6 @@ public class InfoNivel extends DialogFragment {
     public InfoNivel(){
         super();
     }
-
-    private Nivel nivel;
-    private NivelConTerminado nivelConTerminado;
 
     @Override
     public void onStart() {
@@ -60,9 +59,9 @@ public class InfoNivel extends DialogFragment {
         View view = null;
 
         boolean bloqueado = getArguments().getBoolean("bloqueado");
-        nivelConTerminado = getArguments().getParcelable("nivel");
+        NivelConTerminado nivelConTerminado = getArguments().getParcelable("nivel");
         int puntaje = getArguments().getInt("puntaje");
-        nivel = nivelConTerminado.nivel;
+        Nivel nivel = nivelConTerminado.nivel;
 
         if (bloqueado){
             view = inflater.inflate(R.layout.popup_nivel_block, container);
@@ -98,13 +97,20 @@ public class InfoNivel extends DialogFragment {
             if (puntaje==100)
                 backGroundColor = ContextCompat.getColor(getContext(), R.color.md_yellow_700);
             else
-                backGroundColor = ContextCompat.getColor(getContext(), getColorBackground());
+                backGroundColor = ContextCompat.getColor(getContext(), nivel.getColorBackground());
 
             RelativeLayout relativeLayout = view.findViewById(R.id.popup_relative_root);
             ((GradientDrawable)relativeLayout.getBackground()).setColor(backGroundColor);
 
+            String rutaNivel = nivel.getRuta();
             MaterialButton button = view.findViewById(R.id.popup_boton_comenzar);
             button.setTextColor(backGroundColor);
+            button.setOnClickListener(viewButton ->{
+                Intent megaCodeIntent = new Intent(getContext(), MegaCodeAcitivity.class);
+                megaCodeIntent.putExtra("rutaNivel", rutaNivel);
+                startActivity(megaCodeIntent);
+                dismiss();
+            });
         }
 
         //Cambiar posicion
@@ -115,30 +121,6 @@ public class InfoNivel extends DialogFragment {
         setDialogPosition(sourceX, sourceY, heightView);
 
         return view;
-    }
-
-    private int getColorBackground(){
-        int color;
-
-        switch (nivel.getTypeLevel()){
-            case COMANDO:
-                color = R.color.md_brown_600;
-                break;
-            case SI:
-                color = R.color.md_blue_700;
-                break;
-            case PARA:
-                color = R.color.md_yellow_700;
-                break;
-            case MIENTRAS:
-                color = R.color.md_purple_600;
-                break;
-            default:
-                color = R.color.md_blue_700;
-                break;
-        }
-
-        return color;
     }
 
     private void setDialogPosition(int sourceX, int sourceY, int heightView) {

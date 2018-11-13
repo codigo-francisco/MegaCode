@@ -76,16 +76,7 @@ public class FeedFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.feed_refreshlayout);
         swipeRefreshLayout.setOnRefreshListener(() -> feedViewModel.actualizarFeed(true));
 
-        customAdapter = new CustomAdapter(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), ScoreActivity.class);
-                View sharedElement = view.findViewById(R.id.cards_layout_icon);
-                ActivityOptions activityOptions =
-                        ActivityOptions.makeSceneTransitionAnimation(getActivity(),sharedElement,"score_icon");
-                startActivity(intent, activityOptions.toBundle());
-            }
-        });
+        customAdapter = new CustomAdapter(getActivity());
 
         recyclerView.setAdapter(customAdapter);
 

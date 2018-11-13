@@ -16,11 +16,16 @@ import com.udacity.gamedev.gigagal.GigaGalGame;
 public class GameFragment extends AndroidFragmentApplication {
 
     public static GigaGalGame GAME;
+    private String rutaNivel;
+
+    public GameFragment(String rutaNivel){
+        this.rutaNivel = rutaNivel;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        GigaGalGame game = new GigaGalGame();
+        GigaGalGame game = new GigaGalGame(rutaNivel);
         GAME = game;
         return initializeForView(game);
     }

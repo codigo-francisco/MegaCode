@@ -2,6 +2,7 @@ package com.megacode.views.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.megacode.R;
@@ -110,6 +112,17 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		Intent intent = getIntent();
+		String rutaNivel = null;
+		if (intent!=null){
+			rutaNivel = intent.getStringExtra("rutaNivel");
+		}
+
+		if (rutaNivel==null){
+			Toast.makeText(this, "No se ha cargado la ruta del nivel correctamente",Toast.LENGTH_LONG).show();
+			finish();
+		}
+
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
 		cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
@@ -143,34 +156,17 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		});
 
 		webView = findViewById(R.id.megacode_activity_webview);
-		webView.setWebViewClient(new WebViewClient(){
-			@Override
-			public void onPageFinished(WebView view, String url) {
-				//webView.loadUrl("javascript:onresize();");
-			}
-		});
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
-		/*webSettings.setAllowContentAccess(true);
-		webSettings.setAllowFileAccess(true);
-		webSettings.setAllowFileAccessFromFileURLs(true);
-		webSettings.setAllowUniversalAccessFromFileURLs(true);
-		webSettings.setBlockNetworkLoads(true);
-		webSettings.setLoadsImagesAutomatically(true);
-		webSettings.setDomStorageEnabled(true);
-		webSettings.setSupportZoom(true);
-		webSettings.setDisplayZoomControls(true);*/
 
 		webView.addJavascriptInterface(new WebViewJavaScriptInterface(this), "megacode");
 
 		webView.loadUrl("file:///android_asset/blockly/index.html");
 
-        findViewById(R.id.megacode_play).setOnClickListener(view -> {
-		    webView.loadUrl("javascript:runBlockly()");
-        });
+        findViewById(R.id.megacode_play).setOnClickListener(view -> webView.loadUrl("javascript:runBlockly()"));
 
         // Create libgdx fragment
-		GameFragment libgdxFragment = new GameFragment();
+		GameFragment libgdxFragment = new GameFragment(rutaNivel);
 
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 

@@ -2,6 +2,7 @@ package com.megacode.adapters.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.View;
 
 import com.megacode.adapters.model.enumators.TypeFeed;
 
@@ -11,6 +12,7 @@ public class DataModel implements Parcelable {
     private String title;
     private String content;
     private int _id;
+    private View.OnClickListener onClickListener;
 
     private TypeFeed typeFeed;
 
@@ -52,6 +54,14 @@ public class DataModel implements Parcelable {
 
     public void set_id(int _id) {
         this._id = _id;
+    }
+
+    public View.OnClickListener getClickListener(){
+        return this.onClickListener;
+    }
+
+    public void setClickListener(View.OnClickListener clickListener){
+        this.onClickListener = clickListener;
     }
 
     public DataModel() {

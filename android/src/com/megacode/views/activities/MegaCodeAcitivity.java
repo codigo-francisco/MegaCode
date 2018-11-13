@@ -20,7 +20,6 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,8 +31,8 @@ import com.megacode.R;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
 import com.megacode.views.fragments.GameFragment;
-import com.udacity.gamedev.gigagal.GameplayScreen;
-import com.udacity.gamedev.gigagal.Level;
+import com.megacode.GameplayScreen;
+import com.megacode.Level;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
@@ -159,7 +158,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 
-		webView.addJavascriptInterface(new WebViewJavaScriptInterface(this), "megacode");
+		webView.addJavascriptInterface(new WebViewJavaScriptInterface(), "megacode");
 
 		webView.loadUrl("file:///android_asset/blockly/index.html");
 
@@ -178,17 +177,14 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
     class WebViewJavaScriptInterface{
 
-        private Context context;
         private Level level;
-
-        public WebViewJavaScriptInterface(Context context){
-            this.context = context;
-        }
 
         @JavascriptInterface
         public void runBlockly(String code){
+        	GameplayScreen screen = (GameplayScreen)GameFragment.GAME.getScreen();
+
             if (level == null) {
-                level = ((GameplayScreen)GameFragment.GAME.getScreen()).level;
+                level = screen.level;
             }
 
             Log.d(TAG, code);

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.udacity.gamedev.gigagal.GigaGalGame;
+import com.megacode.GigaGalGame;
 
 /**
  * Created by Francisco on 22/02/2018.

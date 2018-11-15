@@ -1,7 +1,10 @@
 package com.megacode.views.activities;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -9,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +30,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.megacode.GigaGalGame;
 import com.megacode.R;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
@@ -37,6 +43,7 @@ import com.megacode.Level;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 import java.util.Arrays;
@@ -51,7 +58,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	private ImageView imageViewFace;
 	private LinearLayout linearLayoutCamera;
 	private WebView webView;
-
+	private GameFragment libgdxFragment;
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -62,8 +69,8 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		}
 	}
 
-	private int idMenuCamera = 0;
-	private int idRecargarBlockly = 1;
+	private final static int idMenuCamera = 0;
+	private final static int idRecargarBlockly = 1;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -164,28 +171,75 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
         findViewById(R.id.megacode_play).setOnClickListener(view -> webView.loadUrl("javascript:runBlockly()"));
 
-        // Create libgdx fragment
-		GameFragment libgdxFragment = new GameFragment(rutaNivel);
+        cargarJuego(rutaNivel);
+
+	}
+
+	private void cargarJuego(String rutaNivel){
+		// Create libgdx fragment
+		libgdxFragment = new GameFragment(rutaNivel);
+
+		libgdxFragment.getGame().addLoadGameListener(new GigaGalGame.LoadGameListener() {
+			@Override
+			public void loadedGame() {
+				libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(new GameplayScreen.NivelCompletadoListener() {
+					@Override
+					public void nivelTerminado(GameplayScreen screen) {
+						libgdxFragment.handler.post(new Runnable() {
+							@Override
+							public void run() {
+								AlertDialog alertDialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
+										.setTitle("Continuar los ejercicios")
+										.setMessage("¿Quieres pasar a otro nivel?")
+										.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialogInterface, int i) {
+												screen.dispose();
+												libgdxFragment.getGame().dispose();
+												libgdxFragment = null;
+												//Mejor solución pendiente
+												cargarJuego("levels/nivel2.dt");
+
+												//Obtener siguiente nivel, iniciarlo
+												//screen.startNewLevel();
+											}
+										})
+										.setNegativeButton("No", new DialogInterface.OnClickListener() {
+											@Override
+											public void onClick(DialogInterface dialogInterface, int i) {
+												MegaCodeAcitivity.this.finish();
+											}
+										})
+										.setCancelable(false)
+										.create();
+
+								alertDialog.show();
+							}
+						});
+					}
+				});
+			}
+		});
 
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-		transaction
-                .add(R.id.game_fragment, libgdxFragment)
-				.commit();
+		Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.game_fragment);
+
+		if (fragment!=null)
+			transaction.replace(R.id.game_fragment, libgdxFragment).commit();
+		else
+			transaction.add(R.id.game_fragment, libgdxFragment).commit();
+
 
 	}
 
     class WebViewJavaScriptInterface{
 
-        private Level level;
-
         @JavascriptInterface
         public void runBlockly(String code){
-        	GameplayScreen screen = (GameplayScreen)GameFragment.GAME.getScreen();
+        	GameplayScreen screen = libgdxFragment.getGamePlayScreen();
 
-            if (level == null) {
-                level = screen.level;
-            }
+			Level level = screen.level;
 
             Log.d(TAG, code);
 
@@ -218,6 +272,8 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	@Override
 	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame cvCameraViewFrame) {
 		lastFrame = cvCameraViewFrame.rgba();
+		//Core.flip(lastFrame, lastFrame,0);
+		//Core.transpose(lastFrame, lastFrame);
 		return  faceRecognition.markFace(lastFrame);
 	}
 }

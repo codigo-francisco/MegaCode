@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.megacode.GameplayScreen;
 import com.megacode.GigaGalGame;
 
 /**
@@ -15,18 +18,26 @@ import com.megacode.GigaGalGame;
 
 public class GameFragment extends AndroidFragmentApplication {
 
-    public static GigaGalGame GAME;
     private String rutaNivel;
+    private GigaGalGame game;
 
     public GameFragment(String rutaNivel){
         this.rutaNivel = rutaNivel;
+        this.game = new GigaGalGame(rutaNivel);
+    }
+
+    public GigaGalGame getGame() {
+        return game;
+    }
+
+    public GameplayScreen getGamePlayScreen(){
+        return (GameplayScreen)game.getScreen();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        GigaGalGame game = new GigaGalGame(rutaNivel);
-        GAME = game;
+
         return initializeForView(game);
     }
 }

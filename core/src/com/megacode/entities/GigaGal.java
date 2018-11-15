@@ -72,8 +72,7 @@ public class GigaGal {
         walkState = Enums.WalkState.NOT_WALKING;
 
         if (level.cam !=null) {
-            level.cam.resetCameraPosition();
-            level.cam.following = false;
+            level.cam.resetCameraPosition(false);
         }
     }
 
@@ -297,14 +296,14 @@ public class GigaGal {
             region = Assets.instance.gigaGalAssets.standingRight;
         } else if (facing == Direction.RIGHT && walkState == Enums.WalkState.WALKING) {
             float walkTimeSeconds = Utils.secondsSince(walkStartTime);
-            region = Assets.instance.gigaGalAssets.walkingRightAnimation.getKeyFrame(walkTimeSeconds);
+            region = (TextureRegion)Assets.instance.gigaGalAssets.walkingRightAnimation.getKeyFrame(walkTimeSeconds);
         } else if (facing == Direction.LEFT && jumpState != Enums.JumpState.GROUNDED) {
             region = Assets.instance.gigaGalAssets.jumpingLeft;
         } else if (facing == Direction.LEFT && walkState == Enums.WalkState.NOT_WALKING) {
             region = Assets.instance.gigaGalAssets.standingLeft;
         } else if (facing == Direction.LEFT && walkState == Enums.WalkState.WALKING) {
             float walkTimeSeconds = Utils.secondsSince(walkStartTime);
-            region = Assets.instance.gigaGalAssets.walkingLeftAnimation.getKeyFrame(walkTimeSeconds);
+            region = (TextureRegion)Assets.instance.gigaGalAssets.walkingLeftAnimation.getKeyFrame(walkTimeSeconds);
         }
 
         Utils.drawTextureRegion(batch, region, position, Constants.GIGAGAL_EYE_POSITION);

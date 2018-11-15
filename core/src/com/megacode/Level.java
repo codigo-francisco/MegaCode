@@ -82,14 +82,14 @@ public class Level {
             }
         }
 
-        cam.resetCameraPosition();
+        cam.resetCameraPosition(true);
         this.comandos = comandosEnum;
     }
 
-    private float secondsMovements = 1.5f;
-    private float jumpTime = .1f;
-    private float jumpMovements = 1f;
-    private float shootTime = .1f;
+    private final static float secondsMovements = 1.5f;
+    private final static float jumpTime = .1f;
+    private final static float jumpMovements = 1f;
+    private final static float shootTime = .1f;
     private Comando lastMovement = Comando.NADA;
 
     public void procesarComandos(){

@@ -44,10 +44,10 @@ public class ChaseCam extends GestureDetector.GestureAdapter {
 
     public float initialZoom;
 
-    public void resetCameraPosition(){
+    public void resetCameraPosition(boolean following){
         camera.position.x = target.getPosition().x;
         camera.position.y = target.getPosition().y;
-        following = true;
+        this.following = following;
         camera.zoom = initialZoom;
     }
 

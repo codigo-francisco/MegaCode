@@ -1,4 +1,4 @@
-package com.megacode.utils;
+package com.megacode.helpers;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

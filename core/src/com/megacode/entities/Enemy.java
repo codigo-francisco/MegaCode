@@ -25,7 +25,7 @@ public class Enemy {
         direction = Direction.RIGHT;
         position = new Vector2((platform.left+platform.right)/2, platform.top + Constants.ENEMY_CENTER.y);
         startTime = TimeUtils.nanoTime();
-        health = Constants.ENEMY_HEALTH;
+        health = 1; //Constants.ENEMY_HEALTH;
         bobOffset = MathUtils.random();
     }
 

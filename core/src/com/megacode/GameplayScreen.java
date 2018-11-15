@@ -8,15 +8,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.megacode.entities.GigaGal;
 import com.megacode.overlays.GameOverOverlay;
-import com.megacode.overlays.GigaGalHud;
-import com.megacode.overlays.OnscreenControls;
 import com.megacode.overlays.VictoryOverlay;
 import com.megacode.util.Assets;
 import com.megacode.util.ChaseCam;
 import com.megacode.util.Constants;
 import com.megacode.util.LevelLoader;
 import com.megacode.util.Utils;
+
 
 
 public class GameplayScreen extends ScreenAdapter {
@@ -56,7 +56,7 @@ public class GameplayScreen extends ScreenAdapter {
             Gdx.input.setInputProcessor(onscreenControls);
         }*/
 
-        startNewLevel();
+        startNewLevel(false);
     }
 
     private boolean onMobile() {
@@ -105,22 +105,18 @@ public class GameplayScreen extends ScreenAdapter {
     }
 
     private void renderLevelEndOverlays(SpriteBatch batch) {
-        if (level.gameOver) {
+        /*if (level.gameOver) {
 
             if (levelEndOverlayStartTime == 0) {
                 levelEndOverlayStartTime = TimeUtils.nanoTime();
-                gameOverOverlay.init();
             }
 
             gameOverOverlay.render(batch);
-            if (Utils.secondsSince(levelEndOverlayStartTime) > Constants.LEVEL_END_DURATION) {
-                levelEndOverlayStartTime = 0;
-                levelFailed();
-            }
-        } else if (level.victory) {
+        } else */
+        if (level.victory) {
             if (levelEndOverlayStartTime == 0) {
                 levelEndOverlayStartTime = TimeUtils.nanoTime();
-                victoryOverlay.init();
+                //victoryOverlay.init();
             }
 
             victoryOverlay.render(batch);
@@ -132,16 +128,31 @@ public class GameplayScreen extends ScreenAdapter {
         }
     }
 
-    private void startNewLevel() {
+    public void startNewLevel(String rutaNivel){
+        this.rutaNivel = rutaNivel;
+        startNewLevel(true);
+    }
+
+    public void startNewLevel(boolean restartRendering) {
 
 //        level = Level.debugLevel();
 
         //String levelName = "levels/Tutorial.dt"; //Constants.LEVELS[MathUtils.random(Constants.LEVELS.length - 1)];
+
+        if (restartRendering)
+            Gdx.graphics.setContinuousRendering(true);
+
         level = LevelLoader.load(rutaNivel);
 
         chaseCam.camera = (OrthographicCamera)level.viewport.getCamera();
         chaseCam.initialZoom = chaseCam.camera.zoom;
-        chaseCam.target = level.getGigaGal();
+
+        GigaGal gigaGal = level.getGigaGal();
+        gigaGal.justDied = false;
+
+        chaseCam.target = gigaGal;
+
+        chaseCam.resetCameraPosition(false);
 
         level.cam = chaseCam;
 
@@ -152,10 +163,23 @@ public class GameplayScreen extends ScreenAdapter {
     }
 
     public void levelComplete() {
-        //startNewLevel();
+        //Notificar nivelCompletado
+        Gdx.graphics.setContinuousRendering(false);
+        if (nivelCompletadoListener!=null)
+            nivelCompletadoListener.nivelTerminado(this);
     }
 
     public void levelFailed() {
         //startNewLevel();
+    }
+
+    private NivelCompletadoListener nivelCompletadoListener;
+
+    public void addNivelCompletadoListener(NivelCompletadoListener listener){
+        nivelCompletadoListener = listener;
+    }
+
+    public interface NivelCompletadoListener{
+        void nivelTerminado(GameplayScreen screen);
     }
 }

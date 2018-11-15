@@ -13,6 +13,18 @@ public class GigaGalGame extends Game {
     @Override
     public void create() {
         setScreen(new GameplayScreen(rutaNivel));
+        if (gameListener!=null){
+            gameListener.loadedGame();
+        }
     }
 
+    public void addLoadGameListener(LoadGameListener listener){
+        gameListener = listener;
+    }
+
+    private LoadGameListener gameListener;
+
+    public interface LoadGameListener{
+        void loadedGame();
+    }
 }

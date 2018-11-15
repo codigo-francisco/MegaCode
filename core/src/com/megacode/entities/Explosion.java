@@ -1,6 +1,7 @@
 package com.megacode.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.megacode.util.Assets;
@@ -22,7 +23,7 @@ public class Explosion {
         if (!isFinished() && !yetToStart()) {
             Utils.drawTextureRegion(
                     batch,
-                    Assets.instance.explosionAssets.explosion.getKeyFrame(Utils.secondsSince(startTime) - offset),
+                    (TextureRegion)Assets.instance.explosionAssets.explosion.getKeyFrame(Utils.secondsSince(startTime) - offset),
                     position.x - Constants.EXPLOSION_CENTER.x,
                     position.y - Constants.EXPLOSION_CENTER.y
             );

@@ -37,9 +37,18 @@ public class Nivel implements Parcelable {
     private int para;
     private String ruta;
     private int tipoNivel;
+    private String cadenaOptima;
 
     public Nivel() {
         lastRefresh = new Date();
+    }
+
+    public String getCadenaOptima() {
+        return cadenaOptima;
+    }
+
+    public void setCadenaOptima(String cadenaOptima){
+        this.cadenaOptima = cadenaOptima;
     }
 
     public int getGrupo() {
@@ -56,14 +65,6 @@ public class Nivel implements Parcelable {
 
     public void setPara(int para) {
         this.para = para;
-    }
-
-    public int getID() {
-        return id;
-    }
-
-    public void setID(int id) {
-        this.id = id;
     }
 
     public TypeLevel getTypeLevel() {
@@ -202,6 +203,7 @@ public class Nivel implements Parcelable {
         dest.writeInt(this.para);
         dest.writeString(this.ruta);
         dest.writeInt(this.tipoNivel);
+        dest.writeString(this.cadenaOptima);
     }
 
     protected Nivel(Parcel in) {
@@ -219,6 +221,7 @@ public class Nivel implements Parcelable {
         this.para = in.readInt();
         this.ruta = in.readString();
         this.tipoNivel = in.readInt();
+        this.cadenaOptima = in.readString();
     }
 
     public static final Creator<Nivel> CREATOR = new Creator<Nivel>() {

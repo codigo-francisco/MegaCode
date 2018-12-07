@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 
 import com.megacode.R;
 import com.megacode.adapters.model.DataModel;
@@ -27,19 +26,16 @@ import com.megacode.views.activities.MegaCodeAcitivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Executors;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class FeedRepository {
 
-    private MutableLiveData<List<DataModel>> dataModelMutableLiveData;
+    private MutableLiveData<List<DataModel>> feeds;
     private List<DataModel> data;
     private NivelDao nivelDao;
     private UsuarioDao usuarioDao;
@@ -50,7 +46,37 @@ public class FeedRepository {
         usuarioDao = dataBaseMegaCode.usuarioDao();
         nivelDao = dataBaseMegaCode.nivelDao();
         data = new ArrayList<>();
-        dataModelMutableLiveData = new MutableLiveData<>();
+        feeds = new MutableLiveData<>();
+    }
+
+    public DataModel siguienteEjercicioSync(){
+        DataModel siguienteEjercicio = null;
+
+        List<NivelConTerminado> nivelesConTerminados = nivelDao.getNivelesConTerminados();
+
+        NivelTerminado nivelTerminado=null;
+        Nivel nivel=null;
+        int ultimoGrupo = -1;
+        int ultimoPuntaje = -1;
+
+        if (!nivelesConTerminados.isEmpty()){
+            for (NivelConTerminado nivelConTerminado : nivelesConTerminados) {
+                if (!nivelConTerminado.nivelesTerminados.isEmpty()){
+                    nivelTerminado = nivelConTerminado.nivelesTerminados.get(0);
+                    if (nivel==null || nivel.getGrupo() >= ultimoGrupo && nivelTerminado.getPuntaje() < ultimoPuntaje){
+                        nivel = nivelConTerminado.nivel;
+                        ultimoGrupo = nivel.getGrupo();
+                        ultimoPuntaje = nivelTerminado.getPuntaje();
+                    }
+                }
+            }
+        }
+
+        if (nivel!=null){
+            siguienteEjercicio = createDataModelJuego(nivel.getNombre(), nivel.getRuta());
+        }
+
+        return siguienteEjercicio;
     }
 
     public LiveData<DataModel> siguienteEjercicio(){
@@ -81,7 +107,7 @@ public class FeedRepository {
                 DataModel dataModel = createDataModelJuego(nivel.getNombre(), nivel.getRuta());
 
                 data.add(dataModel);
-                dataModelMutableLiveData.postValue(data);
+                feeds.postValue(data);
 
                 siguienteEjercicio.postValue(dataModel);
             }else{
@@ -93,12 +119,14 @@ public class FeedRepository {
                         if (response.isSuccessful()){
                             NivelResponse nivelResponse = response.body();
 
-                            DataModel dataModel = createDataModelJuego(nivelResponse.getNombre(), nivelResponse.getRuta());
+                            if (nivelResponse!=null) {
+                                DataModel dataModel = createDataModelJuego(nivelResponse.getNombre(), nivelResponse.getRuta());
 
-                            data.add(dataModel);
-                            dataModelMutableLiveData.postValue(data);
+                                data.add(dataModel);
+                                feeds.postValue(data);
 
-                            siguienteEjercicio.postValue(dataModel);
+                                siguienteEjercicio.postValue(dataModel);
+                            }
                         }
                     }
 
@@ -172,7 +200,7 @@ public class FeedRepository {
                                         dataModel.setTitle("Sigue compitiendo");
 
                                         data.add(dataModel);
-                                        dataModelMutableLiveData.postValue(data);
+                                        feeds.postValue(data);
                                     }
                                 }
                             }
@@ -196,12 +224,12 @@ public class FeedRepository {
                     data.add(dataModel);
                 }
                 if (feedBacks.size()>0)
-                    dataModelMutableLiveData.postValue(data);
+                    feeds.postValue(data);
             }
         });
 
 
-        return dataModelMutableLiveData;
+        return feeds;
     }
 
     private DataModel createDataModelJuego(String nombreNivel, String rutaNivel){
@@ -219,7 +247,7 @@ public class FeedRepository {
         return dataModel;
     }
 
-    public MutableLiveData<List<DataModel>> getDataModelMutableLiveData() {
-        return dataModelMutableLiveData;
+    public LiveData<List<DataModel>> getFeeds() {
+        return feeds;
     }
 }

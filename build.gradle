@@ -82,6 +82,8 @@ project(":android") {
         implementation 'org.jeasy:easy-rules-support:3.2.0'
         implementation 'org.jeasy:easy-rules-tutorials:3.2.0'
 
+        //implementation 'org.apache.commons:commons-lang3:3.6'
+
         implementation 'com.github.bumptech.glide:glide:4.8.0'
         annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 

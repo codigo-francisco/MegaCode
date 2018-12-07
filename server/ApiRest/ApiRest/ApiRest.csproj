@@ -105,13 +105,16 @@
       <LastGenOutput>MegaCodeModel.Context.cs</LastGenOutput>
       <DependentUpon>MegaCodeModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Models\MegaCodeModel.edmx.sql" />
     <Content Include="Models\MegaCodeModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>MegaCodeModel.edmx</DependentUpon>
       <LastGenOutput>MegaCodeModel.cs</LastGenOutput>
     </Content>
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />

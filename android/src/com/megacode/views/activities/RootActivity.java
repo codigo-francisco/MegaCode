@@ -4,7 +4,10 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.navigation.NavigationView;
+import com.megacode.Claves;
 import com.megacode.R;
+import com.megacode.models.database.Usuario;
+import com.megacode.viewmodels.RootViewModel;
 import com.megacode.views.fragments.FeedFragment;
 import com.megacode.views.fragments.PerfilFragment;
 import com.megacode.views.fragments.ProgresoFragment;
@@ -15,8 +18,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
+import android.preference.PreferenceManager;
 import android.util.SparseArray;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -29,11 +38,21 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     private int RESULT_GAME = 1;
     private NavigationView navigationView;
     private Toolbar toolbarMenu;
+    private RootViewModel rootViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
+
+        rootViewModel = ViewModelProviders.of(this).get(RootViewModel.class);
+        rootViewModel.obtenerUsuario().observe(this, new Observer<Usuario>() {
+            @Override
+            public void onChanged(Usuario usuario) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RootActivity.this);
+                sharedPreferences.edit().putLong(Claves.ID_USUARIO, usuario.getId()).apply();
+            }
+        });
 
         toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);

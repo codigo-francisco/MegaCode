@@ -31,6 +31,7 @@ namespace ApiRest.Models
         public int dificultad { get; set; }
         public int grupo { get; set; }
         public short tipoNivel { get; set; }
+        public string cadenaOptima { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Niveles_Terminados> Niveles_Terminados { get; set; }

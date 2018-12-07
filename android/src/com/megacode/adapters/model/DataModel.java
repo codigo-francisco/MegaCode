@@ -12,6 +12,7 @@ public class DataModel implements Parcelable {
     private String title;
     private String content;
     private int _id;
+    private Object data;
     private View.OnClickListener onClickListener;
 
     private TypeFeed typeFeed;
@@ -62,6 +63,14 @@ public class DataModel implements Parcelable {
 
     public void setClickListener(View.OnClickListener clickListener){
         this.onClickListener = clickListener;
+    }
+
+    public Object getData(){
+        return data;
+    }
+
+    public void setData(Object object){
+        data = object;
     }
 
     public DataModel() {

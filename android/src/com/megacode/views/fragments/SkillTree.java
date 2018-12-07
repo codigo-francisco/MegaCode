@@ -70,22 +70,9 @@ public class SkillTree extends Fragment {
             }
         });
 
-        if (savedInstanceState!=null){
-            if (savedInstanceState.getParcelable("nodes")!=null){
-                //adapterRecyclerSkillTree.setData(((ParcelableLinkedList)savedInstanceState.getParcelable("nodes")).nodes);
-            }
-        }else{
-            nivelViewModel.listarNiveles();
-        }
+        nivelViewModel.listarNiveles();
 
         return view;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        //ParcelableLinkedList parcelableLinkedList = new ParcelableLinkedList(nodes);
-        //outState.putParcelable("nodes", parcelableLinkedList);
-        super.onSaveInstanceState(outState);
     }
 
 }

@@ -1,44 +1,26 @@
 package com.megacode.views.fragments;
 
 
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.megacode.R;
 import com.megacode.adapters.CustomAdapter;
-import com.megacode.adapters.model.enumators.TypeFeed;
-import com.megacode.models.database.Usuario;
-import com.megacode.services.RuleInstance;
 import com.megacode.adapters.model.DataModel;
-import com.megacode.models.FeedBack;
-import com.megacode.models.response.NivelResponse;
-import com.megacode.models.response.PosicionesResponse;
 import com.megacode.viewmodels.FeedViewModel;
-import com.megacode.viewmodels.UsuarioViewModel;
-import com.megacode.views.activities.ScoreActivity;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,7 +44,7 @@ public class FeedFragment extends Fragment {
 
         feedViewModel = ViewModelProviders.of(this).get(FeedViewModel.class);
 
-        feedViewModel.getDataModelMutableLiveData().observe(this, dataModels -> {
+        feedViewModel.getFeeds().observe(this, dataModels -> {
             customAdapter.setData(dataModels);
             swipeRefreshLayout.setRefreshing(false);
         });

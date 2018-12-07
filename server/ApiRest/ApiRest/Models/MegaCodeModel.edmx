@@ -10,10 +10,10 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="usuarioId" Type="bigint" />
           <Property Name="entrada" Type="datetime" Nullable="false" />
           <Property Name="salida" Type="datetime" />
           <Property Name="duracion" Type="int" />
+          <Property Name="usuarioId" Type="bigint" />
         </EntityType>
         <EntityType Name="ConexionSesion">
           <Key>
@@ -30,7 +30,7 @@
           <Property Name="id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="sesionId" Type="uniqueidentifier" />
           <Property Name="etiqueta" Type="varchar" MaxLength="50" />
-          <Property Name="tiempo" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="tiempo" Type="binary" MaxLength="8" Nullable="false" StoreGeneratedPattern="Computed" />
           <Property Name="fotografia" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Nivel">
@@ -47,6 +47,7 @@
           <Property Name="dificultad" Type="int" Nullable="false" />
           <Property Name="grupo" Type="int" Nullable="false" />
           <Property Name="tipoNivel" Type="smallint" Nullable="false" />
+          <Property Name="cadenaOptima" Type="varchar" MaxLength="30" Nullable="false" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -65,7 +66,7 @@
           <Property Name="id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="usuarioId" Type="bigint" />
           <Property Name="nivelId" Type="int" />
-          <Property Name="tiempo" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="tiempo" Type="binary" MaxLength="8" Nullable="false" StoreGeneratedPattern="Computed" />
           <Property Name="intentos" Type="int" />
           <Property Name="ayudas" Type="int" />
           <Property Name="inactividad" Type="int" />
@@ -201,21 +202,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="obtenerMarcadorUsuario" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
-          <Parameter Name="id" Type="bigint" Mode="In" />
-          <ReturnType>
-            <CollectionType>
-              <RowType>
-                <Property Name="nombre" Type="varchar" MaxLength="200" Nullable="false" />
-                <Property Name="comandos" Type="smallint" Nullable="false" />
-                <Property Name="si" Type="smallint" Nullable="false" />
-                <Property Name="para" Type="smallint" Nullable="false" />
-                <Property Name="mientras" Type="smallint" Nullable="false" />
-                <Property Name="total" Type="smallint" />
-              </RowType>
-            </CollectionType>
-          </ReturnType>
-        </Function>
         <EntityContainer Name="MegacodeModelStoreContainer">
           <EntitySet Name="Conexion" EntityType="Self.Conexion" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ConexionSesion" EntityType="Self.ConexionSesion" Schema="dbo" store:Type="Tables" />
@@ -306,6 +292,7 @@
           <Property Name="grupo" Type="Int32" Nullable="false" />
           <Property Name="tipoNivel" Type="Int16" Nullable="false" />
           <NavigationProperty Name="TipoNivel1" Relationship="MegacodeModel.FK_Nivel_TipoNivel" FromRole="Nivel" ToRole="TipoNivel" />
+          <Property Name="cadenaOptima" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -549,119 +536,107 @@
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
-      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="MegacodeModelStoreContainer" CdmEntityContainer="megacodeEntities">
-          <EntitySetMapping Name="Conexion">
-            <EntityTypeMapping TypeName="MegacodeModel.Conexion">
-              <MappingFragment StoreEntitySet="Conexion">
-                <ScalarProperty Name="usuarioId" ColumnName="usuarioId" />
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MegacodeModelStoreContainer" CdmEntityContainer="megacodeEntities">
+    <EntitySetMapping Name="Conexion">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Conexion)">
+        <MappingFragment StoreEntitySet="Conexion">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="entrada" ColumnName="entrada" />
+          <ScalarProperty Name="salida" ColumnName="salida" />
+          <ScalarProperty Name="duracion" ColumnName="duracion" />
+          <ScalarProperty Name="usuarioId" ColumnName="usuarioId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Emociones_Sesion">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Emociones_Sesion)">
+        <MappingFragment StoreEntitySet="Emociones_Sesion">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="sesionId" ColumnName="sesionId" />
+          <ScalarProperty Name="etiqueta" ColumnName="etiqueta" />
+          <ScalarProperty Name="tiempo" ColumnName="tiempo" />
+          <ScalarProperty Name="fotografia" ColumnName="fotografia" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Nivel">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Nivel)">
+        <MappingFragment StoreEntitySet="Nivel">
+          <ScalarProperty Name="cadenaOptima" ColumnName="cadenaOptima" />
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="entrada" ColumnName="entrada" />
-                <ScalarProperty Name="salida" ColumnName="salida" />
-                <ScalarProperty Name="duracion" ColumnName="duracion" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Emociones_Sesion">
-            <EntityTypeMapping TypeName="MegacodeModel.Emociones_Sesion">
-              <MappingFragment StoreEntitySet="Emociones_Sesion">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="sesionId" ColumnName="sesionId" />
-                <ScalarProperty Name="etiqueta" ColumnName="etiqueta" />
-                <ScalarProperty Name="tiempo" ColumnName="tiempo" />
-                <ScalarProperty Name="fotografia" ColumnName="fotografia" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Nivel">
-            <EntityTypeMapping TypeName="MegacodeModel.Nivel">
-              <MappingFragment StoreEntitySet="Nivel">
-                <ScalarProperty Name="tipoNivel" ColumnName="tipoNivel" />
-                <ScalarProperty Name="grupo" ColumnName="grupo" />
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="ruta" ColumnName="ruta" />
-                <ScalarProperty Name="comandos" ColumnName="comandos" />
-                <ScalarProperty Name="si" ColumnName="si" />
-                <ScalarProperty Name="para" ColumnName="para" />
-                <ScalarProperty Name="mientras" ColumnName="mientras" />
-                <ScalarProperty Name="dificultad" ColumnName="dificultad" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Niveles_Terminados">
-            <EntityTypeMapping TypeName="MegacodeModel.Niveles_Terminados">
-              <MappingFragment StoreEntitySet="Niveles_Terminados">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
-                <ScalarProperty Name="NivelId" ColumnName="NivelId" />
-                <ScalarProperty Name="terminado" ColumnName="terminado" />
-                <ScalarProperty Name="puntaje" ColumnName="puntaje" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Usuario">
-            <EntityTypeMapping TypeName="MegacodeModel.Usuario">
-              <MappingFragment StoreEntitySet="Usuario">
-                <ScalarProperty Name="fotoPerfil" ColumnName="fotoPerfil" />
-                <ScalarProperty Name="contrasena" ColumnName="contrasena" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="edad" ColumnName="edad" />
-                <ScalarProperty Name="sexo" ColumnName="sexo" />
-                <ScalarProperty Name="comandos" ColumnName="comandos" />
-                <ScalarProperty Name="si" ColumnName="si" />
-                <ScalarProperty Name="para" ColumnName="para" />
-                <ScalarProperty Name="mientras" ColumnName="mientras" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ConexionSesion">
-            <EntityTypeMapping TypeName="MegacodeModel.ConexionSesion">
-              <MappingFragment StoreEntitySet="ConexionSesion">
-                <ScalarProperty Name="conexionId" ColumnName="conexionId" />
-                <ScalarProperty Name="sesionId" ColumnName="sesionId" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Sesion">
-            <EntityTypeMapping TypeName="MegacodeModel.Sesion">
-              <MappingFragment StoreEntitySet="Sesion">
-                <ScalarProperty Name="inactividad" ColumnName="inactividad" />
-                <ScalarProperty Name="ayudas" ColumnName="ayudas" />
-                <ScalarProperty Name="intentos" ColumnName="intentos" />
-                <ScalarProperty Name="tiempo" ColumnName="tiempo" />
-                <ScalarProperty Name="nivelId" ColumnName="nivelId" />
-                <ScalarProperty Name="usuarioId" ColumnName="usuarioId" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TipoNivel">
-            <EntityTypeMapping TypeName="MegacodeModel.TipoNivel">
-              <MappingFragment StoreEntitySet="TipoNivel">
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="obtenerMarcadorUsuario" FunctionName="MegacodeModel.Store.obtenerMarcadorUsuario">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="MegacodeModel.obtenerMarcadorUsuario_Result1">
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
-                <ScalarProperty Name="comandos" ColumnName="comandos" />
-                <ScalarProperty Name="si" ColumnName="si" />
-                <ScalarProperty Name="para" ColumnName="para" />
-                <ScalarProperty Name="mientras" ColumnName="mientras" />
-                <ScalarProperty Name="total" ColumnName="total" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-        </EntityContainerMapping>
-      </Mapping>
-    </edmx:Mappings>
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="ruta" ColumnName="ruta" />
+          <ScalarProperty Name="comandos" ColumnName="comandos" />
+          <ScalarProperty Name="si" ColumnName="si" />
+          <ScalarProperty Name="para" ColumnName="para" />
+          <ScalarProperty Name="mientras" ColumnName="mientras" />
+          <ScalarProperty Name="dificultad" ColumnName="dificultad" />
+          <ScalarProperty Name="grupo" ColumnName="grupo" />
+          <ScalarProperty Name="tipoNivel" ColumnName="tipoNivel" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Niveles_Terminados">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Niveles_Terminados)">
+        <MappingFragment StoreEntitySet="Niveles_Terminados">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
+          <ScalarProperty Name="NivelId" ColumnName="NivelId" />
+          <ScalarProperty Name="terminado" ColumnName="terminado" />
+          <ScalarProperty Name="puntaje" ColumnName="puntaje" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Usuario">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Usuario)">
+        <MappingFragment StoreEntitySet="Usuario">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="edad" ColumnName="edad" />
+          <ScalarProperty Name="sexo" ColumnName="sexo" />
+          <ScalarProperty Name="comandos" ColumnName="comandos" />
+          <ScalarProperty Name="si" ColumnName="si" />
+          <ScalarProperty Name="para" ColumnName="para" />
+          <ScalarProperty Name="mientras" ColumnName="mientras" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="contrasena" ColumnName="contrasena" />
+          <ScalarProperty Name="fotoPerfil" ColumnName="fotoPerfil" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ConexionSesion">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.ConexionSesion)">
+        <MappingFragment StoreEntitySet="ConexionSesion">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="sesionId" ColumnName="sesionId" />
+          <ScalarProperty Name="conexionId" ColumnName="conexionId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sesion">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Sesion)">
+        <MappingFragment StoreEntitySet="Sesion">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="usuarioId" ColumnName="usuarioId" />
+          <ScalarProperty Name="nivelId" ColumnName="nivelId" />
+          <ScalarProperty Name="tiempo" ColumnName="tiempo" />
+          <ScalarProperty Name="intentos" ColumnName="intentos" />
+          <ScalarProperty Name="ayudas" ColumnName="ayudas" />
+          <ScalarProperty Name="inactividad" ColumnName="inactividad" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TipoNivel">
+      <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.TipoNivel)">
+        <MappingFragment StoreEntitySet="TipoNivel">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
   <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
@@ -675,7 +650,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="false" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
       </DesignerInfoPropertySet>
     </Options>

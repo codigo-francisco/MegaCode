@@ -107,7 +107,7 @@ public class InfoNivel extends DialogFragment {
             button.setTextColor(backGroundColor);
             button.setOnClickListener(viewButton ->{
                 Intent megaCodeIntent = new Intent(getContext(), MegaCodeAcitivity.class);
-                megaCodeIntent.putExtra("rutaNivel", rutaNivel);
+                megaCodeIntent.putExtra("nivel", nivel);
                 startActivity(megaCodeIntent);
                 dismiss();
             });

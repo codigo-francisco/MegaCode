@@ -31,7 +31,8 @@ namespace ApiRest.Controllers
                        n.si,
                        n.para,
                        n.ruta,
-                       n.tipoNivel
+                       n.tipoNivel,
+                       n.cadenaOptima
                    });
         }
 
@@ -52,7 +53,8 @@ namespace ApiRest.Controllers
                               n.si,
                               n.para,
                               n.ruta,
-                              n.tipoNivel
+                              n.tipoNivel,
+                              n.cadenaOptima
                           };
 
             var nivelesTerminados = from nt in entities.Niveles_Terminados

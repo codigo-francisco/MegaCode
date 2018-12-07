@@ -125,4 +125,8 @@ public class NivelRepository {
     public MutableLiveData<LinkedList<List<NivelConTerminado>>> getNiveles() {
         return nivelesLiveData;
     }
+
+    public void actualizarNivel(Nivel nivel){
+        AsyncTask.execute(()-> nivelDao.update(nivel));
+    }
 }

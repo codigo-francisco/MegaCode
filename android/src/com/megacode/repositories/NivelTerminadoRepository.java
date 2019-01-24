@@ -15,6 +15,10 @@ public class NivelTerminadoRepository {
         nivelTerminadoDao = DataBaseMegaCode.getDataBaseMegaCode(application).nivelTerminadoDao();
     }
 
+    public void insertarNivelTerminadoSync(NivelTerminado nivelTerminado){
+        nivelTerminadoDao.insert(nivelTerminado);
+    }
+
     public void insertarNivelTerminado(NivelTerminado nivelTerminado){
         AsyncTask.execute( () -> { nivelTerminadoDao.insert(nivelTerminado); } );
     }

@@ -3,12 +3,14 @@ package com.megacode;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.megacode.entities.GigaGal;
+import com.megacode.models.InfoNivel;
 import com.megacode.overlays.GameOverOverlay;
 import com.megacode.overlays.VictoryOverlay;
 import com.megacode.util.Assets;
@@ -27,14 +29,14 @@ public class GameplayScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private long levelEndOverlayStartTime;
     public Level level;
-    public ChaseCam chaseCam;
+    public static ChaseCam chaseCam;
     //private GigaGalHud hud;
     private VictoryOverlay victoryOverlay;
     private GameOverOverlay gameOverOverlay;
-    private String rutaNivel;
+    private static InfoNivel infoNivel;
 
-    public GameplayScreen(String rutaNivel){
-        this.rutaNivel = rutaNivel;
+    public GameplayScreen(InfoNivel infoNivel){
+        GameplayScreen.infoNivel = infoNivel;
     }
 
     @Override
@@ -128,8 +130,8 @@ public class GameplayScreen extends ScreenAdapter {
         }
     }
 
-    public void startNewLevel(String rutaNivel){
-        this.rutaNivel = rutaNivel;
+    public void startNewLevel(InfoNivel infoNivel){
+        GameplayScreen.infoNivel = infoNivel;
         startNewLevel(true);
     }
 
@@ -142,21 +144,19 @@ public class GameplayScreen extends ScreenAdapter {
         if (restartRendering)
             Gdx.graphics.setContinuousRendering(true);
 
-        level = LevelLoader.load(rutaNivel);
+        level = LevelLoader.load(infoNivel.rutaNivel);
 
+        level.cam = chaseCam;
         chaseCam.camera = (OrthographicCamera)level.viewport.getCamera();
-        chaseCam.initialZoom = chaseCam.camera.zoom;
 
         GigaGal gigaGal = level.getGigaGal();
         gigaGal.justDied = false;
 
         chaseCam.target = gigaGal;
+        chaseCam.zoom = infoNivel.zoomInicial;
+        chaseCam.resetCameraPosition(true);
 
-        chaseCam.resetCameraPosition(false);
-
-        level.cam = chaseCam;
-
-        Gdx.input.setInputProcessor(new GestureDetector(chaseCam));
+        //Gdx.input.setInputProcessor(new GestureDetector(chaseCam));
 
         //onscreenControls.gigaGal = level.getGigaGal();
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

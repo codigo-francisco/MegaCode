@@ -82,6 +82,14 @@ public class NivelTerminado implements Parcelable {
         this.puntaje = puntaje;
     }
 
+    public long getNewId(){
+        return Long.parseLong(Long.toString(nivelId) + usuarioId);
+    }
+
+    public void setNewId(){
+        id = Long.parseLong(Long.toString(nivelId) + usuarioId);
+    }
+
     @Override
     public int describeContents() {
         return 0;

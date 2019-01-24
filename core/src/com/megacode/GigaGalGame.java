@@ -1,18 +1,19 @@
 package com.megacode;
 
 import com.badlogic.gdx.Game;
+import com.megacode.models.InfoNivel;
 
 public class GigaGalGame extends Game {
 
-    private String rutaNivel;
+    private InfoNivel infoNivel;
 
-    public GigaGalGame(String rutaNivel){
-        this.rutaNivel = rutaNivel;
+    public GigaGalGame(InfoNivel infoNivel){
+        this.infoNivel = infoNivel;
     }
 
     @Override
     public void create() {
-        setScreen(new GameplayScreen(rutaNivel));
+        setScreen(new GameplayScreen(infoNivel));
         if (gameListener!=null){
             gameListener.loadedGame();
         }

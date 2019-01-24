@@ -31,7 +31,7 @@ public class NivelViewModel extends AndroidViewModel {
         nivelRepository.listarNiveles();
     }
 
-    public MutableLiveData<LinkedList<List<NivelConTerminado>>> getNiveles() {
+    public LiveData<LinkedList<List<NivelConTerminado>>> getNiveles() {
         return nivelRepository.getNiveles();
     }
 

@@ -38,6 +38,7 @@ public class Nivel implements Parcelable {
     private String ruta;
     private int tipoNivel;
     private String cadenaOptima;
+    private float zoomInicial;
 
     public Nivel() {
         lastRefresh = new Date();
@@ -184,6 +185,14 @@ public class Nivel implements Parcelable {
         return color;
     }
 
+    public float getZoomInicial(){
+        return zoomInicial;
+    }
+
+    public void setZoomInicial(float zoomInicial){
+        this.zoomInicial = zoomInicial;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -204,6 +213,7 @@ public class Nivel implements Parcelable {
         dest.writeString(this.ruta);
         dest.writeInt(this.tipoNivel);
         dest.writeString(this.cadenaOptima);
+        dest.writeFloat(this.zoomInicial);
     }
 
     protected Nivel(Parcel in) {
@@ -222,6 +232,7 @@ public class Nivel implements Parcelable {
         this.ruta = in.readString();
         this.tipoNivel = in.readInt();
         this.cadenaOptima = in.readString();
+        this.zoomInicial = in.readFloat();
     }
 
     public static final Creator<Nivel> CREATOR = new Creator<Nivel>() {

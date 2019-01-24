@@ -12,23 +12,23 @@ namespace ApiRest.Controllers
     [RoutePrefix("api/score")]
     public class ScoreController : ApiController
     {
-        megacodeEntities entities = new megacodeEntities();
+        MegacodeEntities entities = new MegacodeEntities();
 
         [HttpGet]
         [AllowAnonymous]
         public IHttpActionResult ObtenerScores()
         {
-            var query = (from u in entities.Usuario
-                         join c in entities.Conexion on u.id equals c.usuarioId
-                         select new
-                         {
-                             u.nombre,
-                             score = u.comandos + u.si + u.para + u.mientras,
-                             dia = c.entrada.Day,
-                             mes = c.entrada.Month,
-                             anio = c.entrada.Year,
-                             u.fotoPerfil
-                         }).Take(10).OrderByDescending(o => o.score);
+            var query = entities.Usuario
+                .Join(entities.Conexion, u => u.id, c => c.usuarioId, (u,c) =>
+                new
+                {
+                    u.nombre,
+                    score = u.comandos + u.si + u.para + u.mientras,
+                    dia = c.entrada.Day,
+                    mes = c.entrada.Month,
+                    anio = c.entrada.Year,
+                    u.fotoPerfil
+                }).Take(10).OrderByDescending(o => o.score);
 
             return Json(query);
                 

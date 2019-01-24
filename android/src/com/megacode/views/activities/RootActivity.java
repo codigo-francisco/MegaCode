@@ -1,5 +1,6 @@
 package com.megacode.views.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -171,6 +172,10 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
                     navigationView.setCheckedItem(selectedFragment);
                     selectFragment(selectedFragment);
                 }
+            }
+        } else if (requestCode==Claves.ABRIR_NIVEL_MEGACODE) {
+            if (resultCode == Activity.RESULT_OK){
+                getSupportFragmentManager().findFragmentByTag(tags.get(R.id.progreso)).onActivityResult(requestCode, resultCode, data);
             }
         }
     }

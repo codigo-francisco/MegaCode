@@ -7,48 +7,24 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.megacode.entities.GigaGal;
 
-public class ChaseCam extends GestureDetector.GestureAdapter {
+public class ChaseCam {
 
     public static final String TAG = ChaseCam.class.getName();
 
     public OrthographicCamera camera;
     public GigaGal target;
-    public Boolean following;
-    private final static float MOVEMENT = .5f;
-    private float currentZoom;
+    private Boolean following;
+    public float zoom;
 
     public ChaseCam() {
         following = false;
     }
 
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-
-        camera.translate(-deltaX * currentZoom * MOVEMENT,deltaY * currentZoom * MOVEMENT);
-
-        return true;
-    }
-
-    @Override
-    public boolean zoom(float initialDistance, float distance) {
-
-        camera.zoom = (initialDistance / distance) * currentZoom;
-        return true;
-    }
-
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
-        currentZoom = camera.zoom;
-        return true;
-    }
-
-    public float initialZoom;
-
     public void resetCameraPosition(boolean following){
         camera.position.x = target.getPosition().x;
         camera.position.y = target.getPosition().y;
         this.following = following;
-        camera.zoom = initialZoom;
+        camera.zoom = this.zoom;
     }
 
     public void update(float delta) {

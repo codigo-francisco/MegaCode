@@ -22,6 +22,8 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -45,6 +47,7 @@ import com.megacode.GigaGalGame;
 import com.megacode.R;
 import com.megacode.adapters.model.DataModel;
 import com.megacode.helpers.StringHelper;
+import com.megacode.models.InfoNivel;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelTerminado;
 import com.megacode.models.database.Usuario;
@@ -171,12 +174,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 				Utils.matToBitmap(lastFrame, imageFace);
 				imageViewFace.setImageBitmap(imageFace);
 				textViewEmotion.setText("Detectando emocion...");
-				faceRecognition.detectEmotion(lastFrame, new CustomCallback<String>() {
-					@Override
-					public void processResponse(String response) {
-						textViewEmotion.setText(response);
-					}
-				});
+				faceRecognition.detectEmotion(lastFrame, response -> textViewEmotion.setText(response));
 			}
 		});
 
@@ -192,12 +190,16 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
         findViewById(R.id.megacode_play).setOnClickListener(view -> webView.loadUrl("javascript:runBlockly()"));
 
-        cargarJuego(nivelActual.getRuta());
+        InfoNivel infoNivel = new InfoNivel();
+        infoNivel.rutaNivel = nivelActual.getRuta();
+        infoNivel.zoomInicial = nivelActual.getZoomInicial();
+
+        cargarJuego(infoNivel);
 	}
 
-	private void cargarJuego(String rutaNivel){
+	private void cargarJuego(InfoNivel infoNivel){
 		// Create libgdx fragment
-		libgdxFragment = new GameFragment(rutaNivel);
+		libgdxFragment = new GameFragment(infoNivel);
 
 		libgdxFragment.getGame().addLoadGameListener(new GigaGalGame.LoadGameListener() {
             @Override
@@ -213,12 +215,14 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
                         NivelTerminado nivelTerminado = new NivelTerminado();
                         nivelTerminado.setNivelId(nivelActual.getId());
                         nivelTerminado.setPuntaje(puntaje);
-                        nivelTerminado.setTerminado(puntaje < 100);
+                        nivelTerminado.setTerminado(puntaje > 0);
                         long idUsuario = PreferenceManager.getDefaultSharedPreferences(MegaCodeAcitivity.this).getLong(Claves.ID_USUARIO, 0);
                         nivelTerminado.setUsuarioId(idUsuario);
-                        megaCodeViewModel.insertarNivelTerminado(nivelTerminado);
-
-                        runOnUiThread(() -> {
+                        nivelTerminado.setNewId();
+                        megaCodeViewModel.insertarNivelTerminadoSync(nivelTerminado);
+						MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
+						MegaCodeAcitivity.this.finish();
+                        /*runOnUiThread(() -> {
                             DataModel siguienteEjercicio = megaCodeViewModel.siguienteEjercicioSync();
                             if (siguienteEjercicio != null) {
                                 libgdxFragment.handler.post(new Runnable() {
@@ -232,7 +236,9 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
                                                     libgdxFragment.getGame().dispose();
                                                     libgdxFragment = null;
                                                     //Mejor solución pendiente
-                                                    cargarJuego(siguienteEjercicio.getData().toString());
+													InfoNivel infoNivelSiguiente = new InfoNivel();
+													infoNivelSiguiente.rutaNivel =
+                                                    cargarJuego();
                                                 })
                                                 .setNegativeButton("No", (dialogInterface, i) -> MegaCodeAcitivity.this.finish())
                                                 .setCancelable(false)
@@ -247,7 +253,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
                                         .setOnDismissListener(dialogInterface -> MegaCodeAcitivity.this.finish())
                                         .show();
                             }
-                        });
+                        });*/
                     }
                 });
             }

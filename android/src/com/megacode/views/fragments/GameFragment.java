@@ -11,6 +11,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.megacode.GameplayScreen;
 import com.megacode.GigaGalGame;
+import com.megacode.models.InfoNivel;
 
 /**
  * Created by Francisco on 22/02/2018.
@@ -18,12 +19,10 @@ import com.megacode.GigaGalGame;
 
 public class GameFragment extends AndroidFragmentApplication {
 
-    private String rutaNivel;
     private GigaGalGame game;
 
-    public GameFragment(String rutaNivel){
-        this.rutaNivel = rutaNivel;
-        this.game = new GigaGalGame(rutaNivel);
+    public GameFragment(InfoNivel infoNivel){
+        this.game = new GigaGalGame(infoNivel);
     }
 
     public GigaGalGame getGame() {

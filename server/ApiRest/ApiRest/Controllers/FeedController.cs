@@ -13,7 +13,7 @@ namespace ApiRest.Controllers
     [RoutePrefix("api/feed")]
     public class FeedController : ApiController
     {
-        megacodeEntities entities = new megacodeEntities();
+        MegacodeEntities entities = new MegacodeEntities();
 
         [HttpGet]
         [Route("posicionContraOtros/{id}")]
@@ -44,17 +44,22 @@ namespace ApiRest.Controllers
             }
             else
             {
-                var dataResult = (from n in entities.Nivel
-                                  where n.id == ((from nt in entities.Niveles_Terminados
-                                                  join u in entities.Usuario on nt.UsuarioId equals u.id
-                                                  orderby nt.NivelId descending
-                                                  select nt.NivelId).FirstOrDefault() + 1)
-                                  select new
-                                  {
-                                      n.id,
-                                      n.nombre,
-                                      n.ruta
-                                  }).FirstOrDefault();
+                var siguienteNivelId = entities.Niveles_Terminados
+                    .Join(entities.Usuario, nt => nt.UsuarioId, u => u.id, (nt, u) => nt)
+                    .OrderBy(nt => nt.NivelId)
+                    .Select(nt => nt.NivelId)
+                    .LastOrDefault() + 1;
+
+                var dataResult = entities.Nivel
+                    .Where(n => n.id == siguienteNivelId)
+                    .Select(
+                        n => new
+                        {
+                            n.id,
+                            n.nombre,
+                            n.ruta
+                        }
+                    ).FirstOrDefault();
 
                 return Json(dataResult);
             }

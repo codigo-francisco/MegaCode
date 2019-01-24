@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,7 +45,7 @@ public class NivelRepository {
         nivelesLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<LinkedList<List<NivelConTerminado>>> listarNiveles(){
+    public void listarNiveles(){
         Executors.newSingleThreadExecutor().execute(new Runnable() {
             @Override
             public void run() {
@@ -57,9 +58,7 @@ public class NivelRepository {
                 }
 
                 if (!needRefresh){ //Los datos traidos de BD son organizados por niveles
-
                     nivelesLiveData.postValue(NivelConTerminado.organizarPorNiveles(niveles));
-
                 }else{ //Traer del servidor
                     Usuario usuario = usuarioDao.obtenerUsuarioSync();
                     MegaCodeService.getServicio(NivelService.class).listarNiveles(usuario.getToken(), usuario.getId())
@@ -108,8 +107,6 @@ public class NivelRepository {
                 }
             }
         });
-
-        return nivelesLiveData;
     }
 
     private static boolean isOverMaxTime(Date lastRefresh){
@@ -122,7 +119,7 @@ public class NivelRepository {
         return now.after(maxTime);
     }
 
-    public MutableLiveData<LinkedList<List<NivelConTerminado>>> getNiveles() {
+    public LiveData<LinkedList<List<NivelConTerminado>>> getNiveles() {
         return nivelesLiveData;
     }
 

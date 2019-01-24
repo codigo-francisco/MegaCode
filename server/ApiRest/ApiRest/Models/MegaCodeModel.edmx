@@ -10,10 +10,10 @@
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="usuarioId" Type="bigint" />
           <Property Name="entrada" Type="datetime" Nullable="false" />
           <Property Name="salida" Type="datetime" />
           <Property Name="duracion" Type="int" />
-          <Property Name="usuarioId" Type="bigint" />
         </EntityType>
         <EntityType Name="ConexionSesion">
           <Key>
@@ -30,7 +30,7 @@
           <Property Name="id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="sesionId" Type="uniqueidentifier" />
           <Property Name="etiqueta" Type="varchar" MaxLength="50" />
-          <Property Name="tiempo" Type="binary" MaxLength="8" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="tiempo" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="fotografia" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Nivel">
@@ -47,7 +47,10 @@
           <Property Name="dificultad" Type="int" Nullable="false" />
           <Property Name="grupo" Type="int" Nullable="false" />
           <Property Name="tipoNivel" Type="smallint" Nullable="false" />
-          <Property Name="cadenaOptima" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="cadenaOptima" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="zoomInicial" Type="real" Nullable="false" />
+          <Property Name="coordenadaX" Type="int" Nullable="false" />
+          <Property Name="coordenadaY" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -66,7 +69,7 @@
           <Property Name="id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="usuarioId" Type="bigint" />
           <Property Name="nivelId" Type="int" />
-          <Property Name="tiempo" Type="binary" MaxLength="8" Nullable="false" StoreGeneratedPattern="Computed" />
+          <Property Name="tiempo" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
           <Property Name="intentos" Type="int" />
           <Property Name="ayudas" Type="int" />
           <Property Name="inactividad" Type="int" />
@@ -292,7 +295,10 @@
           <Property Name="grupo" Type="Int32" Nullable="false" />
           <Property Name="tipoNivel" Type="Int16" Nullable="false" />
           <NavigationProperty Name="TipoNivel1" Relationship="MegacodeModel.FK_Nivel_TipoNivel" FromRole="Nivel" ToRole="TipoNivel" />
-          <Property Name="cadenaOptima" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="cadenaOptima" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="zoomInicial" Type="Single" Nullable="false" />
+          <Property Name="coordenadaX" Type="Int32" Nullable="false" />
+          <Property Name="coordenadaY" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Niveles_Terminados">
           <Key>
@@ -349,7 +355,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="megacodeEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="MegacodeEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Conexion" EntityType="Self.Conexion" />
           <EntitySet Name="Emociones_Sesion" EntityType="Self.Emociones_Sesion" />
           <EntitySet Name="Nivel" EntityType="Self.Nivel" />
@@ -537,7 +543,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-  <EntityContainerMapping StorageEntityContainer="MegacodeModelStoreContainer" CdmEntityContainer="megacodeEntities">
+  <EntityContainerMapping StorageEntityContainer="MegacodeModelStoreContainer" CdmEntityContainer="MegacodeEntities">
     <EntitySetMapping Name="Conexion">
       <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Conexion)">
         <MappingFragment StoreEntitySet="Conexion">
@@ -563,7 +569,10 @@
     <EntitySetMapping Name="Nivel">
       <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Nivel)">
         <MappingFragment StoreEntitySet="Nivel">
-          <ScalarProperty Name="cadenaOptima" ColumnName="cadenaOptima" />
+          <ScalarProperty Name="coordenadaY" ColumnName="coordenadaY" />
+                <ScalarProperty Name="coordenadaX" ColumnName="coordenadaX" />
+                <ScalarProperty Name="zoomInicial" ColumnName="zoomInicial" />
+                <ScalarProperty Name="cadenaOptima" ColumnName="cadenaOptima" />
                 <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
           <ScalarProperty Name="ruta" ColumnName="ruta" />

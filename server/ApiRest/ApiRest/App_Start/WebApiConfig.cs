@@ -24,6 +24,8 @@ namespace ApiRest
             jsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/json"));
             jsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             jsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("multipart/form-data"));
+            jsonFormatter.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+            jsonFormatter.SerializerSettings.Formatting = Newtonsoft.Json.Formatting.Indented;
 
             //GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
             //config.Formatters.XmlFormatter.SupportedMediaTypes.Clear();

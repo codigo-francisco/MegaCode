@@ -8,6 +8,7 @@ import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.megacode.Claves;
 import com.megacode.R;
 import com.megacode.adapters.model.enumators.TypeLevel;
 import com.megacode.helpers.MetricsHelper;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelConTerminado;
 import com.megacode.models.database.NivelTerminado;
-import com.megacode.views.fragments.InfoNivel;
+import com.megacode.views.fragments.InfoNivelFragment;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +68,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
             View cardView = layoutInflater.inflate(R.layout.skillnode_layout,linearLayout, false);
             ImageView imageView = cardView.findViewById(R.id.node_imageview);
 
-            Nivel nivel = nivelConTerminado.nivel;
+            //Nivel nivel = nivelConTerminado.nivel;
             List<NivelTerminado> nivelesTerminados = nivelConTerminado.nivelesTerminados;
 
             int puntaje=0;
@@ -98,7 +100,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
             imageView.setImageResource(nivelConTerminado.getImageResource(bloquearNodos));
 
             imageView.setOnClickListener(view->{
-                DialogFragment dialogFragment = new InfoNivel();
+                DialogFragment dialogFragment = new InfoNivelFragment();
                 Bundle bundle = new Bundle();
 
                 bundle.putParcelable("nivel", nivelConTerminado);
@@ -113,7 +115,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
                 bundle.putInt("heightView", view.getHeight());
 
                 dialogFragment.setArguments(bundle);
-                dialogFragment.show(fragmentManager, "dialog_node");
+                dialogFragment.show(fragmentManager, Claves.INFO_NIVEL_FRAGMENT_TAG);
             });
 
             linearLayout.addView(cardView);

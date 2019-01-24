@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
+import com.megacode.Claves;
 import com.megacode.R;
 import com.megacode.helpers.MetricsHelper;
 import com.megacode.models.database.Nivel;
@@ -28,11 +30,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
-public class InfoNivel extends DialogFragment {
+public class InfoNivelFragment extends DialogFragment {
 
+    private static final String TAG = DialogFragment.class.getName();
     private static final String LINESEPARATOR = System.lineSeparator();
 
-    public InfoNivel(){
+    public InfoNivelFragment(){
         super();
     }
 
@@ -106,9 +109,9 @@ public class InfoNivel extends DialogFragment {
             MaterialButton button = view.findViewById(R.id.popup_boton_comenzar);
             button.setTextColor(backGroundColor);
             button.setOnClickListener(viewButton ->{
-                Intent megaCodeIntent = new Intent(getContext(), MegaCodeAcitivity.class);
+                Intent megaCodeIntent = new Intent(getActivity(), MegaCodeAcitivity.class);
                 megaCodeIntent.putExtra("nivel", nivel);
-                startActivity(megaCodeIntent);
+                getActivity().startActivityForResult(megaCodeIntent, Claves.ABRIR_NIVEL_MEGACODE);
                 dismiss();
             });
         }

@@ -35,7 +35,6 @@ public class GigaGal {
     private long walkStartTime;
     private long jumpStartTime;
     private int ammo;
-    private int lives;
 
     public GigaGal(Vector2 spawnLocation, Level level) {
         this.spawnLocation = spawnLocation;
@@ -50,13 +49,8 @@ public class GigaGal {
         return ammo;
     }
 
-    public int getLives() {
-        return lives;
-    }
-
     public void init() {
         ammo = Constants.INITIAL_AMMO;
-        lives = Constants.INITIAL_LIVES;
         justDied = false;
         respawn();
     }
@@ -70,10 +64,6 @@ public class GigaGal {
         jumpState = Enums.JumpState.FALLING;
         facing = Direction.RIGHT;
         walkState = Enums.WalkState.NOT_WALKING;
-
-        if (level.cam !=null) {
-            level.cam.resetCameraPosition(false);
-        }
     }
 
     public Vector2 getPosition() {
@@ -87,12 +77,9 @@ public class GigaGal {
         position.mulAdd(velocity, delta);
 
         if (position.y < Constants.KILL_PLANE) {
-            lives--;
             justDied = true;
             resetButtons();
-            if (lives > -1) {
-                respawn();
-            }
+            respawn();
         }
 
         // Land on/fall off platforms

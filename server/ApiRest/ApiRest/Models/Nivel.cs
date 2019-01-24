@@ -32,6 +32,9 @@ namespace ApiRest.Models
         public int grupo { get; set; }
         public short tipoNivel { get; set; }
         public string cadenaOptima { get; set; }
+        public float zoomInicial { get; set; }
+        public int coordenadaX { get; set; }
+        public int coordenadaY { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Niveles_Terminados> Niveles_Terminados { get; set; }

@@ -14,7 +14,7 @@ namespace ApiRest.Controllers
     [RoutePrefix("api/autenticacion")]
     public class LoginController : ApiController
     {
-        private megacodeEntities entities = new megacodeEntities();
+        private MegacodeEntities entities = new MegacodeEntities();
 
         [HttpPost]
         [Route("login")]

@@ -6,6 +6,7 @@ import com.megacode.adapters.model.DataModel;
 import com.megacode.models.database.NivelTerminado;
 import com.megacode.models.database.Usuario;
 import com.megacode.repositories.FeedRepository;
+import com.megacode.repositories.NivelRepository;
 import com.megacode.repositories.NivelTerminadoRepository;
 import com.megacode.repositories.UsuarioRepository;
 
@@ -18,6 +19,7 @@ public class MegaCodeViewModel extends AndroidViewModel {
     private NivelTerminadoRepository nivelTerminadoRepository;
     private UsuarioRepository usuarioRepository;
     private FeedRepository feedRepository;
+    private NivelRepository nivelRepository;
 
     public MegaCodeViewModel(@NonNull Application application) {
         super(application);
@@ -25,10 +27,11 @@ public class MegaCodeViewModel extends AndroidViewModel {
         nivelTerminadoRepository = new NivelTerminadoRepository(application);
         usuarioRepository = new UsuarioRepository(application);
         feedRepository = new FeedRepository(application);
+        nivelRepository = new NivelRepository(application);
     }
 
-    public void insertarNivelTerminado(NivelTerminado nivelTerminado){
-        nivelTerminadoRepository.insertarNivelTerminado(nivelTerminado);
+    public void insertarNivelTerminadoSync(NivelTerminado nivelTerminado){
+        nivelTerminadoRepository.insertarNivelTerminadoSync(nivelTerminado);
     }
 
     public LiveData<Usuario> getUsuario(){
@@ -37,5 +40,9 @@ public class MegaCodeViewModel extends AndroidViewModel {
 
     public DataModel siguienteEjercicioSync(){
         return feedRepository.siguienteEjercicioSync();
+    }
+
+    public void refrescarNiveles(){
+        nivelRepository.listarNiveles();
     }
 }

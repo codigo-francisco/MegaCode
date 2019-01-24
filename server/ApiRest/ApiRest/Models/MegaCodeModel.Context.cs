@@ -15,10 +15,10 @@ namespace ApiRest.Models
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class megacodeEntities : DbContext
+    public partial class MegacodeEntities : DbContext
     {
-        public megacodeEntities()
-            : base("name=megacodeEntities")
+        public MegacodeEntities()
+            : base("name=MegacodeEntities")
         {
         }
     
@@ -36,14 +36,14 @@ namespace ApiRest.Models
         public virtual DbSet<Sesion> Sesion { get; set; }
         public virtual DbSet<TipoNivel> TipoNivel { get; set; }
     
-        [DbFunction("megacodeEntities", "obtenerMarcadorUsuario")]
+        [DbFunction("MegacodeEntities", "obtenerMarcadorUsuario")]
         public virtual IQueryable<obtenerMarcadorUsuario_Result1> obtenerMarcadorUsuario(Nullable<long> id)
         {
             var idParameter = id.HasValue ?
                 new ObjectParameter("id", id) :
                 new ObjectParameter("id", typeof(long));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<obtenerMarcadorUsuario_Result1>("[megacodeEntities].[obtenerMarcadorUsuario](@id)", idParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<obtenerMarcadorUsuario_Result1>("[MegacodeEntities].[obtenerMarcadorUsuario](@id)", idParameter);
         }
     }
 }

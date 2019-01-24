@@ -12,7 +12,7 @@ namespace ApiRest.Controllers
     [RoutePrefix("api/usuario")]
     public class UsuarioController : ApiController
     {
-        private megacodeEntities entities = new megacodeEntities();
+        private MegacodeEntities entities = new MegacodeEntities();
 
         [HttpPost]
         [Route("registrarFoto")]

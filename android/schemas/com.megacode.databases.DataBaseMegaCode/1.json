@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "64275a5c2c5060277b0ebfeca42141b0",
+    "identityHash": "134be50c30e4fcd8172ad9ee6d9777d3",
     "entities": [
       {
         "tableName": "Usuario",
@@ -92,7 +92,7 @@
       },
       {
         "tableName": "Nivel",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lastRefresh` INTEGER, `id` INTEGER NOT NULL, `nombre` TEXT, `dificultad` INTEGER NOT NULL, `grupo` INTEGER NOT NULL, `mientras` INTEGER NOT NULL, `comandos` INTEGER NOT NULL, `si` INTEGER NOT NULL, `para` INTEGER NOT NULL, `ruta` TEXT, `tipoNivel` INTEGER NOT NULL, `cadenaOptima` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lastRefresh` INTEGER, `id` INTEGER NOT NULL, `nombre` TEXT, `dificultad` INTEGER NOT NULL, `grupo` INTEGER NOT NULL, `mientras` INTEGER NOT NULL, `comandos` INTEGER NOT NULL, `si` INTEGER NOT NULL, `para` INTEGER NOT NULL, `ruta` TEXT, `tipoNivel` INTEGER NOT NULL, `cadenaOptima` TEXT, `zoomInicial` REAL NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "lastRefresh",
@@ -165,6 +165,12 @@
             "columnName": "cadenaOptima",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "zoomInicial",
+            "columnName": "zoomInicial",
+            "affinity": "REAL",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -264,7 +270,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"64275a5c2c5060277b0ebfeca42141b0\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"134be50c30e4fcd8172ad9ee6d9777d3\")"
     ]
   }
 }

@@ -15,8 +15,9 @@
 
     <application
         android:name="com.megacode.base.ApplicationBase"
-        android:allowBackup="true"
-        android:fullBackupContent="true"
+        tools:replace="android:allowBackup"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@drawable/ico"
         android:label="@string/app_name"
         android:theme="@style/Theme.MaterialComponents.Light"

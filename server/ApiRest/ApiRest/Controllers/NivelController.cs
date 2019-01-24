@@ -12,15 +12,15 @@ namespace ApiRest.Controllers
     [RoutePrefix("api/nivel")]
     public class NivelController : ApiController
     {
-        megacodeEntities entities = new megacodeEntities();
+        MegacodeEntities entities = new MegacodeEntities();
 
         [AllowAnonymous]
         [HttpGet]
         [Route("listarNiveles")]
-        public IHttpActionResult listarNiveles()
+        public IHttpActionResult ListarNiveles()
         {
-           return Json(from n in entities.Nivel
-                   select new
+           return Json(entities.Nivel.
+                   Select( n => new
                    {
                        n.id,
                        n.nombre,
@@ -33,40 +33,41 @@ namespace ApiRest.Controllers
                        n.ruta,
                        n.tipoNivel,
                        n.cadenaOptima
-                   });
+                   }));
         }
 
         [HttpGet]
         [Route("listarNiveles/{id}")]
-        public IHttpActionResult listarNiveles(Int64? id)
+        public IHttpActionResult ListarNiveles(Int64? id)
         {
 
-            var niveles = from n in entities.Nivel
-                          select new
-                          {
-                              n.id,
-                              n.nombre,
-                              n.dificultad,
-                              n.grupo,
-                              n.mientras,
-                              n.comandos,
-                              n.si,
-                              n.para,
-                              n.ruta,
-                              n.tipoNivel,
-                              n.cadenaOptima
-                          };
+            var niveles = entities.Nivel.Select(
+                    n => new
+                    {
+                        n.id,
+                        n.nombre,
+                        n.dificultad,
+                        n.grupo,
+                        n.mientras,
+                        n.comandos,
+                        n.si,
+                        n.para,
+                        n.ruta,
+                        n.tipoNivel,
+                        n.cadenaOptima,
+                        n.zoomInicial
+                    }
+               );
 
-            var nivelesTerminados = from nt in entities.Niveles_Terminados
-                            where nt.UsuarioId == id
-                            select new
-                            {
-                                nt.id,
-                                nivelId = nt.NivelId,
-                                usuarioId = nt.UsuarioId,
-                                nt.terminado,
-                                nt.puntaje
-                            };
+            var nivelesTerminados = entities.Niveles_Terminados.Where(nt => nt.UsuarioId == id)
+                .Select(nt => new
+                {
+                    nt.id,
+                    nivelId = nt.NivelId,
+                    usuarioId = nt.UsuarioId,
+                    nt.terminado,
+                    nt.puntaje
+                });
 
             return Json(
                 new

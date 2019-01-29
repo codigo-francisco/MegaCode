@@ -1,12 +1,15 @@
 Blockly.JavaScript['caminarderecha'] = function(block) {
-  return "derecha,";
+   return "comandos += 'derecha,';";
 };
+
 Blockly.JavaScript['caminarizquierda'] = function(block) {
-  return "izquierda,";
+  return "comandos += 'izquierda,';";
 };
+
 Blockly.JavaScript['saltar'] = function(block) {
-  return "saltar,";
+  return "comandos += 'saltar,';";
 };
+
 Blockly.JavaScript['disparar'] = function(block) {
-  return "disparar,";
+  return "comandos += 'disparar,';";
 };

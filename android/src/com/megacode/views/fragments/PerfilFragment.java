@@ -2,6 +2,7 @@ package com.megacode.views.fragments;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -49,11 +50,11 @@ public class PerfilFragment extends Fragment {
 
     private final static int REQUEST_GET_SINGLE_FILE = 1;
     private final static int REQUEST_CAMERA_PERMISSION = 3;
-    private final static int RESULT_OK = -1;
     private final static String TAG = "PerfilFragment";
     private static final int REQUEST_CAMERA = 2;
     private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
     private Usuario usuario;
+    private UsuarioViewModel usuarioViewModel;
 
     public PerfilFragment() {
         // Required empty public constructor
@@ -95,7 +96,7 @@ public class PerfilFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode==RESULT_OK){
+        if (resultCode== Activity.RESULT_OK){
             switch (requestCode){
                 case REQUEST_GET_SINGLE_FILE:
                     if (data!=null){
@@ -128,8 +129,6 @@ public class PerfilFragment extends Fragment {
             }
         }
     }
-
-    private UsuarioViewModel usuarioViewModel;
 
     private void solicitarFotografiaCamara(){
         Intent intentCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -195,7 +194,7 @@ public class PerfilFragment extends Fragment {
             usuarioViewModel.borrarUsuario();
 
             //Cambiar de actividad con una tarea nueva
-            Intent intent = new Intent(PerfilFragment.this.getActivity(), LoginActivity.class);
+            Intent intent = new Intent(this.getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         });

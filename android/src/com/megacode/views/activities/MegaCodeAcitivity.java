@@ -1,6 +1,7 @@
 package com.megacode.views.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,9 +30,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsPromptResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -46,6 +52,8 @@ import com.megacode.Claves;
 import com.megacode.GigaGalGame;
 import com.megacode.R;
 import com.megacode.adapters.model.DataModel;
+import com.megacode.components.CustomWebChromeClient;
+import com.megacode.helpers.HtmlHelper;
 import com.megacode.helpers.StringHelper;
 import com.megacode.models.InfoNivel;
 import com.megacode.models.database.Nivel;
@@ -87,6 +95,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
     private String[] ultimoCodigoGenerado;
     private final static int idMenuCamera = 0;
     private final static int idRecargarBlockly = 1;
+    private String paginaHtml;
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -121,7 +130,9 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
                 linearLayoutCamera.setVisibility(View.GONE);
             }
         }else if (idItem==idRecargarBlockly){
-        	webView.reload();
+        	//webView.reload();
+			webView.loadUrl("about:blank");
+			webView.loadDataWithBaseURL("file:///android_asset/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
 		}
 
         return super.onOptionsItemSelected(item);
@@ -134,6 +145,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		faceRecognition = new FaceRecognition(getApplicationContext());
 	}
 
+	@SuppressLint({"SetJavaScriptEnabled", "ClickableViewAccessibility"})
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -179,14 +191,16 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		});
 
 		webView = findViewById(R.id.megacode_activity_webview);
+		webView.setWebChromeClient(new CustomWebChromeClient());
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 
         javaScriptInterface = new WebViewJavaScriptInterface();
-
 		webView.addJavascriptInterface(javaScriptInterface, "megacode");
 
-		webView.loadUrl("file:///android_asset/blockly/index.html");
+		paginaHtml = HtmlHelper.generarHtml(nivelActual.getRuta(), this);
+
+		webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
 
         findViewById(R.id.megacode_play).setOnClickListener(view -> webView.loadUrl("javascript:runBlockly()"));
 
@@ -195,6 +209,11 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
         infoNivel.zoomInicial = nivelActual.getZoomInicial();
 
         cargarJuego(infoNivel);
+
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+        //InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        //inputMethodManager.toggleSoftInputFromWindow(getWindow().getAttributes().token, InputMethodManager.SHOW_FORCED, 0);
 	}
 
 	private void cargarJuego(InfoNivel infoNivel){
@@ -215,12 +234,15 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
                         NivelTerminado nivelTerminado = new NivelTerminado();
                         nivelTerminado.setNivelId(nivelActual.getId());
                         nivelTerminado.setPuntaje(puntaje);
-                        nivelTerminado.setTerminado(puntaje > 0);
+                        nivelTerminado.setTerminado(true);
                         long idUsuario = PreferenceManager.getDefaultSharedPreferences(MegaCodeAcitivity.this).getLong(Claves.ID_USUARIO, 0);
                         nivelTerminado.setUsuarioId(idUsuario);
                         nivelTerminado.setNewId();
                         megaCodeViewModel.insertarNivelTerminadoSync(nivelTerminado);
-						MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
+
+                        //Registrar avance en puntaje del estudia TODO: pendiente
+
+                        MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
 						MegaCodeAcitivity.this.finish();
                         /*runOnUiThread(() -> {
                             DataModel siguienteEjercicio = megaCodeViewModel.siguienteEjercicioSync();

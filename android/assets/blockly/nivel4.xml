@@ -1,0 +1,16 @@
+<xml id="toolbox" style="display: none;">
+    <category name="Comandos" colour="#6d5ba5">
+        <block type="caminarderecha"></block>
+        <block type="caminarizquierda"></block>
+        <block type="saltar"></block>
+        <block type="disparar"></block>
+    </category>
+    <category name="Ciclos" colour="#5CA65C">
+        <block type="controls_repeat_ext"></block>
+    </category>
+    <category name="Numeros" colour="#805ba5">
+        <block type="math_number">
+            <field name="NUM">1</field>
+        </block>
+    </category>
+</xml>

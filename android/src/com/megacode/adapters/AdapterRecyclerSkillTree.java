@@ -99,7 +99,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
 
             imageView.setImageResource(nivelConTerminado.getImageResource(bloquearNodos));
 
-            imageView.setOnClickListener(view->{
+            imageView.setOnClickListener(view -> {
                 DialogFragment dialogFragment = new InfoNivelFragment();
                 Bundle bundle = new Bundle();
 

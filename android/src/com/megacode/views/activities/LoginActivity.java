@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private final static String TAG = "LoginActivity";
+    private final static String TAG = LoginActivity.class.getName();
 
     private ProgressBar progressBar;
     private MaterialButton loginButton;
@@ -83,6 +83,6 @@ public class LoginActivity extends AppCompatActivity {
     private void mostrarMensajeError(String mensaje){
         progressBar.setVisibility(ProgressBar.GONE);
         loginButton.setEnabled(true);
-        Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show();
     }
 }

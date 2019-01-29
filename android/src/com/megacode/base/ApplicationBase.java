@@ -6,6 +6,10 @@ import android.os.Build;
 import android.util.Log;
 import android.webkit.WebView;
 
+import com.megacode.helpers.HtmlHelper;
+import com.x5.template.Theme;
+import com.x5.template.providers.AndroidTemplates;
+
 import org.opencv.android.OpenCVLoader;
 
 public class ApplicationBase extends Application {
@@ -16,5 +20,6 @@ public class ApplicationBase extends Application {
         if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
+        HtmlHelper.theme = new Theme(new AndroidTemplates(this));
     }
 }

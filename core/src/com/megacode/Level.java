@@ -20,6 +20,7 @@ import com.megacode.util.ChaseCam;
 import com.megacode.util.Constants;
 import com.megacode.util.Enums.Direction;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +69,8 @@ public class Level {
     public Queue<Comando> comandos;
 
     public void setComandos(List<String> comandos){
-        Queue<Comando> comandosEnum = new LinkedList<Comando>();
+        eliminarTasksPendientes();
+        Queue<Comando> comandosEnum = new LinkedList<>();
 
         for (String comando: comandos){
             if (comando.equals("izquierda")){
@@ -86,11 +88,19 @@ public class Level {
         this.comandos = comandosEnum;
     }
 
-    private final static float secondsMovements = 1.5f;
+    private final static float secondsMovements = 1.2f;
     private final static float jumpTime = .1f;
     private final static float jumpMovements = 1f;
     private final static float shootTime = .1f;
     private Comando lastMovement = Comando.NADA;
+    private Queue<Timer.Task> tasks = new ArrayDeque<>();
+
+    private void eliminarTasksPendientes(){
+        while(tasks.size() > 0){
+            Timer.Task task = tasks.poll();
+            task.cancel();
+        }
+    }
 
     public void procesarComandos(){
         if (comandos.size() > 0){
@@ -99,48 +109,51 @@ public class Level {
             if (comando == Comando.CAMINAR_DERECHA){
                 gigaGal.rightButtonPressed = true;
 
-                Timer.schedule(new Timer.Task() {
+                tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         if (gigaGal.justDied){
                             gigaGal.justDied = false;
+                            eliminarTasksPendientes();
                             comandos.clear();
                         }
                         gigaGal.rightButtonPressed = false;
                         lastMovement = Comando.CAMINAR_DERECHA;
                         procesarComandos();
                     }
-                },secondsMovements);
+                },secondsMovements));
 
             }else if (comando == Comando.CAMINAR_IZQUIERDA){
                 gigaGal.leftButtonPressed = true;
 
-                Timer.schedule(new Timer.Task() {
+                tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         if (gigaGal.justDied){
                             gigaGal.justDied = false;
+                            eliminarTasksPendientes();
                             comandos.clear();
                         }
                         gigaGal.leftButtonPressed = false;
                         lastMovement = Comando.CAMINAR_IZQUIERDA;
                         procesarComandos();
                     }
-                },secondsMovements);
+                },secondsMovements));
 
             }else if (comando == Comando.DISPARAR){
 
                 gigaGal.shoot();
-                Timer.schedule(new Timer.Task() {
+                tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         if (gigaGal.justDied){
                             gigaGal.justDied = false;
+                            eliminarTasksPendientes();
                             comandos.clear();
                         }
                         procesarComandos();
                     }
-                }, shootTime);
+                }, shootTime));
 
             }else if (comando == Comando.SALTAR){
 
@@ -151,25 +164,26 @@ public class Level {
                     gigaGal.leftButtonPressed = true;
                 }
 
-                Timer.schedule(new Timer.Task() {
+                tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         gigaGal.jumpButtonPressed = false;
                     }
-                },jumpTime);
+                },jumpTime));
 
-                Timer.schedule(new Timer.Task() {
+                tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         if (gigaGal.justDied){
                             gigaGal.justDied = false;
+                            eliminarTasksPendientes();
                             comandos.clear();
                         }
                         gigaGal.rightButtonPressed = false;
                         gigaGal.leftButtonPressed = false;
                         procesarComandos();
                     }
-                }, jumpMovements);
+                }, jumpMovements));
 
             }
         }

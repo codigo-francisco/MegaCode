@@ -1,0 +1,8 @@
+<xml id="toolbox" style="display:none;">
+    <category name="Acciones">
+        <block type="caminarderecha"></block>
+        <block type="caminarizquierda"></block>
+        <block type="saltar"></block>
+        <block type="disparar"></block>
+    </category>
+</xml>

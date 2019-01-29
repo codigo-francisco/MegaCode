@@ -50,8 +50,10 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         rootViewModel.obtenerUsuario().observe(this, new Observer<Usuario>() {
             @Override
             public void onChanged(Usuario usuario) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RootActivity.this);
-                sharedPreferences.edit().putLong(Claves.ID_USUARIO, usuario.getId()).apply();
+                if (usuario != null) {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RootActivity.this);
+                    sharedPreferences.edit().putLong(Claves.ID_USUARIO, usuario.getId()).apply();
+                }
             }
         });
 

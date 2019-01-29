@@ -1,73 +1,47 @@
-Blockly.Blocks['acciones'] = {
-  init: function(){
-      this.jsonInit({
-          "lastDummyAlign0": "RIGHT",
-          "message0": "Caminar %1 veces",
-          "args0": [
-            {
-              "type": "input_value",
-              "name": "caminar",
-              "check": "Number"
-            }
-          ],
-          "inputsInline": true,
-          "previousStatement": null,
-          "nextStatement": null,
-          "colour": 225,
-          "tooltip": "Cuantos pasos va a caminar",
-          "helpUrl": ""
-        });
-    }
-}
-
 Blockly.Blocks['caminarderecha'] = {
-  init: function(){
-      this.jsonInit({
-        "message0": "Caminar Derecha",
-        "previousStatement": null,
-        "nextStatement": null,
-        "colour": 230,
-        "tooltip": "Camina hacia la derecha",
-        "helpUrl": ""
-      });
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Caminar Derecha");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+ this.setTooltip("Hace que el personaje avance hacia la derecha");
+ this.setHelpUrl("");
   }
-}
+};
 
 Blockly.Blocks['caminarizquierda'] = {
-  init: function(){
-      this.jsonInit({
-          "message0": "Caminar Izquierda",
-          "previousStatement": null,
-          "nextStatement": null,
-          "colour": 230,
-          "tooltip": "Camina hacia la izquierda",
-          "helpUrl": ""
-      });
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Caminar Izquierda");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+ this.setTooltip("Comando que hace que el personaje camine hacia la izquierda");
+ this.setHelpUrl("");
   }
-}
+};
 
 Blockly.Blocks['saltar'] = {
-  init: function(){
-      this.jsonInit({
-          "message0": "Saltar",
-          "previousStatement": null,
-          "nextStatement": null,
-          "colour": 230,
-          "tooltip": "Saltar",
-          "helpUrl": ""
-      });
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Saltar");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+ this.setTooltip("Comando que hace que el personaje realice un salto");
+ this.setHelpUrl("");
   }
-}
+};
 
 Blockly.Blocks['disparar'] = {
-  init: function(){
-      this.jsonInit({
-          "message0": "Disparar",
-          "previousStatement": null,
-          "nextStatement": null,
-          "colour": 230,
-          "tooltip": "Saltar",
-          "helpUrl": ""
-      });
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Disparar");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
   }
-}
+};

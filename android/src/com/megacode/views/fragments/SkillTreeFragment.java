@@ -72,7 +72,6 @@ public class SkillTreeFragment extends Fragment {
             }
         });
 
-
         RecyclerView recyclerView = view.findViewById(R.id.skill_tree_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -1,0 +1,10 @@
+<xml id="toolbox" style="display: none;">
+    <category name="Comandos">
+        <block type="caminarderecha"></block>
+        <block type="disparar"></block>
+    </category>
+    <category name="Logico">
+        <block type="controls_if"></block>
+        <block type="enemigo_defrente"></block>
+    </category>
+</xml>

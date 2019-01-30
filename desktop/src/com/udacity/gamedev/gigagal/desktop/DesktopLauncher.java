@@ -2,7 +2,7 @@ package com.udacity.gamedev.gigagal.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.megacode.GigaGalGame;
+import com.megacode.MegaCodeGame;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {
@@ -10,6 +10,6 @@ public class DesktopLauncher {
         config.width = 640;
         config.height = 480;
 
-        new LwjglApplication(new GigaGalGame(), config);
+        new LwjglApplication(new MegaCodeGame(), config);
     }
 }

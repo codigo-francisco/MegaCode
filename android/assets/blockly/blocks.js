@@ -45,3 +45,14 @@ Blockly.Blocks['disparar'] = {
  this.setHelpUrl("");
   }
 };
+
+Blockly.Blocks['enemigo_defrente'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("enemigo de frente");
+    this.setOutput(true, "Boolean");
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};

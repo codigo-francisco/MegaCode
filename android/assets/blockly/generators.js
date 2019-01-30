@@ -1,15 +1,24 @@
 Blockly.JavaScript['caminarderecha'] = function(block) {
-   return "comandos += 'derecha,';";
+   var code = "caminarDerecha();\n";
+   return code;
 };
 
 Blockly.JavaScript['caminarizquierda'] = function(block) {
-  return "comandos += 'izquierda,';";
+  var code = "caminarIzquierda();\n";
+  return code;
 };
 
 Blockly.JavaScript['saltar'] = function(block) {
-  return "comandos += 'saltar,';";
+  var code = "saltar();\n";
+  return code;
 };
 
 Blockly.JavaScript['disparar'] = function(block) {
-  return "comandos += 'disparar,';";
+  var code = "disparar();\n";
+  return code;
+};
+
+Blockly.JavaScript['enemigo_defrente'] = function(block) {
+  var code = 'enemigoDeFrente()'
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };

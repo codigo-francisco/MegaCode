@@ -3,11 +3,11 @@ package com.megacode;
 import com.badlogic.gdx.Game;
 import com.megacode.models.InfoNivel;
 
-public class GigaGalGame extends Game {
+public class MegaCodeGame extends Game {
 
     private InfoNivel infoNivel;
 
-    public GigaGalGame(InfoNivel infoNivel){
+    public MegaCodeGame(InfoNivel infoNivel){
         this.infoNivel = infoNivel;
     }
 

@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Array;
 import com.megacode.Level;
 import com.megacode.entities.Enemy;
 import com.megacode.entities.ExitPortal;
-import com.megacode.entities.GigaGal;
+import com.megacode.entities.MegaCode;
 import com.megacode.entities.Platform;
 import com.megacode.entities.Powerup;
 
@@ -74,8 +74,8 @@ public class LevelLoader {
                 level.getPowerups().add(new Powerup(powerupPosition));
             } else if (item.get(Constants.LEVEL_IMAGENAME_KEY).equals(Constants.STANDING_RIGHT)) {
                 final Vector2 gigaGalPosition = imagePosition.add(Constants.GIGAGAL_EYE_POSITION);
-                Gdx.app.log(TAG, "Loaded GigaGal at " + gigaGalPosition);
-                level.setGigaGal(new GigaGal(gigaGalPosition, level));
+                Gdx.app.log(TAG, "Loaded MegaCode at " + gigaGalPosition);
+                level.setMegaCode(new MegaCode(gigaGalPosition, level));
             } else if (item.get(Constants.LEVEL_IMAGENAME_KEY).equals(Constants.EXIT_PORTAL_SPRITE_1)) {
                 final Vector2 exitPortalPosition = imagePosition.add(Constants.EXIT_PORTAL_CENTER);
                 Gdx.app.log(TAG, "Loaded the exit portal at " + exitPortalPosition);

@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.megacode.GameplayScreen;
-import com.megacode.GigaGalGame;
+import com.megacode.MegaCodeGame;
 import com.megacode.models.InfoNivel;
 
 /**
@@ -19,13 +17,13 @@ import com.megacode.models.InfoNivel;
 
 public class GameFragment extends AndroidFragmentApplication {
 
-    private GigaGalGame game;
+    private MegaCodeGame game;
 
     public GameFragment(InfoNivel infoNivel){
-        this.game = new GigaGalGame(infoNivel);
+        this.game = new MegaCodeGame(infoNivel);
     }
 
-    public GigaGalGame getGame() {
+    public MegaCodeGame getGame() {
         return game;
     }
 

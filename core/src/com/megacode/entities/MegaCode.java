@@ -18,9 +18,9 @@ import com.megacode.util.Enums.JumpState;
 import com.megacode.util.Enums.WalkState;
 import com.megacode.util.Utils;
 
-public class GigaGal {
+public class MegaCode {
 
-    public final static String TAG = GigaGal.class.getName();
+    public final static String TAG = MegaCode.class.getName();
     public boolean jumpButtonPressed;
     public boolean leftButtonPressed;
     public boolean rightButtonPressed;
@@ -36,7 +36,7 @@ public class GigaGal {
     private long jumpStartTime;
     private int ammo;
 
-    public GigaGal(Vector2 spawnLocation, Level level) {
+    public MegaCode(Vector2 spawnLocation, Level level) {
         this.spawnLocation = spawnLocation;
         this.level = level;
         position = new Vector2();
@@ -55,9 +55,10 @@ public class GigaGal {
         respawn();
     }
 
-    public boolean justDied=false;
+    public boolean justDied = false;
 
-    private void respawn() {
+    public void respawn() {
+        justDied = false;
         position.set(spawnLocation);
         lastFramePosition.set(spawnLocation);
         velocity.setZero();

@@ -3,13 +3,11 @@ package com.megacode;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.megacode.entities.GigaGal;
+import com.megacode.entities.MegaCode;
 import com.megacode.models.InfoNivel;
 import com.megacode.overlays.GameOverOverlay;
 import com.megacode.overlays.VictoryOverlay;
@@ -102,7 +100,7 @@ public class GameplayScreen extends ScreenAdapter {
             onscreenControls.render(batch);
         }*/
 
-        //hud.render(batch, level.getGigaGal().getLives(), level.getGigaGal().getAmmo(), level.score);
+        //hud.render(batch, level.getMegaCode().getLives(), level.getMegaCode().getAmmo(), level.score);
         renderLevelEndOverlays(batch);
     }
 
@@ -149,16 +147,16 @@ public class GameplayScreen extends ScreenAdapter {
         level.cam = chaseCam;
         chaseCam.camera = (OrthographicCamera)level.viewport.getCamera();
 
-        GigaGal gigaGal = level.getGigaGal();
-        gigaGal.justDied = false;
+        MegaCode megaCode = level.getMegaCode();
+        megaCode.justDied = false;
 
-        chaseCam.target = gigaGal;
+        chaseCam.target = megaCode;
         chaseCam.zoom = infoNivel.zoomInicial;
         chaseCam.resetCameraPosition(true);
 
         //Gdx.input.setInputProcessor(new GestureDetector(chaseCam));
 
-        //onscreenControls.gigaGal = level.getGigaGal();
+        //onscreenControls.megaCode = level.getMegaCode();
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 

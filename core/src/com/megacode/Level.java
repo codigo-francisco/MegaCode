@@ -1,6 +1,5 @@
 package com.megacode;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -13,7 +12,7 @@ import com.megacode.entities.Bullet;
 import com.megacode.entities.Enemy;
 import com.megacode.entities.ExitPortal;
 import com.megacode.entities.Explosion;
-import com.megacode.entities.GigaGal;
+import com.megacode.entities.MegaCode;
 import com.megacode.entities.Platform;
 import com.megacode.entities.Powerup;
 import com.megacode.util.ChaseCam;
@@ -21,7 +20,6 @@ import com.megacode.util.Constants;
 import com.megacode.util.Enums.Direction;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -31,9 +29,11 @@ public class Level {
     public static final String TAG = Level.class.getName();
     public boolean gameOver;
     public boolean victory;
+    public boolean enemyInFront = false;
+    public boolean recibirComandos = true;
     public Viewport viewport;
     public int score;
-    public GigaGal gigaGal;
+    public MegaCode megaCode;
     public ChaseCam cam;
     private ExitPortal exitPortal;
     private Array<Platform> platforms;
@@ -45,7 +45,7 @@ public class Level {
     public Level() {
         viewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE, new OrthographicCamera());
 
-        gigaGal = new GigaGal(new Vector2(50, 50), this);
+        megaCode = new MegaCode(new Vector2(50, 50), this);
         platforms = new Array<Platform>();
         enemies = new DelayedRemovalArray<Enemy>();
         bullets = new DelayedRemovalArray<Bullet>();
@@ -66,138 +66,134 @@ public class Level {
         return level;
     }
 
-    public Queue<Comando> comandos;
-
-    public void setComandos(List<String> comandos){
-        eliminarTasksPendientes();
-        Queue<Comando> comandosEnum = new LinkedList<>();
-
-        for (String comando: comandos){
-            if (comando.equals("izquierda")){
-                comandosEnum.add(Comando.CAMINAR_IZQUIERDA);
-            }else if (comando.equals("derecha")){
-                comandosEnum.add(Comando.CAMINAR_DERECHA);
-            }else if (comando.equals("saltar")){
-                comandosEnum.add(Comando.SALTAR);
-            }else if (comando.equals("disparar")){
-                comandosEnum.add(Comando.DISPARAR);
-            }
-        }
-
-        cam.resetCameraPosition(true);
-        this.comandos = comandosEnum;
-    }
+    //public Queue<Comando> comandos = new LinkedList<>();
 
     private final static float secondsMovements = 1.2f;
     private final static float jumpTime = .1f;
     private final static float jumpMovements = 1f;
     private final static float shootTime = .1f;
-    private Comando lastMovement = Comando.NADA;
     private Queue<Timer.Task> tasks = new ArrayDeque<>();
+    private Comando lastMovement = Comando.NADA;
 
     private void eliminarTasksPendientes(){
         while(tasks.size() > 0){
             Timer.Task task = tasks.poll();
             task.cancel();
         }
+
+        recibirComandos = true;
     }
 
-    public void procesarComandos(){
-        if (comandos.size() > 0){
-            Comando comando = comandos.poll();
+    public void prepararNivel(){
+        eliminarTasksPendientes();
+        megaCode.respawn();
+        //this.comandos.clear();
+        cam.resetCameraPosition(true);
+    }
 
-            if (comando == Comando.CAMINAR_DERECHA){
-                gigaGal.rightButtonPressed = true;
+    public void procesarComando(Comando comando){
+        if (recibirComandos) {
+            if (comando == Comando.CAMINAR_DERECHA) {
+                recibirComandos = false;
+                megaCode.rightButtonPressed = true;
 
                 tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        if (gigaGal.justDied){
-                            gigaGal.justDied = false;
+                        if (megaCode.justDied) {
+                            megaCode.justDied = false;
                             eliminarTasksPendientes();
-                            comandos.clear();
+                            //comandos.clear();
                         }
-                        gigaGal.rightButtonPressed = false;
+                        megaCode.rightButtonPressed = false;
+                        recibirComandos = true;
                         lastMovement = Comando.CAMINAR_DERECHA;
-                        procesarComandos();
                     }
-                },secondsMovements));
+                }, secondsMovements));
 
-            }else if (comando == Comando.CAMINAR_IZQUIERDA){
-                gigaGal.leftButtonPressed = true;
+            } else if (comando == Comando.CAMINAR_IZQUIERDA) {
+                megaCode.leftButtonPressed = true;
+                recibirComandos = false;
 
                 tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        if (gigaGal.justDied){
-                            gigaGal.justDied = false;
+                        if (megaCode.justDied) {
+                            megaCode.justDied = false;
                             eliminarTasksPendientes();
-                            comandos.clear();
+                            //comandos.clear();
                         }
-                        gigaGal.leftButtonPressed = false;
+                        megaCode.leftButtonPressed = false;
+                        recibirComandos = true;
                         lastMovement = Comando.CAMINAR_IZQUIERDA;
-                        procesarComandos();
                     }
-                },secondsMovements));
+                }, secondsMovements));
 
-            }else if (comando == Comando.DISPARAR){
-
-                gigaGal.shoot();
+            } else if (comando == Comando.DISPARAR) {
+                recibirComandos = false;
+                megaCode.shoot();
                 tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        if (gigaGal.justDied){
-                            gigaGal.justDied = false;
+                        if (megaCode.justDied) {
+                            megaCode.justDied = false;
                             eliminarTasksPendientes();
-                            comandos.clear();
+                            //comandos.clear();
                         }
-                        procesarComandos();
+                        recibirComandos = true;
                     }
                 }, shootTime));
 
-            }else if (comando == Comando.SALTAR){
+            } else if (comando == Comando.SALTAR) {
+                megaCode.jumpButtonPressed = true;
+                recibirComandos = false;
 
-                gigaGal.jumpButtonPressed = true;
-                if (lastMovement==Comando.CAMINAR_DERECHA){
-                    gigaGal.rightButtonPressed = true;
-                }else if (lastMovement == Comando.CAMINAR_IZQUIERDA){
-                    gigaGal.leftButtonPressed = true;
+                if (lastMovement == Comando.CAMINAR_DERECHA) {
+                    megaCode.rightButtonPressed = true;
+                } else if (lastMovement == Comando.CAMINAR_IZQUIERDA) {
+                    megaCode.leftButtonPressed = true;
                 }
 
                 tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        gigaGal.jumpButtonPressed = false;
+                        megaCode.jumpButtonPressed = false;
                     }
-                },jumpTime));
+                }, jumpTime));
 
                 tasks.add(Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        if (gigaGal.justDied){
-                            gigaGal.justDied = false;
+                        if (megaCode.justDied) {
+                            megaCode.justDied = false;
                             eliminarTasksPendientes();
-                            comandos.clear();
+                            //comandos.clear();
                         }
-                        gigaGal.rightButtonPressed = false;
-                        gigaGal.leftButtonPressed = false;
-                        procesarComandos();
+                        megaCode.rightButtonPressed = false;
+                        megaCode.leftButtonPressed = false;
+                        recibirComandos = true;
                     }
                 }, jumpMovements));
-
             }
         }
     }
 
     public void update(float delta) {
 
-        if (gigaGal.getPosition().dst(exitPortal.position) < Constants.EXIT_PORTAL_RADIUS) {
+        if (megaCode.getPosition().dst(exitPortal.position) < Constants.EXIT_PORTAL_RADIUS) {
             victory = true;
+        }
+
+        enemyInFront = false;
+        for(Enemy enemy : enemies){
+            if (megaCode.getPosition().dst(enemy.position) < Constants.ENEMY_INFRONT_RADIUS){
+                enemyInFront = true;
+            }
         }
 
         if (!gameOver && !victory) {
 
-            gigaGal.update(delta, platforms);
+            megaCode.update(delta, platforms);
 
             // Update Bullets
             bullets.begin();
@@ -254,7 +250,7 @@ public class Level {
         for (Enemy enemy : enemies) {
             enemy.render(batch);
         }
-        gigaGal.render(batch);
+        megaCode.render(batch);
 
         for (Bullet bullet : bullets) {
             bullet.render(batch);
@@ -269,7 +265,7 @@ public class Level {
 
     private void initializeDebugLevel() {
 
-        gigaGal = new GigaGal(new Vector2(15, 40), this);
+        megaCode = new MegaCode(new Vector2(15, 40), this);
 
         exitPortal = new ExitPortal(new Vector2(150, 150));
 
@@ -322,12 +318,12 @@ public class Level {
         this.viewport = viewport;
     }
 
-    public GigaGal getGigaGal() {
-        return gigaGal;
+    public MegaCode getMegaCode() {
+        return megaCode;
     }
 
-    public void setGigaGal(GigaGal gigaGal) {
-        this.gigaGal = gigaGal;
+    public void setMegaCode(MegaCode megaCode) {
+        this.megaCode = megaCode;
     }
 
     public void spawnBullet(Vector2 position, Direction direction) {

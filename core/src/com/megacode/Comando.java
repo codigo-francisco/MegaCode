@@ -4,15 +4,20 @@ package com.megacode;
  * Created by Francisco on 22/02/2018.
  */
 
-enum Comando {
-    CAMINAR_DERECHA(0),
-    CAMINAR_IZQUIERDA(1),
-    SALTAR(2),
-    DISPARAR(3), NADA(4);
+public enum Comando {
+    CAMINAR_DERECHA("derecha"),
+    CAMINAR_IZQUIERDA("izquierda"),
+    SALTAR("saltar"),
+    DISPARAR("disparar"),
+    NADA("nada");
 
-    private int value;
+    private String value;
 
-    private Comando(int value){
+    Comando(String value){
         this.value = value;
+    }
+
+    public String getValue(){
+        return value;
     }
 }

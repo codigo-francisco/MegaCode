@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.megacode.entities.GigaGal;
+import com.megacode.entities.MegaCode;
 import com.megacode.util.Assets;
 import com.megacode.util.Constants;
 import com.megacode.util.Utils;
@@ -17,7 +17,7 @@ public class OnscreenControls extends InputAdapter {
     public static final String TAG = OnscreenControls.class.getName();
 
     public final Viewport viewport;
-    public GigaGal gigaGal;
+    public MegaCode megaCode;
     private Vector2 moveLeftCenter;
     private Vector2 moveRightCenter;
     private Vector2 shootCenter;
@@ -48,26 +48,26 @@ public class OnscreenControls extends InputAdapter {
 
         if (viewportPosition.dst(shootCenter) < Constants.BUTTON_RADIUS) {
 
-            // TODO: Call shoot() on GigaGal
-            gigaGal.shoot();
+            // TODO: Call shoot() on MegaCode
+            megaCode.shoot();
 
         } else if (viewportPosition.dst(jumpCenter) < Constants.BUTTON_RADIUS) {
 
-            // TODO: Save the jumpPointer and set gigaGal.jumpButtonPressed = true
+            // TODO: Save the jumpPointer and set megaCode.jumpButtonPressed = true
             jumpPointer = pointer;
-            gigaGal.jumpButtonPressed = true;
+            megaCode.jumpButtonPressed = true;
 
         } else if (viewportPosition.dst(moveLeftCenter) < Constants.BUTTON_RADIUS) {
 
-            // TODO: Save the moveLeftPointer, and set gigaGal.leftButtonPressed = true
+            // TODO: Save the moveLeftPointer, and set megaCode.leftButtonPressed = true
             moveLeftPointer = pointer;
-            gigaGal.leftButtonPressed = true;
+            megaCode.leftButtonPressed = true;
 
         } else if (viewportPosition.dst(moveRightCenter) < Constants.BUTTON_RADIUS) {
 
-            // TODO: Save the moveRightPointer, and set gigaGal.rightButtonPressed = true
+            // TODO: Save the moveRightPointer, and set megaCode.rightButtonPressed = true
             moveRightPointer = pointer;
-            gigaGal.rightButtonPressed = true;
+            megaCode.rightButtonPressed = true;
 
         }
 
@@ -81,11 +81,11 @@ public class OnscreenControls extends InputAdapter {
         if (pointer == moveLeftPointer && viewportPosition.dst(moveRightCenter) < Constants.BUTTON_RADIUS) {
 
             // TODO: Handle the case where the left button touch has been dragged to the right button
-            // Inform GigaGal that the left button is no longer pressed
-            gigaGal.leftButtonPressed = false;
+            // Inform MegaCode that the left button is no longer pressed
+            megaCode.leftButtonPressed = false;
 
-            // Inform GigaGal that the right button is now pressed
-            gigaGal.rightButtonPressed = true;
+            // Inform MegaCode that the right button is now pressed
+            megaCode.rightButtonPressed = true;
 
             // Zero moveLeftPointer
             moveLeftPointer = 0;
@@ -98,8 +98,8 @@ public class OnscreenControls extends InputAdapter {
         if (pointer == moveRightPointer && viewportPosition.dst(moveLeftCenter) < Constants.BUTTON_RADIUS) {
 
             // TODO: Handle the case where the right button touch has been dragged to the left button
-            gigaGal.rightButtonPressed = false;
-            gigaGal.leftButtonPressed = true;
+            megaCode.rightButtonPressed = false;
+            megaCode.leftButtonPressed = true;
             moveRightPointer = 0;
             moveLeftPointer = pointer;
 
@@ -115,19 +115,19 @@ public class OnscreenControls extends InputAdapter {
         batch.begin();
 
         if (!Gdx.input.isTouched(jumpPointer)) {
-            gigaGal.jumpButtonPressed = false;
+            megaCode.jumpButtonPressed = false;
             jumpPointer = 0;
         }
 
-        // TODO: If the moveLeftPointer is no longer touched, inform GigaGal and zero moveLeftPointer
+        // TODO: If the moveLeftPointer is no longer touched, inform MegaCode and zero moveLeftPointer
         if (!Gdx.input.isTouched(moveLeftPointer)) {
-            gigaGal.leftButtonPressed = false;
+            megaCode.leftButtonPressed = false;
             moveLeftPointer = 0;
         }
 
         // TODO: Do the same for moveRightPointer
         if (!Gdx.input.isTouched(moveRightPointer)) {
-            gigaGal.rightButtonPressed = false;
+            megaCode.rightButtonPressed = false;
             moveRightPointer = 0;
         }
 

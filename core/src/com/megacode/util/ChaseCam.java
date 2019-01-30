@@ -4,15 +4,14 @@ package com.megacode.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.input.GestureDetector;
-import com.megacode.entities.GigaGal;
+import com.megacode.entities.MegaCode;
 
 public class ChaseCam {
 
     public static final String TAG = ChaseCam.class.getName();
 
     public OrthographicCamera camera;
-    public GigaGal target;
+    public MegaCode target;
     private Boolean following;
     public float zoom;
 

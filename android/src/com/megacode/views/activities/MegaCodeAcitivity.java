@@ -3,14 +3,9 @@ package com.megacode.views.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,25 +14,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
-import android.webkit.JsPromptResult;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -46,22 +32,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.megacode.Claves;
-import com.megacode.GigaGalGame;
+import com.megacode.Comando;
+import com.megacode.MegaCodeGame;
 import com.megacode.R;
-import com.megacode.adapters.model.DataModel;
 import com.megacode.components.CustomWebChromeClient;
 import com.megacode.helpers.HtmlHelper;
 import com.megacode.helpers.StringHelper;
 import com.megacode.models.InfoNivel;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelTerminado;
-import com.megacode.models.database.Usuario;
-import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
-import com.megacode.repositories.NivelRepository;
 import com.megacode.viewmodels.MegaCodeViewModel;
 import com.megacode.views.fragments.GameFragment;
 import com.megacode.GameplayScreen;
@@ -71,7 +53,6 @@ import org.jetbrains.annotations.NotNull;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 import java.util.ArrayList;
@@ -92,7 +73,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	private WebViewJavaScriptInterface javaScriptInterface;
 	private Nivel nivelActual;
 	private MegaCodeViewModel megaCodeViewModel;
-    private String[] ultimoCodigoGenerado;
+    private List<Character> ultimoCodigoGenerado = new ArrayList<>();
     private final static int idMenuCamera = 0;
     private final static int idRecargarBlockly = 1;
     private String paginaHtml;
@@ -132,7 +113,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
         }else if (idItem==idRecargarBlockly){
         	//webView.reload();
 			webView.loadUrl("about:blank");
-			webView.loadDataWithBaseURL("file:///android_asset/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
+            webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
 		}
 
         return super.onOptionsItemSelected(item);
@@ -145,7 +126,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		faceRecognition = new FaceRecognition(getApplicationContext());
 	}
 
-	@SuppressLint({"SetJavaScriptEnabled", "ClickableViewAccessibility"})
+	@SuppressLint({"SetJavaScriptEnabled"})
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -209,18 +190,13 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
         infoNivel.zoomInicial = nivelActual.getZoomInicial();
 
         cargarJuego(infoNivel);
-
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-
-        //InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        //inputMethodManager.toggleSoftInputFromWindow(getWindow().getAttributes().token, InputMethodManager.SHOW_FORCED, 0);
 	}
 
 	private void cargarJuego(InfoNivel infoNivel){
 		// Create libgdx fragment
 		libgdxFragment = new GameFragment(infoNivel);
 
-		libgdxFragment.getGame().addLoadGameListener(new GigaGalGame.LoadGameListener() {
+		libgdxFragment.getGame().addLoadGameListener(new MegaCodeGame.LoadGameListener() {
             @Override
             public void loadedGame() {
                 libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(new GameplayScreen.NivelCompletadoListener() {
@@ -292,49 +268,73 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			transaction.add(R.id.game_fragment, libgdxFragment).commit();
 	}
 
-    @NotNull
-	private String[] generarCodigo(String[] codigos){
-        List<String> claves = new ArrayList<>();
-
-    	for (String codigo: codigos)
-		{
-			switch (codigo){
-				case "izquierda":
-				    claves.add("A");
-					break;
-                case "derecha":
-                    claves.add("B");
-                    break;
-                case "saltar":
-                    claves.add("C");
-                    break;
-                case "disparar":
-                    claves.add("D");
-                    break;
-			}
-		}
-
-    	return claves.toArray(new String[]{});
+    private void agregarCodigo(Comando comando){
+        switch (comando.getValue()){
+            case "izquierda":
+                ultimoCodigoGenerado.add('A');
+                break;
+            case "derecha":
+                ultimoCodigoGenerado.add('B');
+                break;
+            case "saltar":
+                ultimoCodigoGenerado.add('C');
+                break;
+            case "disparar":
+                ultimoCodigoGenerado.add('D');
+                break;
+        }
 	}
 
     class WebViewJavaScriptInterface{
 
+		@JavascriptInterface
+		public boolean enemigoDeFrente(){
+			Level level = libgdxFragment.getGamePlayScreen().level;
+
+			return level.enemyInFront;
+		}
+
+		@JavascriptInterface
+        public boolean caminarDerecha(){
+            return ejecutarComando(Comando.CAMINAR_DERECHA);
+        }
+
         @JavascriptInterface
-        public void runBlockly(String code){
-        	GameplayScreen screen = libgdxFragment.getGamePlayScreen();
+        public boolean caminarIzquierda(){
+            return ejecutarComando(Comando.CAMINAR_IZQUIERDA);
+        }
 
-			Level level = screen.level;
+        @JavascriptInterface
+        public boolean disparar(){
+            return ejecutarComando(Comando.DISPARAR);
+        }
 
-            Log.d(TAG, code);
+        @JavascriptInterface
+        public boolean saltar(){
+            return ejecutarComando(Comando.SALTAR);
+        }
 
-            String[] comandos = code.split(",");
+        @JavascriptInterface
+        public boolean recibirComandos(){
+		    return libgdxFragment.getGamePlayScreen().level.recibirComandos;
+        }
 
-            ultimoCodigoGenerado = generarCodigo(comandos);
+        @JavascriptInterface
+		public void prepararNivel(){
+		    ultimoCodigoGenerado.clear();
+			libgdxFragment.getGamePlayScreen().level.prepararNivel();
+		}
 
-            Log.d(TAG, "Procesando comandos: " + comandos);
+        private boolean ejecutarComando(Comando comando){
+            agregarCodigo(comando);
 
-            level.setComandos(new LinkedList<>(Arrays.asList(comandos)));
-            level.procesarComandos();
+            Level level = libgdxFragment.getGamePlayScreen().level;
+
+            Log.d(TAG, "Comando llamado: "+comando.name());
+
+            level.procesarComando(comando);
+
+            return level.recibirComandos;
         }
     }
 

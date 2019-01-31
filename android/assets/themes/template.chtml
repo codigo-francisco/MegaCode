@@ -39,5 +39,6 @@
         </div>
 
         <script src="configure_blockly.js"></script>
+        {$workspace:}
     </body>
 </html>

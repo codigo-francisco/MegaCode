@@ -1,8 +1,6 @@
 var blocklyArea = document.getElementById('blocklyArea');
 var blocklyDiv = document.getElementById('blocklyDiv');
 
-//var body = document.getElementsByTagName("body");
-//body.addEventListener("load", injectBlockly, false);
 var workspace = Blockly.inject(blocklyDiv,
     {
         toolbox: document.getElementById('toolbox'),
@@ -45,9 +43,12 @@ function highlightBlock(id) {
   workspace.highlightBlock(id);
 }
 
+var highlightPause = false;
+
 function initApi(interpreter, scope) {
   // Add an API function for highlighting blocks.
   var wrapper = function(id) {
+    highlightPause = true;
     return workspace.highlightBlock(id);
   };
 
@@ -93,19 +94,28 @@ function initApi(interpreter, scope) {
   interpreter.setProperty(scope, 'enemigoDeFrente', interpreter.createNativeFunction(wrapper));
 }
 
+var myInterpreter;
+
+function doStep(){
+    do {
+        try {
+          var hasMoreCode = myInterpreter.step();
+          if (megacode.respawn()){
+            break;
+          }
+          if (hasMoreCode && highlightPause){
+            window.setTimeout(doStep, 1);
+          }
+        } finally {
+        }
+     } while (hasMoreCode && !highlightPause);
+}
+
 function runBlockly(){
     var parent = this;
     megacode.prepararNivel();
     code = Blockly.JavaScript.workspaceToCode(workspace);
-    //eval(code);
-    var myInterpreter = new Interpreter(code, initApi);
+    myInterpreter = new Interpreter(code, initApi);
 
-    do {
-        try {
-          var hasMoreCode = myInterpreter.step();
-        } finally {
-        }
-     } while (hasMoreCode);
-
-    //myInterpreter.run();
+    doStep();
 }

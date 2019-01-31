@@ -56,3 +56,25 @@ Blockly.Blocks['enemigo_defrente'] = {
  this.setHelpUrl("");
   }
 };
+
+Blockly.Blocks['fin_deljuego'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("juego terminado");
+    this.setOutput(true, "Boolean");
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};
+
+Blockly.Blocks['nofin_deljuego'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("juego no terminado");
+    this.setOutput(true, "Boolean");
+    this.setColour(230);
+ this.setTooltip("");
+ this.setHelpUrl("");
+  }
+};

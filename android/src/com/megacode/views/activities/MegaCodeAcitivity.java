@@ -288,6 +288,11 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
     class WebViewJavaScriptInterface{
 
 		@JavascriptInterface
+		public boolean respawn(){
+			return libgdxFragment.getGamePlayScreen().level.megaCode.respawn;
+		}
+
+		@JavascriptInterface
 		public boolean enemigoDeFrente(){
 			Level level = libgdxFragment.getGamePlayScreen().level;
 

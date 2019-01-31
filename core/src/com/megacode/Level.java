@@ -87,7 +87,7 @@ public class Level {
     public void prepararNivel(){
         eliminarTasksPendientes();
         megaCode.respawn();
-        //this.comandos.clear();
+        megaCode.respawn = false;
         cam.resetCameraPosition(true);
     }
 

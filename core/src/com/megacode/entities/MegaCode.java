@@ -35,6 +35,7 @@ public class MegaCode {
     private long walkStartTime;
     private long jumpStartTime;
     private int ammo;
+    public boolean respawn = false;
 
     public MegaCode(Vector2 spawnLocation, Level level) {
         this.spawnLocation = spawnLocation;
@@ -59,6 +60,7 @@ public class MegaCode {
 
     public void respawn() {
         justDied = false;
+        respawn = true;
         position.set(spawnLocation);
         lastFramePosition.set(spawnLocation);
         velocity.setZero();

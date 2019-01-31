@@ -22,3 +22,13 @@ Blockly.JavaScript['enemigo_defrente'] = function(block) {
   var code = 'enemigoDeFrente()'
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+
+Blockly.JavaScript['fin_deljuego'] = function(block) {
+  var code = 'finDelJuego()';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.JavaScript['nofin_deljuego'] = function(block) {
+  var code = '!finDelJuego()';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};

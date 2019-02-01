@@ -32,4 +32,8 @@ public class UsuarioViewModel extends AndroidViewModel {
     public void update(Usuario usuario){
         usuarioRepository.update(usuario);
     }
+
+    public void borrarBaseDeDatos() {
+        usuarioRepository.limpiarBaseDeDatos();
+    }
 }

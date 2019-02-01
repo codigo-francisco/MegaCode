@@ -16,9 +16,10 @@ import androidx.lifecycle.LiveData;
 public class UsuarioRepository {
 
     private UsuarioDao usuarioDao;
+    private DataBaseMegaCode db;
 
     public UsuarioRepository(Application application){
-        DataBaseMegaCode db = DataBaseMegaCode.getDataBaseMegaCode(application);
+        db = DataBaseMegaCode.getDataBaseMegaCode(application);
         usuarioDao = db.usuarioDao();
     }
 
@@ -28,6 +29,12 @@ public class UsuarioRepository {
 
     public void borrarTodos(){
         Executors.newSingleThreadExecutor().execute(() -> usuarioDao.borrarTodos());
+    }
+
+    public void limpiarBaseDeDatos(){
+        Executors.newSingleThreadExecutor().execute(()->{
+            db.clearAllTables();
+        });
     }
 
     public LiveData<Usuario> obtenerUsuario() {

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -16,14 +17,14 @@ import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.preference.PreferenceManager;
-import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
-import android.webkit.JavascriptInterface;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -33,32 +34,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.megacode.Claves;
-import com.megacode.Comando;
-import com.megacode.MegaCodeGame;
 import com.megacode.R;
 import com.megacode.components.CustomWebChromeClient;
+import com.megacode.components.WebViewJavaScriptInterface;
 import com.megacode.helpers.HtmlHelper;
 import com.megacode.helpers.StringHelper;
 import com.megacode.models.InfoNivel;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelTerminado;
+import com.megacode.models.database.Usuario;
+import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
 import com.megacode.viewmodels.MegaCodeViewModel;
 import com.megacode.views.fragments.GameFragment;
-import com.megacode.GameplayScreen;
-import com.megacode.Level;
+import com.squareup.leakcanary.LeakCanary;
 
-import org.jetbrains.annotations.NotNull;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
 
@@ -70,13 +67,15 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	private LinearLayout linearLayoutCamera;
 	private WebView webView;
 	private GameFragment libgdxFragment;
-	private WebViewJavaScriptInterface javaScriptInterface;
 	private Nivel nivelActual;
 	private MegaCodeViewModel megaCodeViewModel;
-    private List<Character> ultimoCodigoGenerado = new ArrayList<>();
     private final static int idMenuCamera = 0;
     private final static int idRecargarBlockly = 1;
+    private final static int idMostrarCodigo = 2;
+    private WebViewJavaScriptInterface javaScriptInterface;
     private String paginaHtml;
+    private Usuario usuario;
+    private Timer timer = new Timer("mostrarCodigo", false);
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -91,6 +90,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(Menu.NONE, idMenuCamera, Menu.NONE, "Abrir/Cerrar Camara");
         menu.add(Menu.NONE, idRecargarBlockly, Menu.NONE, "Recargar Blockly");
+        menu.add(Menu.NONE, idMostrarCodigo, Menu.NONE, "Mostrar Codigo Generado");
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -114,6 +114,22 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
         	//webView.reload();
 			webView.loadUrl("about:blank");
             webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
+		}else if (idItem == idMostrarCodigo){
+			javaScriptInterface.generarCodigoBlockly(new CustomCallback<String>() {
+				@Override
+				public void processResponse(String codigo) {
+					View view = LayoutInflater.from(MegaCodeAcitivity.this).inflate(R.layout.dialog_code, findViewById(android.R.id.content), false);
+					TextView text_code = view.findViewById(R.id.dialog_code_text_code);
+					text_code.setText(codigo);
+					text_code.setMovementMethod(new ScrollingMovementMethod());
+					AlertDialog dialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
+							.setView(view)
+							.setTitle("Codigo generado")
+							.setCancelable(true)
+							.show();
+				}
+			});
+			webView.loadUrl("javascript:getCodeBlockly()"); //Se ejecuta funcion para obtener codigo generado
 		}
 
         return super.onOptionsItemSelected(item);
@@ -143,6 +159,10 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		}
 
 		megaCodeViewModel = ViewModelProviders.of(this).get(MegaCodeViewModel.class);
+
+		megaCodeViewModel.getUsuario().observe(this, usuario -> {
+			this.usuario = usuario;
+		});
 
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
@@ -176,9 +196,6 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 
-        javaScriptInterface = new WebViewJavaScriptInterface();
-		webView.addJavascriptInterface(javaScriptInterface, "megacode");
-
 		paginaHtml = HtmlHelper.generarHtml(nivelActual.getRuta(), this);
 
 		webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
@@ -190,74 +207,80 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
         infoNivel.zoomInicial = nivelActual.getZoomInicial();
 
         cargarJuego(infoNivel);
+
+		javaScriptInterface = new WebViewJavaScriptInterface(libgdxFragment);
+		webView.addJavascriptInterface(javaScriptInterface, "megacode");
 	}
 
 	private void cargarJuego(InfoNivel infoNivel){
 		// Create libgdx fragment
 		libgdxFragment = new GameFragment(infoNivel);
 
-		libgdxFragment.getGame().addLoadGameListener(new MegaCodeGame.LoadGameListener() {
-            @Override
-            public void loadedGame() {
-                libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(new GameplayScreen.NivelCompletadoListener() {
-                    @Override
-                    public void nivelTerminado(GameplayScreen screen) {
-                        //Se registran todos los avances del nivel
-                        String cadenaOptima = nivelActual.getCadenaOptima();
-                        String cadenaGenerada = TextUtils.join("", ultimoCodigoGenerado);
-                        int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
-                        int puntaje = (int) Math.round((double) distance / Math.max(cadenaOptima.length(), cadenaGenerada.length()) * 100);
-                        NivelTerminado nivelTerminado = new NivelTerminado();
-                        nivelTerminado.setNivelId(nivelActual.getId());
-                        nivelTerminado.setPuntaje(puntaje);
-                        nivelTerminado.setTerminado(true);
-                        long idUsuario = PreferenceManager.getDefaultSharedPreferences(MegaCodeAcitivity.this).getLong(Claves.ID_USUARIO, 0);
-                        nivelTerminado.setUsuarioId(idUsuario);
-                        nivelTerminado.setNewId();
-                        megaCodeViewModel.insertarNivelTerminadoSync(nivelTerminado);
+		libgdxFragment.getGame().addLoadGameListener(() -> libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(screen -> {
+			//Se registran todos los avances del nivel
+			String cadenaOptima = nivelActual.getCadenaOptima();
+			String cadenaGenerada = javaScriptInterface.getUltimoCodigoGenerado();
+			int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
+			int puntaje = (int) Math.round((double) distance / Math.max(cadenaOptima.length(), cadenaGenerada.length()) * 100);
+			NivelTerminado nivelTerminado = new NivelTerminado();
+			nivelTerminado.setNivelId(nivelActual.getId());
+			nivelTerminado.setPuntaje(puntaje);
+			nivelTerminado.setTerminado(true);
+			long idUsuario = usuario.getId(); //PreferenceManager.getDefaultSharedPreferences(MegaCodeAcitivity.this).getLong(Claves.ID_USUARIO, 0);
+			nivelTerminado.setUsuarioId(idUsuario);
+			nivelTerminado.setNewId();
+			megaCodeViewModel.insertarNivelTerminadoSync(nivelTerminado);
 
-                        //Registrar avance en puntaje del estudia TODO: pendiente
+			//Actualizar puntajes del usuario
+			if (nivelTerminado.isTerminado() && usuario != null){
+				int puntajeComandos = usuario.getComandos() + nivelActual.getComandos();
+				int puntajeSi = usuario.getSi() + nivelActual.getSi();
+				int puntajePara = usuario.getPara() + nivelActual.getPara();
+				int puntajeMientras = usuario.getMientras() + nivelActual.getMientras();
 
-                        MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
-						MegaCodeAcitivity.this.finish();
-                        /*runOnUiThread(() -> {
-                            DataModel siguienteEjercicio = megaCodeViewModel.siguienteEjercicioSync();
-                            if (siguienteEjercicio != null) {
-                                libgdxFragment.handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AlertDialog alertDialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
-                                                .setTitle("Continuar los ejercicios")
-                                                .setMessage("¿Quieres pasar a otro nivel?")
-                                                .setPositiveButton("Si", (dialogInterface, i) -> {
-                                                    screen.dispose();
-                                                    libgdxFragment.getGame().dispose();
-                                                    libgdxFragment = null;
-                                                    //Mejor solución pendiente
-													InfoNivel infoNivelSiguiente = new InfoNivel();
-													infoNivelSiguiente.rutaNivel =
-                                                    cargarJuego();
-                                                })
-                                                .setNegativeButton("No", (dialogInterface, i) -> MegaCodeAcitivity.this.finish())
-                                                .setCancelable(false)
-                                                .show();
-                                    }
-                                });
-                            } else {
-                                AlertDialog alertDialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
-                                        .setTitle("Ejercicio terminado")
-                                        .setMessage("Felicidades, selecciona otro ejercicio en el menu")
-                                        .setPositiveButton("Volver al menu", null)
-                                        .setOnDismissListener(dialogInterface -> MegaCodeAcitivity.this.finish())
-                                        .show();
-                            }
-                        });*/
-                    }
-                });
-            }
-        });
+				usuario.setComandos(puntajeComandos);
+				usuario.setSi(puntajeSi);
+				usuario.setPara(puntajePara);
+				usuario.setMientras(puntajeMientras);
 
+				megaCodeViewModel.actualizarUsuario(usuario);
+			}
 
+			MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
+			MegaCodeAcitivity.this.finish();
+			/*runOnUiThread(() -> {
+				DataModel siguienteEjercicio = megaCodeViewModel.siguienteEjercicioSync();
+				if (siguienteEjercicio != null) {
+					libgdxFragment.handler.post(new Runnable() {
+						@Override
+						public void run() {
+							AlertDialog alertDialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
+									.setTitle("Continuar los ejercicios")
+									.setMessage("¿Quieres pasar a otro nivel?")
+									.setPositiveButton("Si", (dialogInterface, i) -> {
+										screen.dispose();
+										libgdxFragment.getGame().dispose();
+										libgdxFragment = null;
+										//Mejor solución pendiente
+										InfoNivel infoNivelSiguiente = new InfoNivel();
+										infoNivelSiguiente.rutaNivel =
+										cargarJuego();
+									})
+									.setNegativeButton("No", (dialogInterface, i) -> MegaCodeAcitivity.this.finish())
+									.setCancelable(false)
+									.show();
+						}
+					});
+				} else {
+					AlertDialog alertDialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
+							.setTitle("Ejercicio terminado")
+							.setMessage("Felicidades, selecciona otro ejercicio en el menu")
+							.setPositiveButton("Volver al menu", null)
+							.setOnDismissListener(dialogInterface -> MegaCodeAcitivity.this.finish())
+							.show();
+				}
+			});*/
+		}));
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 		Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.game_fragment);
@@ -267,81 +290,6 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		else
 			transaction.add(R.id.game_fragment, libgdxFragment).commit();
 	}
-
-    private void agregarCodigo(Comando comando){
-        switch (comando.getValue()){
-            case "izquierda":
-                ultimoCodigoGenerado.add('A');
-                break;
-            case "derecha":
-                ultimoCodigoGenerado.add('B');
-                break;
-            case "saltar":
-                ultimoCodigoGenerado.add('C');
-                break;
-            case "disparar":
-                ultimoCodigoGenerado.add('D');
-                break;
-        }
-	}
-
-    class WebViewJavaScriptInterface{
-
-		@JavascriptInterface
-		public boolean respawn(){
-			return libgdxFragment.getGamePlayScreen().level.megaCode.respawn;
-		}
-
-		@JavascriptInterface
-		public boolean enemigoDeFrente(){
-			Level level = libgdxFragment.getGamePlayScreen().level;
-
-			return level.enemyInFront;
-		}
-
-		@JavascriptInterface
-        public boolean caminarDerecha(){
-            return ejecutarComando(Comando.CAMINAR_DERECHA);
-        }
-
-        @JavascriptInterface
-        public boolean caminarIzquierda(){
-            return ejecutarComando(Comando.CAMINAR_IZQUIERDA);
-        }
-
-        @JavascriptInterface
-        public boolean disparar(){
-            return ejecutarComando(Comando.DISPARAR);
-        }
-
-        @JavascriptInterface
-        public boolean saltar(){
-            return ejecutarComando(Comando.SALTAR);
-        }
-
-        @JavascriptInterface
-        public boolean recibirComandos(){
-		    return libgdxFragment.getGamePlayScreen().level.recibirComandos;
-        }
-
-        @JavascriptInterface
-		public void prepararNivel(){
-		    ultimoCodigoGenerado.clear();
-			libgdxFragment.getGamePlayScreen().level.prepararNivel();
-		}
-
-        private boolean ejecutarComando(Comando comando){
-            agregarCodigo(comando);
-
-            Level level = libgdxFragment.getGamePlayScreen().level;
-
-            Log.d(TAG, "Comando llamado: "+comando.name());
-
-            level.procesarComando(comando);
-
-            return level.recibirComandos;
-        }
-    }
 
 	@Override
 	public void exit() {

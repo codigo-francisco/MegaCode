@@ -55,17 +55,22 @@ public class PerfilFragment extends Fragment {
     private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
     private Usuario usuario;
     private UsuarioViewModel usuarioViewModel;
+    private CargarImagen cargarImagen;
 
     public PerfilFragment() {
         // Required empty public constructor
     }
 
-    private class CargarImagen extends AsyncTask<Uri, Void, String>{
+    private static class CargarImagen extends AsyncTask<Uri, Void, String>{
 
         private ContentResolver contentResolver;
+        private Usuario usuario;
+        private UsuarioViewModel usuarioViewModel;
 
-        private CargarImagen(ContentResolver contentResolver){
+        private CargarImagen(ContentResolver contentResolver, Usuario usuario, UsuarioViewModel usuarioViewModel){
             this.contentResolver = contentResolver;
+            this.usuario = usuario;
+            this.usuarioViewModel = usuarioViewModel;
         }
 
         @Override
@@ -103,7 +108,7 @@ public class PerfilFragment extends Fragment {
                         fotoPerfil.setImageURI(data.getData());
                         fotoPerfil.setBackgroundResource(R.color.translucent);
 
-                        new CargarImagen(getContext().getContentResolver()).execute(data.getData());
+                        cargarImagen.execute(data.getData());
                     }
                     break;
                 case REQUEST_CAMERA:
@@ -115,7 +120,7 @@ public class PerfilFragment extends Fragment {
                             File file = File.createTempFile("fotoPerfil","png");
                             try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                                 if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)){
-                                    new CargarImagen(getContext().getContentResolver()).execute(Uri.fromFile(file));
+                                   cargarImagen.execute(Uri.fromFile(file));
                                 }
                             }
                         } catch (IOException e) {
@@ -140,6 +145,8 @@ public class PerfilFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false);
+
+        cargarImagen = new CargarImagen(getContext().getContentResolver(), usuario, usuarioViewModel);
 
         usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
 
@@ -191,7 +198,7 @@ public class PerfilFragment extends Fragment {
         Button button = fragmentView.findViewById(R.id.perfil_cerrarsesion);
         button.setOnClickListener(view -> {
 
-            usuarioViewModel.borrarUsuario();
+            usuarioViewModel.borrarBaseDeDatos();
 
             //Cambiar de actividad con una tarea nueva
             Intent intent = new Intent(this.getActivity(), LoginActivity.class);

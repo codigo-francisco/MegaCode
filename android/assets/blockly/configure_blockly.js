@@ -92,6 +92,8 @@ function initApi(interpreter, scope) {
   }
 
   interpreter.setProperty(scope, 'enemigoDeFrente', interpreter.createNativeFunction(wrapper));
+
+  interpreter.setProperty(scope, 'juegoTerminado', interpreter.createNativeFunction(function(){ return megacode.juegoTerminado() }));
 }
 
 var myInterpreter;
@@ -109,6 +111,10 @@ function doStep(){
         } finally {
         }
      } while (hasMoreCode && !highlightPause);
+}
+
+function getCodeBlockly(){
+    megacode.codigoBlocklyGenerado(Blockly.JavaScript.workspaceToCode(workspace));
 }
 
 function runBlockly(){

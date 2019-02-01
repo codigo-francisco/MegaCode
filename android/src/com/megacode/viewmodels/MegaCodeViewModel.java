@@ -38,6 +38,10 @@ public class MegaCodeViewModel extends AndroidViewModel {
         return usuarioRepository.obtenerUsuario();
     }
 
+    public void actualizarUsuario(Usuario usuario){
+        usuarioRepository.update(usuario);
+    }
+
     public DataModel siguienteEjercicioSync(){
         return feedRepository.siguienteEjercicioSync();
     }

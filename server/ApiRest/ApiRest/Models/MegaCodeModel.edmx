@@ -4,254 +4,254 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="MegacodeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Conexion">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="usuarioId" Type="bigint" />
-          <Property Name="entrada" Type="datetime" Nullable="false" />
-          <Property Name="salida" Type="datetime" />
-          <Property Name="duracion" Type="int" />
-        </EntityType>
-        <EntityType Name="ConexionSesion">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="sesionId" Type="uniqueidentifier" />
-          <Property Name="conexionId" Type="uniqueidentifier" />
-        </EntityType>
-        <EntityType Name="Emociones_Sesion">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="sesionId" Type="uniqueidentifier" />
-          <Property Name="etiqueta" Type="varchar" MaxLength="50" />
-          <Property Name="tiempo" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="fotografia" Type="varchar(max)" />
-        </EntityType>
-        <EntityType Name="Nivel">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nombre" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="ruta" Type="varchar(max)" Nullable="false" />
-          <Property Name="comandos" Type="int" Nullable="false" />
-          <Property Name="si" Type="int" Nullable="false" />
-          <Property Name="para" Type="int" Nullable="false" />
-          <Property Name="mientras" Type="int" Nullable="false" />
-          <Property Name="dificultad" Type="int" Nullable="false" />
-          <Property Name="grupo" Type="int" Nullable="false" />
-          <Property Name="tipoNivel" Type="smallint" Nullable="false" />
-          <Property Name="cadenaOptima" Type="nvarchar" MaxLength="30" Nullable="false" />
-          <Property Name="zoomInicial" Type="real" Nullable="false" />
-          <Property Name="coordenadaX" Type="int" Nullable="false" />
-          <Property Name="coordenadaY" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Niveles_Terminados">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UsuarioId" Type="bigint" />
-          <Property Name="NivelId" Type="int" />
-          <Property Name="terminado" Type="bit" />
-          <Property Name="puntaje" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Sesion">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="usuarioId" Type="bigint" />
-          <Property Name="nivelId" Type="int" />
-          <Property Name="tiempo" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
-          <Property Name="intentos" Type="int" />
-          <Property Name="ayudas" Type="int" />
-          <Property Name="inactividad" Type="int" />
-        </EntityType>
-        <EntityType Name="TipoNivel">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="smallint" Nullable="false" />
-          <Property Name="nombre" Type="varchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Usuario">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="nombre" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="edad" Type="smallint" Nullable="false" />
-          <Property Name="sexo" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="comandos" Type="smallint" Nullable="false" />
-          <Property Name="si" Type="smallint" Nullable="false" />
-          <Property Name="para" Type="smallint" Nullable="false" />
-          <Property Name="mientras" Type="smallint" Nullable="false" />
-          <Property Name="email" Type="varchar" MaxLength="200" Nullable="false" />
-          <Property Name="contrasena" Type="varchar(max)" Nullable="false" />
-          <Property Name="fotoPerfil" Type="varchar(max)" />
-        </EntityType>
-        <Association Name="FK_Conecion_UsuarioId">
-          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
-          <End Role="Conexion" Type="Self.Conexion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Usuario">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Conexion">
-              <PropertyRef Name="usuarioId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ConexionSesion_ConexionId">
-          <End Role="Conexion" Type="Self.Conexion" Multiplicity="0..1" />
-          <End Role="ConexionSesion" Type="Self.ConexionSesion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Conexion">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="ConexionSesion">
-              <PropertyRef Name="conexionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_ConexionSesion_SesionId">
-          <End Role="Sesion" Type="Self.Sesion" Multiplicity="0..1" />
-          <End Role="ConexionSesion" Type="Self.ConexionSesion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Sesion">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="ConexionSesion">
-              <PropertyRef Name="conexionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Emocion_Sesion_SesionId">
-          <End Role="Sesion" Type="Self.Sesion" Multiplicity="0..1" />
-          <End Role="Emociones_Sesion" Type="Self.Emociones_Sesion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Sesion">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Emociones_Sesion">
-              <PropertyRef Name="sesionId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Nivel_TipoNivel">
-          <End Role="TipoNivel" Type="Self.TipoNivel" Multiplicity="1" />
-          <End Role="Nivel" Type="Self.Nivel" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TipoNivel">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Nivel">
-              <PropertyRef Name="tipoNivel" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_NivelesTerminados_NivelId">
-          <End Role="Nivel" Type="Self.Nivel" Multiplicity="0..1" />
-          <End Role="Niveles_Terminados" Type="Self.Niveles_Terminados" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Nivel">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Niveles_Terminados">
-              <PropertyRef Name="NivelId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_NivelesTerminados_UsuarioId">
-          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
-          <End Role="Niveles_Terminados" Type="Self.Niveles_Terminados" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Usuario">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Niveles_Terminados">
-              <PropertyRef Name="UsuarioId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Sesion_NivelId">
-          <End Role="Nivel" Type="Self.Nivel" Multiplicity="0..1" />
-          <End Role="Sesion" Type="Self.Sesion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Nivel">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Sesion">
-              <PropertyRef Name="nivelId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Sesion_UsuarioId">
-          <End Role="Usuario" Type="Self.Usuario" Multiplicity="0..1" />
-          <End Role="Sesion" Type="Self.Sesion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Usuario">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Sesion">
-              <PropertyRef Name="usuarioId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityContainer Name="MegacodeModelStoreContainer">
-          <EntitySet Name="Conexion" EntityType="Self.Conexion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ConexionSesion" EntityType="Self.ConexionSesion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Emociones_Sesion" EntityType="Self.Emociones_Sesion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Nivel" EntityType="Self.Nivel" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Niveles_Terminados" EntityType="Self.Niveles_Terminados" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Sesion" EntityType="Self.Sesion" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TipoNivel" EntityType="Self.TipoNivel" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Conecion_UsuarioId" Association="Self.FK_Conecion_UsuarioId">
-            <End Role="Usuario" EntitySet="Usuario" />
-            <End Role="Conexion" EntitySet="Conexion" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ConexionSesion_ConexionId" Association="Self.FK_ConexionSesion_ConexionId">
-            <End Role="Conexion" EntitySet="Conexion" />
-            <End Role="ConexionSesion" EntitySet="ConexionSesion" />
-          </AssociationSet>
-          <AssociationSet Name="FK_ConexionSesion_SesionId" Association="Self.FK_ConexionSesion_SesionId">
-            <End Role="Sesion" EntitySet="Sesion" />
-            <End Role="ConexionSesion" EntitySet="ConexionSesion" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Emocion_Sesion_SesionId" Association="Self.FK_Emocion_Sesion_SesionId">
-            <End Role="Sesion" EntitySet="Sesion" />
-            <End Role="Emociones_Sesion" EntitySet="Emociones_Sesion" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Nivel_TipoNivel" Association="Self.FK_Nivel_TipoNivel">
-            <End Role="TipoNivel" EntitySet="TipoNivel" />
-            <End Role="Nivel" EntitySet="Nivel" />
-          </AssociationSet>
-          <AssociationSet Name="FK_NivelesTerminados_NivelId" Association="Self.FK_NivelesTerminados_NivelId">
-            <End Role="Nivel" EntitySet="Nivel" />
-            <End Role="Niveles_Terminados" EntitySet="Niveles_Terminados" />
-          </AssociationSet>
-          <AssociationSet Name="FK_NivelesTerminados_UsuarioId" Association="Self.FK_NivelesTerminados_UsuarioId">
-            <End Role="Usuario" EntitySet="Usuario" />
-            <End Role="Niveles_Terminados" EntitySet="Niveles_Terminados" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Sesion_NivelId" Association="Self.FK_Sesion_NivelId">
-            <End Role="Nivel" EntitySet="Nivel" />
-            <End Role="Sesion" EntitySet="Sesion" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Sesion_UsuarioId" Association="Self.FK_Sesion_UsuarioId">
-            <End Role="Usuario" EntitySet="Usuario" />
-            <End Role="Sesion" EntitySet="Sesion" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema></edmx:StorageModels>
+    <Schema Namespace="MegacodeModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="MegacodeModelStoreContainer">
+    <EntitySet Name="Conexion" EntityType="MegacodeModel.Store.Conexion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Emociones_Sesion" EntityType="MegacodeModel.Store.Emociones_Sesion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Nivel" EntityType="MegacodeModel.Store.Nivel" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Niveles_Terminados" EntityType="MegacodeModel.Store.Niveles_Terminados" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Usuario" EntityType="MegacodeModel.Store.Usuario" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ConexionSesion" EntityType="MegacodeModel.Store.ConexionSesion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Sesion" EntityType="MegacodeModel.Store.Sesion" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TipoNivel" EntityType="MegacodeModel.Store.TipoNivel" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_NivelesTerminados_NivelId" Association="MegacodeModel.Store.FK_NivelesTerminados_NivelId">
+      <End Role="Nivel" EntitySet="Nivel" />
+      <End Role="Niveles_Terminados" EntitySet="Niveles_Terminados" />
+    </AssociationSet>
+    <AssociationSet Name="FK_NivelesTerminados_UsuarioId" Association="MegacodeModel.Store.FK_NivelesTerminados_UsuarioId">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Niveles_Terminados" EntitySet="Niveles_Terminados" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Conecion_UsuarioId" Association="MegacodeModel.Store.FK_Conecion_UsuarioId">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Conexion" EntitySet="Conexion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ConexionSesion_ConexionId" Association="MegacodeModel.Store.FK_ConexionSesion_ConexionId">
+      <End Role="Conexion" EntitySet="Conexion" />
+      <End Role="ConexionSesion" EntitySet="ConexionSesion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ConexionSesion_SesionId" Association="MegacodeModel.Store.FK_ConexionSesion_SesionId">
+      <End Role="Sesion" EntitySet="Sesion" />
+      <End Role="ConexionSesion" EntitySet="ConexionSesion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Emocion_Sesion_SesionId" Association="MegacodeModel.Store.FK_Emocion_Sesion_SesionId">
+      <End Role="Sesion" EntitySet="Sesion" />
+      <End Role="Emociones_Sesion" EntitySet="Emociones_Sesion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sesion_NivelId" Association="MegacodeModel.Store.FK_Sesion_NivelId">
+      <End Role="Nivel" EntitySet="Nivel" />
+      <End Role="Sesion" EntitySet="Sesion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Sesion_UsuarioId" Association="MegacodeModel.Store.FK_Sesion_UsuarioId">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Sesion" EntitySet="Sesion" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Nivel_TipoNivel" Association="MegacodeModel.Store.FK_Nivel_TipoNivel">
+      <End Role="TipoNivel" EntitySet="TipoNivel" />
+      <End Role="Nivel" EntitySet="Nivel" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Conexion">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="entrada" Type="datetime" Nullable="false" />
+    <Property Name="salida" Type="datetime" Nullable="true" />
+    <Property Name="duracion" Type="int" Nullable="true" />
+    <Property Name="usuarioId" Type="bigint" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Emociones_Sesion">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="sesionId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="etiqueta" Type="varchar" Nullable="true" MaxLength="50" />
+    <Property Name="tiempo" Type="binary" StoreGeneratedPattern="Computed" Nullable="false" MaxLength="8" />
+    <Property Name="fotografia" Type="varchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Nivel">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nombre" Type="varchar" Nullable="false" MaxLength="200" />
+    <Property Name="ruta" Type="varchar(max)" Nullable="false" />
+    <Property Name="comandos" Type="int" Nullable="false" />
+    <Property Name="si" Type="int" Nullable="false" />
+    <Property Name="para" Type="int" Nullable="false" />
+    <Property Name="mientras" Type="int" Nullable="false" />
+    <Property Name="dificultad" Type="int" Nullable="false" />
+    <Property Name="grupo" Type="int" Nullable="false" />
+    <Property Name="tipoNivel" Type="smallint" Nullable="false" />
+    <Property Name="cadenaOptima" Type="nvarchar" Nullable="false" MaxLength="30" />
+    <Property Name="zoomInicial" Type="real" Nullable="false" />
+    <Property Name="coordenadaX" Type="int" Nullable="false" />
+    <Property Name="coordenadaY" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Niveles_Terminados">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UsuarioId" Type="bigint" Nullable="true" />
+    <Property Name="NivelId" Type="int" Nullable="true" />
+    <Property Name="terminado" Type="bit" Nullable="true" />
+    <Property Name="puntaje" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nombre" Type="varchar" Nullable="false" MaxLength="200" />
+    <Property Name="edad" Type="smallint" Nullable="false" />
+    <Property Name="sexo" Type="varchar" Nullable="false" MaxLength="20" />
+    <Property Name="comandos" Type="smallint" Nullable="false" />
+    <Property Name="si" Type="smallint" Nullable="false" />
+    <Property Name="para" Type="smallint" Nullable="false" />
+    <Property Name="mientras" Type="smallint" Nullable="false" />
+    <Property Name="email" Type="varchar" Nullable="false" MaxLength="200" />
+    <Property Name="contrasena" Type="varchar(max)" Nullable="false" />
+    <Property Name="fotoPerfil" Type="varchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="ConexionSesion">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="sesionId" Type="uniqueidentifier" Nullable="true" />
+    <Property Name="conexionId" Type="uniqueidentifier" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Sesion">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="usuarioId" Type="bigint" Nullable="true" />
+    <Property Name="nivelId" Type="int" Nullable="true" />
+    <Property Name="tiempo" Type="binary" StoreGeneratedPattern="Computed" Nullable="false" MaxLength="8" />
+    <Property Name="intentos" Type="int" Nullable="true" />
+    <Property Name="ayudas" Type="int" Nullable="true" />
+    <Property Name="inactividad" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="TipoNivel">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="smallint" Nullable="false" />
+    <Property Name="nombre" Type="varchar" Nullable="false" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_NivelesTerminados_NivelId">
+    <End Role="Nivel" Type="MegacodeModel.Store.Nivel" Multiplicity="0..1" />
+    <End Role="Niveles_Terminados" Type="MegacodeModel.Store.Niveles_Terminados" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Nivel">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Niveles_Terminados">
+        <PropertyRef Name="NivelId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_NivelesTerminados_UsuarioId">
+    <End Role="Usuario" Type="MegacodeModel.Store.Usuario" Multiplicity="0..1" />
+    <End Role="Niveles_Terminados" Type="MegacodeModel.Store.Niveles_Terminados" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Niveles_Terminados">
+        <PropertyRef Name="UsuarioId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Conecion_UsuarioId">
+    <End Role="Usuario" Type="MegacodeModel.Store.Usuario" Multiplicity="0..1" />
+    <End Role="Conexion" Type="MegacodeModel.Store.Conexion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Conexion">
+        <PropertyRef Name="usuarioId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ConexionSesion_ConexionId">
+    <End Role="Conexion" Type="MegacodeModel.Store.Conexion" Multiplicity="0..1" />
+    <End Role="ConexionSesion" Type="MegacodeModel.Store.ConexionSesion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Conexion">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ConexionSesion">
+        <PropertyRef Name="conexionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ConexionSesion_SesionId">
+    <End Role="Sesion" Type="MegacodeModel.Store.Sesion" Multiplicity="0..1" />
+    <End Role="ConexionSesion" Type="MegacodeModel.Store.ConexionSesion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sesion">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ConexionSesion">
+        <PropertyRef Name="conexionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Emocion_Sesion_SesionId">
+    <End Role="Sesion" Type="MegacodeModel.Store.Sesion" Multiplicity="0..1" />
+    <End Role="Emociones_Sesion" Type="MegacodeModel.Store.Emociones_Sesion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sesion">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Emociones_Sesion">
+        <PropertyRef Name="sesionId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sesion_NivelId">
+    <End Role="Nivel" Type="MegacodeModel.Store.Nivel" Multiplicity="0..1" />
+    <End Role="Sesion" Type="MegacodeModel.Store.Sesion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Nivel">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Sesion">
+        <PropertyRef Name="nivelId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Sesion_UsuarioId">
+    <End Role="Usuario" Type="MegacodeModel.Store.Usuario" Multiplicity="0..1" />
+    <End Role="Sesion" Type="MegacodeModel.Store.Sesion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Sesion">
+        <PropertyRef Name="usuarioId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Nivel_TipoNivel">
+    <End Role="TipoNivel" Type="MegacodeModel.Store.TipoNivel" Multiplicity="1" />
+    <End Role="Nivel" Type="MegacodeModel.Store.Nivel" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TipoNivel">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Nivel">
+        <PropertyRef Name="tipoNivel" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MegacodeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -569,11 +569,7 @@
     <EntitySetMapping Name="Nivel">
       <EntityTypeMapping TypeName="IsTypeOf(MegacodeModel.Nivel)">
         <MappingFragment StoreEntitySet="Nivel">
-          <ScalarProperty Name="coordenadaY" ColumnName="coordenadaY" />
-                <ScalarProperty Name="coordenadaX" ColumnName="coordenadaX" />
-                <ScalarProperty Name="zoomInicial" ColumnName="zoomInicial" />
-                <ScalarProperty Name="cadenaOptima" ColumnName="cadenaOptima" />
-                <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
           <ScalarProperty Name="ruta" ColumnName="ruta" />
           <ScalarProperty Name="comandos" ColumnName="comandos" />
@@ -583,6 +579,10 @@
           <ScalarProperty Name="dificultad" ColumnName="dificultad" />
           <ScalarProperty Name="grupo" ColumnName="grupo" />
           <ScalarProperty Name="tipoNivel" ColumnName="tipoNivel" />
+          <ScalarProperty Name="cadenaOptima" ColumnName="cadenaOptima" />
+          <ScalarProperty Name="zoomInicial" ColumnName="zoomInicial" />
+          <ScalarProperty Name="coordenadaX" ColumnName="coordenadaX" />
+          <ScalarProperty Name="coordenadaY" ColumnName="coordenadaY" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

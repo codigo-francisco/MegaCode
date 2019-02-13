@@ -3,6 +3,8 @@ package com.megacode.views.activities;
 import android.content.Intent;
 
 import com.google.android.material.button.MaterialButton;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -25,6 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private MaterialButton loginButton;
+    private LoginViewModel loginViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,23 +45,28 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton = findViewById(R.id.button_login);
 
-        LoginViewModel loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
         loginViewModel.getUsuarioMutableLiveData().observe(this, new Observer<Usuario>() {
             @Override
             public void onChanged(Usuario usuario) {
                 if (usuario!=null){
                     if (!usuario.hasError()) {
-                        //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
-                        Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
-                        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intentActivity);
+                        abrirRootActivity();
                     }else{
-                        if (usuario.getErrorCode()==403){
-                            mostrarMensajeError("Email o contraseña incorrectos");
-                        }else{
-                            mostrarMensajeError("Ha ocurrido un error en el proceso");
-                        }
+                        //Se busca un usuario en Base de datos y se carga offline
+                        AsyncTask.execute(()->{
+                            Usuario usuarioBD = loginViewModel.getUsuario();
+                            if (usuarioBD != null){
+                                abrirRootActivity();
+                            }else {
+                                if (usuario.getErrorCode() == 403) {
+                                    mostrarMensajeError("Email o contraseña incorrectos");
+                                } else {
+                                    mostrarMensajeError("Ha ocurrido un error en el proceso");
+                                }
+                            }
+                        });
                     }
                 } else {
                     mostrarMensajeError("Ha ocurrido un error en el proceso");
@@ -78,6 +86,16 @@ public class LoginActivity extends AppCompatActivity {
 
             loginViewModel.loginUsuario(email, contrasena);
         });
+    }
+
+    private void abrirRootActivity(){
+        //Se registra la nueva conexion
+        AsyncTask.execute(()-> loginViewModel.registrarNuevaConexion());
+
+        //Se manda a llamar la actividad principal, se crea un task nuevo para borrar la actividad actual
+        Intent intentActivity = new Intent(LoginActivity.this, RootActivity.class);
+        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intentActivity);
     }
 
     private void mostrarMensajeError(String mensaje){

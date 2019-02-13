@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.megacode.Claves;
 import com.megacode.R;
 import com.megacode.components.CustomWebChromeClient;
 import com.megacode.components.WebViewJavaScriptInterface;
@@ -42,6 +43,7 @@ import com.megacode.helpers.StringHelper;
 import com.megacode.models.InfoNivel;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelTerminado;
+import com.megacode.models.database.Sesion;
 import com.megacode.models.database.Usuario;
 import com.megacode.others.CustomCallback;
 import com.megacode.others.FaceRecognition;
@@ -59,6 +61,7 @@ import java.util.TimerTask;
 
 public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
 
+	private Sesion sesionActual;
 	private final static String TAG = "MegaCodeActivity";
 	private CameraBridgeViewBase cameraBridgeViewBase;
 	private FaceRecognition faceRecognition;
@@ -142,6 +145,20 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		faceRecognition = new FaceRecognition(getApplicationContext());
 	}
 
+	private Timer contador = new Timer("contadorTiempo");
+
+	private void inicializarTiempo(){
+		contador.cancel();
+		contador.purge();
+		sesionActual.tiempo = 0;
+		contador.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				sesionActual.tiempo++;
+			}
+		}, Claves.RETRASO_CONTADOR_TIEMPO_SESION, Claves.INTERMITENCIA_CONTADOR_TIEMPO_SESION);
+	}
+
 	@SuppressLint({"SetJavaScriptEnabled"})
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
@@ -200,7 +217,10 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
 		webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
 
-        findViewById(R.id.megacode_play).setOnClickListener(view -> webView.loadUrl("javascript:runBlockly()"));
+        findViewById(R.id.megacode_play).setOnClickListener(view -> {
+        	sesionActual.intentos++;
+        	webView.loadUrl("javascript:runBlockly()");
+        });
 
         InfoNivel infoNivel = new InfoNivel();
         infoNivel.rutaNivel = nivelActual.getRuta();
@@ -216,38 +236,44 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		// Create libgdx fragment
 		libgdxFragment = new GameFragment(infoNivel);
 
-		libgdxFragment.getGame().addLoadGameListener(() -> libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(screen -> {
-			//Se registran todos los avances del nivel
-			String cadenaOptima = nivelActual.getCadenaOptima();
-			String cadenaGenerada = javaScriptInterface.getUltimoCodigoGenerado();
-			int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
-			int puntaje = (int) Math.round((double) distance / Math.max(cadenaOptima.length(), cadenaGenerada.length()) * 100);
-			NivelTerminado nivelTerminado = new NivelTerminado();
-			nivelTerminado.setNivelId(nivelActual.getId());
-			nivelTerminado.setPuntaje(puntaje);
-			nivelTerminado.setTerminado(true);
-			long idUsuario = usuario.getId(); //PreferenceManager.getDefaultSharedPreferences(MegaCodeAcitivity.this).getLong(Claves.ID_USUARIO, 0);
-			nivelTerminado.setUsuarioId(idUsuario);
-			nivelTerminado.setNewId();
-			megaCodeViewModel.insertarNivelTerminadoSync(nivelTerminado);
+		libgdxFragment.getGame().addLoadGameListener(() -> {
+			//Se crea una sesión nueva
+			sesionActual = new Sesion();
+			//Se inicializa el contador de tiempo
+			inicializarTiempo();
 
-			//Actualizar puntajes del usuario
-			if (nivelTerminado.isTerminado() && usuario != null){
-				int puntajeComandos = usuario.getComandos() + nivelActual.getComandos();
-				int puntajeSi = usuario.getSi() + nivelActual.getSi();
-				int puntajePara = usuario.getPara() + nivelActual.getPara();
-				int puntajeMientras = usuario.getMientras() + nivelActual.getMientras();
+			libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(screen -> {
+				//Se registran todos los avances del nivel
+				String cadenaOptima = nivelActual.getCadenaOptima();
+				String cadenaGenerada = javaScriptInterface.getUltimoCodigoGenerado();
+				int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
+				int puntaje = (int) Math.round((double) distance / Math.max(cadenaOptima.length(), cadenaGenerada.length()) * 100);
+				NivelTerminado nivelTerminado = new NivelTerminado();
+				nivelTerminado.setNivelId(nivelActual.getId());
+				nivelTerminado.setPuntaje(puntaje);
+				nivelTerminado.setTerminado(true);
+				long idUsuario = usuario.getId(); //PreferenceManager.getDefaultSharedPreferences(MegaCodeAcitivity.this).getLong(Claves.ID_USUARIO, 0);
+				nivelTerminado.setUsuarioId(idUsuario);
+				nivelTerminado.setNewId();
+				megaCodeViewModel.insertarNivelTerminadoSync(nivelTerminado);
 
-				usuario.setComandos(puntajeComandos);
-				usuario.setSi(puntajeSi);
-				usuario.setPara(puntajePara);
-				usuario.setMientras(puntajeMientras);
+				//Actualizar puntajes del usuario
+				if (nivelTerminado.isTerminado() && usuario != null) {
+					int puntajeComandos = usuario.getComandos() + nivelActual.getComandos();
+					int puntajeSi = usuario.getSi() + nivelActual.getSi();
+					int puntajePara = usuario.getPara() + nivelActual.getPara();
+					int puntajeMientras = usuario.getMientras() + nivelActual.getMientras();
 
-				megaCodeViewModel.actualizarUsuario(usuario);
-			}
+					usuario.setComandos(puntajeComandos);
+					usuario.setSi(puntajeSi);
+					usuario.setPara(puntajePara);
+					usuario.setMientras(puntajeMientras);
 
-			MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
-			MegaCodeAcitivity.this.finish();
+					megaCodeViewModel.actualizarUsuario(usuario);
+				}
+
+				MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
+				MegaCodeAcitivity.this.finish();
 			/*runOnUiThread(() -> {
 				DataModel siguienteEjercicio = megaCodeViewModel.siguienteEjercicioSync();
 				if (siguienteEjercicio != null) {
@@ -280,7 +306,9 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 							.show();
 				}
 			});*/
-		}));
+			});
+		});
+
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
 		Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.game_fragment);

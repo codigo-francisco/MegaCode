@@ -10,4 +10,8 @@ public final class Claves {
     //ID de ResultActivities
     public final static int ABRIR_NIVEL_MEGACODE = 11;
     public final static int REFRESCAR_ARBOL_HABILIDADES = 12;
+
+    //Contador
+    public final static int RETRASO_CONTADOR_TIEMPO_SESION = 1000;
+    public final static int INTERMITENCIA_CONTADOR_TIEMPO_SESION = 1000;
 }

@@ -2,9 +2,11 @@ package com.megacode.databases;
 
 import android.content.Context;
 
+import com.megacode.dao.ConexionDao;
 import com.megacode.dao.NivelDao;
 import com.megacode.dao.NivelTerminadoDao;
 import com.megacode.dao.UsuarioDao;
+import com.megacode.models.database.Conexion;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelTerminado;
 import com.megacode.models.database.Usuario;
@@ -13,12 +15,17 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Usuario.class, Nivel.class, NivelTerminado.class}, version = 1)
+@Database(entities = {
+        Usuario.class,
+        Nivel.class,
+        NivelTerminado.class,
+        Conexion.class
+}, version = 1)
 public abstract class DataBaseMegaCode extends RoomDatabase {
     public abstract UsuarioDao usuarioDao();
     public abstract NivelTerminadoDao nivelTerminadoDao();
     public abstract NivelDao nivelDao();
-
+    public abstract ConexionDao conexionDao();
 
     private static DataBaseMegaCode INSTANCE;
 

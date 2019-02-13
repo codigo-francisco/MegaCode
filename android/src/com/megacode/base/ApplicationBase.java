@@ -18,10 +18,10 @@ public class ApplicationBase extends Application {
     public void onCreate() {
         super.onCreate();
 
-        if (LeakCanary.isInAnalyzerProcess(this)){
+        /*if (LeakCanary.isInAnalyzerProcess(this)){
             return;
         }
-        LeakCanary.install(this);
+        LeakCanary.install(this);*/
 
         if (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE)) {
             WebView.setWebContentsDebuggingEnabled(true);

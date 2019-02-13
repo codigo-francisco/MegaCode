@@ -44,4 +44,8 @@ public class UsuarioRepository {
     public void update(Usuario usuario){
         Executors.newSingleThreadExecutor().execute(()-> usuarioDao.update(usuario));
     }
+
+    public Usuario obtenerUsuarioSync(){
+        return usuarioDao.obtenerUsuarioSync();
+    }
 }

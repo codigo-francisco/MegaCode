@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 11/28/2018 16:24:04
--- Generated from EDMX file: D:\MegaCode\server\ApiRest\ApiRest\Models\MegaCodeModel.edmx
+-- Date Created: 02/04/2019 23:04:22
+-- Generated from EDMX file: E:\MegaCode\server\ApiRest\ApiRest\Models\MegaCodeModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -109,7 +109,11 @@ CREATE TABLE [dbo].[Nivel] (
     [mientras] int  NOT NULL,
     [dificultad] int  NOT NULL,
     [grupo] int  NOT NULL,
-    [tipoNivel] smallint  NOT NULL
+    [tipoNivel] smallint  NOT NULL,
+    [cadenaOptima] nvarchar(30)  NOT NULL,
+    [zoomInicial] real  NOT NULL,
+    [coordenadaX] int  NOT NULL,
+    [coordenadaY] int  NOT NULL
 );
 GO
 

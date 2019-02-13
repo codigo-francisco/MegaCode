@@ -9,9 +9,10 @@ var workspace = Blockly.inject(blocklyDiv,
                 wheel: true,
                 startScale: 1.0,
                 maxScale: 2,
-                minScale: 1,
-                scaleSpeed: .2
-        }
+                minScale: .2,
+                scaleSpeed: .1
+        },
+        horizontalLayout: true
     }
 );
 var onresize = function(e) {

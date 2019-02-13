@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "134be50c30e4fcd8172ad9ee6d9777d3",
+    "identityHash": "686654306f04c9c10cef536ff55abd1a",
     "entities": [
       {
         "tableName": "Usuario",
@@ -265,12 +265,77 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "Conexion",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `usuarioId` INTEGER NOT NULL, `entrada` INTEGER NOT NULL, `salida` INTEGER, `duracion` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`usuarioId`) REFERENCES `Usuario`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entrada",
+            "columnName": "entrada",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salida",
+            "columnName": "salida",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "duracion",
+            "columnName": "duracion",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Conexion_usuarioId",
+            "unique": false,
+            "columnNames": [
+              "usuarioId"
+            ],
+            "createSql": "CREATE  INDEX `index_Conexion_usuarioId` ON `${TABLE_NAME}` (`usuarioId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Usuario",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "usuarioId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"134be50c30e4fcd8172ad9ee6d9777d3\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"686654306f04c9c10cef536ff55abd1a\")"
     ]
   }
 }

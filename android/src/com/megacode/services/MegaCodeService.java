@@ -22,7 +22,7 @@ public class MegaCodeService {
             .build();
 
     private Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://192.168.1.88/megacode/")
+            .baseUrl("http://192.168.1.83/megacode/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build();

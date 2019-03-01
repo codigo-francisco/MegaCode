@@ -4,12 +4,16 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url 'http://repo1.maven.org/maven2' }
+        maven {
+            url  "https://google.bintray.com/tensorflow"
+        }
         jcenter()
         google()
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.1'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
         classpath "com.badlogicgames.gdx:gdx-tools:1.9.9-SNAPSHOT"
         classpath 'com.badlogicgames.gdx:gdx-freetype:1.9.8@jar'
@@ -67,14 +71,11 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
 
-        implementation 'com.android.volley:volley:1.1.0'
         implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
         implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'
 
         implementation 'com.squareup.retrofit2:retrofit:2.4.0'
         implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-
-        implementation 'de.hdodenhof:circleimageview:2.2.0'
 
         implementation 'org.jeasy:easy-rules-mvel:3.2.0'
         implementation 'org.jeasy:easy-rules-core:3.2.0'
@@ -89,10 +90,10 @@ project(":android") {
 
         implementation 'com.x5dev:chunk-templates:3.5.0'
 
-        debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-        releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+        //debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+        //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
         // Optional, if you use support library fragments:
-        debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+        //debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
 
         implementation project(':OpenCV')
     }

@@ -10,16 +10,21 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
+            java.excludes = ["src/test/**"]
+        }
+        test {
+            java.srcDirs = ["src/test/"]
         }
     }
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     productFlavors {
     }
@@ -34,6 +39,13 @@ android {
             include 'armeabi-v7a', 'x86', 'x86_64', 'arm64-v8a', 'armeabi'
             universalApk false
         }
+    }
+    aaptOptions{
+        noCompress "tflite"
+        noCompress "lite"
+    }
+    testOptions {
+        unitTests.includeAndroidResources = true
     }
 }
 
@@ -58,73 +70,27 @@ task run(type: Exec) {
     def adb = path + "/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.megacode.activities.MegaCodeAcitivity'
 }
-// sets up the Android Eclipse project, using the old Ant based build.
-eclipse {
-    // need to specify Java source sets explicitely, SpringSource Gradle Eclipse plugin
-    // ignores any nodes added in classpath.file.withXml
-    sourceSets {
-        main {
-            java.srcDirs "src", 'gen'
-        }
-    }
-
-    jdt {
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-    }
-
-    classpath {
-        plusConfigurations += [project.configurations.compile]
-        containers 'com.android.ide.eclipse.adt.ANDROID_FRAMEWORK', 'com.android.ide.eclipse.adt.LIBRARIES'
-    }
-
-    project {
-        name = appName + "-android"
-        natures 'com.android.ide.eclipse.adt.AndroidNature'
-        buildCommands.clear();
-        buildCommand "com.android.ide.eclipse.adt.ResourceManagerBuilder"
-        buildCommand "com.android.ide.eclipse.adt.PreCompilerBuilder"
-        buildCommand "org.eclipse.jdt.core.javabuilder"
-        buildCommand "com.android.ide.eclipse.adt.ApkBuilder"
-    }
-}
-// sets up the Android Idea project, using the old Ant based build.
-idea {
-    module {
-        sourceDirs += file("src");
-        scopes = [COMPILE: [plus: [project.configurations.compile]]]
-
-        iml {
-            withXml {
-                def node = it.asNode()
-                def builder = NodeBuilder.newInstance();
-                builder.current = node;
-                builder.component(name: "FacetManager") {
-                    facet(type: "android", name: "Android") {
-                        configuration {
-                            option(name: "UPDATE_PROPERTY_FILES", value: "true")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
-
-    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel:2.0.0"
-    implementation "androidx.lifecycle:lifecycle-livedata:2.0.0"
-    implementation "androidx.lifecycle:lifecycle-runtime:2.0.0"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.0.0"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.0.0"
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
+    implementation 'androidx.room:room-runtime:2.1.0-alpha04'
+    annotationProcessor "androidx.room:room-compiler:2.1.0-alpha04"
 
-    implementation "androidx.room:room-runtime:2.1.0-alpha03"
-    annotationProcessor "androidx.room:room-compiler:2.1.0-alpha03"
+    implementation "commons-io:commons-io:2.6"
+
+    implementation 'org.tensorflow:tensorflow-lite:1.13.1'
+
+    testCompileOnly 'junit:junit:4.12'
+    testCompileOnly 'androidx.test:core:1.1.0'
 }

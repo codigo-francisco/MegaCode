@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -24,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -40,29 +41,30 @@ import com.megacode.components.CustomWebChromeClient;
 import com.megacode.components.WebViewJavaScriptInterface;
 import com.megacode.helpers.HtmlHelper;
 import com.megacode.helpers.StringHelper;
+import com.megacode.ia.EmotionClassification;
 import com.megacode.models.InfoNivel;
 import com.megacode.models.database.Nivel;
 import com.megacode.models.database.NivelTerminado;
 import com.megacode.models.database.Sesion;
 import com.megacode.models.database.Usuario;
 import com.megacode.others.CustomCallback;
-import com.megacode.others.FaceRecognition;
+import com.megacode.ia.FaceRecognition;
 import com.megacode.viewmodels.MegaCodeViewModel;
 import com.megacode.views.fragments.GameFragment;
-import com.squareup.leakcanary.LeakCanary;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks, CameraBridgeViewBase.CvCameraViewListener2 {
+public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks {
 
 	private Sesion sesionActual;
-	private final static String TAG = "MegaCodeActivity";
+	private final static String TAG = MegaCodeAcitivity.class.getName();
 	private CameraBridgeViewBase cameraBridgeViewBase;
 	private FaceRecognition faceRecognition;
 	private TextView textViewEmotion;
@@ -78,7 +80,25 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
     private WebViewJavaScriptInterface javaScriptInterface;
     private String paginaHtml;
     private Usuario usuario;
-    private Timer timer = new Timer("mostrarCodigo", false);
+
+    private CameraBridgeViewBase.CvCameraViewListener2 listenerCamera = new CameraBridgeViewBase.CvCameraViewListener2() {
+		@Override
+		public void onCameraViewStarted(int width, int height) {
+
+		}
+
+		@Override
+		public void onCameraViewStopped() {
+
+		}
+
+		@Override
+		public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+			Mat frame = inputFrame.rgba();
+
+			return faceRecognition.markAndDetectEmotion(frame, true);
+		}
+	};
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -142,14 +162,16 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		OpenCVLoader.initDebug();
 
 		cameraBridgeViewBase.enableView();
-		faceRecognition = new FaceRecognition(getApplicationContext());
+		try {
+			faceRecognition = new FaceRecognition(this, FaceRecognition.LBP_CASCADE, EmotionClassification.RAFD_MODEL);
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage(), e);
+		}
 	}
 
 	private Timer contador = new Timer("contadorTiempo");
 
 	private void inicializarTiempo(){
-		contador.cancel();
-		contador.purge();
 		sesionActual.tiempo = 0;
 		contador.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -184,9 +206,9 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 		cameraBridgeViewBase = findViewById(R.id.camera_view);
 		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
 		cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
-		cameraBridgeViewBase.setCvCameraViewListener(this);
+		cameraBridgeViewBase.setCvCameraViewListener(listenerCamera);
 
-		textViewEmotion = findViewById(R.id.text_view_emotion);
+		//textViewEmotion = findViewById(R.id.text_view_emotion);
 		imageViewFace = findViewById(R.id.image_view_face);
 		linearLayoutCamera = findViewById(R.id.linear_layout_camera);
 
@@ -196,7 +218,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			inicializarCamara();
 		}
 
-		Button butonCamera = findViewById(R.id.button_camera);
+		/*Button butonCamera = findViewById(R.id.button_camera);
 		butonCamera.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -206,7 +228,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 				textViewEmotion.setText("Detectando emocion...");
 				faceRecognition.detectEmotion(lastFrame, response -> textViewEmotion.setText(response));
 			}
-		});
+		});*/
 
 		webView = findViewById(R.id.megacode_activity_webview);
 		webView.setWebChromeClient(new CustomWebChromeClient());
@@ -322,25 +344,5 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	@Override
 	public void exit() {
 		Log.d(TAG, "exit");
-	}
-
-	@Override
-	public void onCameraViewStarted(int i, int i1) {
-
-	}
-
-	@Override
-	public void onCameraViewStopped() {
-
-	}
-
-	protected Mat lastFrame;
-
-	@Override
-	public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame cvCameraViewFrame) {
-		lastFrame = cvCameraViewFrame.rgba();
-		//Core.flip(lastFrame, lastFrame,0);
-		//Core.transpose(lastFrame, lastFrame);
-		return  faceRecognition.markFace(lastFrame);
 	}
 }

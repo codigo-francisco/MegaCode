@@ -90,7 +90,4 @@ dependencies {
     implementation "commons-io:commons-io:2.6"
 
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
-
-    testCompileOnly 'junit:junit:4.12'
-    testCompileOnly 'androidx.test:core:1.1.0'
 }

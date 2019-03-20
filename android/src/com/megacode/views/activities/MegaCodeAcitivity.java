@@ -66,7 +66,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	private Sesion sesionActual;
 	private final static String TAG = MegaCodeAcitivity.class.getName();
 	private CameraBridgeViewBase cameraBridgeViewBase;
-	private FaceRecognition faceRecognition;
+	//private FaceRecognition faceRecognition;
 	private TextView textViewEmotion;
 	private ImageView imageViewFace;
 	private LinearLayout linearLayoutCamera;

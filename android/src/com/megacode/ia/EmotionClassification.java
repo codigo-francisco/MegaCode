@@ -14,8 +14,11 @@ import org.tensorflow.lite.Interpreter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.DoubleToIntFunction;
+import java.util.stream.Stream;
 
 public class EmotionClassification {
 
@@ -71,6 +74,20 @@ public class EmotionClassification {
         probsEmotions = new float[1][emotions.length];
     }
 
+    private void convertMattoTfLiteInput(Mat mat)
+    {
+        imgData.rewind();
+        double[] values;
+        for (int i = 0; i < Claves.DIM_HEIGHT; ++i) {
+            for (int j = 0; j < Claves.DIM_WIDTH; ++j) {
+                values = mat.get(i,j);
+                imgData.putFloat((float)values[0]);
+                imgData.putFloat((float)values[1]);
+                imgData.putFloat((float)values[2]);
+            }
+        }
+    }
+
     public void convertBitmapToByteBuffer(Bitmap bitmap) {
 
         imgData.rewind();
@@ -83,9 +100,9 @@ public class EmotionClassification {
         for (int i = 0; i < bitmap.getWidth(); ++i) {
             for (int j = 0; j < bitmap.getHeight(); ++j) {
                 final int val = intValues[pixel++];
-                imgData.putFloat(((val >> 16) & 0xFF));
-                imgData.putFloat(((val >> 8) & 0xFF));
-                imgData.putFloat((val & 0xFF));
+                imgData.putInt(((val >> 16) & 0xFF));
+                imgData.putInt(((val >> 8) & 0xFF));
+                imgData.putInt((val & 0xFF));
             }
         }
     }
@@ -93,35 +110,20 @@ public class EmotionClassification {
     public String classify(Bitmap image){
         convertBitmapToByteBuffer(image);
 
-        return classify(imgData);
+        return classify();
     }
 
     public String classify(Mat image){
-        ByteBuffer imageBuffer = convertMattoTfLiteInput(image);
+        convertMattoTfLiteInput(image);
 
-        return classify(imageBuffer);
+        return classify();
     }
 
-    public String classify(ByteBuffer image){
+    private String classify(){
         Arrays.fill(probsEmotions[0], 0);
-        tflite.run(image, probsEmotions);
+        tflite.run(imgData, probsEmotions);
 
         return emotions[(int)argmax(probsEmotions[0])[0]];
-    }
-
-    private ByteBuffer convertMattoTfLiteInput( Mat mat)
-    {
-        ByteBuffer imgData = ByteBuffer.allocateDirect(Claves.TAMAÑO_BUFFER_FOTO);
-        imgData.order(ByteOrder.nativeOrder());
-        imgData.rewind();
-        //int pixel = 0;
-        for (int i = 0; i < Claves.DIM_HEIGHT; ++i) {
-            for (int j = 0; j < Claves.DIM_WIDTH; ++j) {
-                imgData.putFloat((float)mat.get(i,j)[0]);
-            }
-        }
-
-        return imgData;
     }
 
     private Object[] argmax(float[] array){

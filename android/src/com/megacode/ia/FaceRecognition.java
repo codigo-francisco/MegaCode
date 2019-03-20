@@ -89,9 +89,9 @@ public class FaceRecognition {
             Rect rect = matOfRect.toArray()[0];
             image = new Mat(image, rect);
             org.opencv.imgproc.Imgproc.resize(image, image, new Size(emotionClassification.tamañoFoto.width, emotionClassification.tamañoFoto.height));
-            Bitmap newImage = Bitmap.createBitmap(240, 240, Bitmap.Config.RGB_565);
-            Utils.matToBitmap(image,newImage);
-            emotion = emotionClassification.classify(newImage);
+            //Bitmap newImage = Bitmap.createBitmap(240, 240, Bitmap.Config.RGB_565);
+            //Utils.matToBitmap(image,newImage);
+            emotion = emotionClassification.classify(image);
 
             result = true;
         }

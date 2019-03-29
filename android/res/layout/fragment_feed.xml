@@ -10,12 +10,30 @@
         android:layout_height="match_parent"
         android:id="@+id/feed_refreshlayout">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_feed"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/feed_text_sincontenido"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="No hay noticias nuevas"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_feed"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:layout_alignParentTop="true"
+                />
+
+        </RelativeLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

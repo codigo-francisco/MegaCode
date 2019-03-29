@@ -1,4 +1,4 @@
-package com.megacode.components;
+package com.rockbass2560.megacode.components;
 
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;

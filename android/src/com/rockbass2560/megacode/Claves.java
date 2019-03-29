@@ -1,8 +1,10 @@
-package com.megacode;
+package com.rockbass2560.megacode;
 
 public final class Claves {
     //Id de shared preferences
     public final static String ID_USUARIO = "idUsuario";
+    public final static String SHARED_MEGACODE_PREFERENCES = "MegacodePreferences";
+    public final static String CONEXION_ID = "conexionId";
 
     //Tag de fragmentos
     public final static String INFO_NIVEL_FRAGMENT_TAG = "INFO_NIVEL_FRAGMENT_TAG";
@@ -17,6 +19,10 @@ public final class Claves {
 
     //Clasificador
     public final static int TAMAÑO_BUFFER_FOTO = 691200;
-    public final static int DIM_HEIGHT = 240;
-    public final static int DIM_WIDTH = 240;
+
+    public final static String EMPTY_STRING = "";
+
+    public final static int EMOTION_FOUND = 1;
+
+    public final static String EMOTION = "EMOTION";
 }

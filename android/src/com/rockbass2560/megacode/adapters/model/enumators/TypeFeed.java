@@ -1,4 +1,4 @@
-package com.megacode.adapters.model.enumators;
+package com.rockbass2560.megacode.adapters.model.enumators;
 
 public enum TypeFeed {
     CONSEJO,

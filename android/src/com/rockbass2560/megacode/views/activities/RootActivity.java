@@ -7,8 +7,6 @@ import androidx.annotation.Nullable;
 import com.google.android.material.navigation.NavigationView;
 import com.rockbass2560.megacode.Claves;
 import com.rockbass2560.megacode.R;
-import com.rockbass2560.megacode.models.database.Usuario;
-import com.rockbass2560.megacode.viewmodels.RootViewModel;
 import com.rockbass2560.megacode.views.fragments.FeedFragment;
 import com.rockbass2560.megacode.views.fragments.PerfilFragment;
 import com.rockbass2560.megacode.views.fragments.ProgresoFragment;
@@ -20,13 +18,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
-import android.preference.PreferenceManager;
 import android.util.SparseArray;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -39,23 +33,11 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
     private int RESULT_GAME = 1;
     private NavigationView navigationView;
     private Toolbar toolbarMenu;
-    private RootViewModel rootViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_root);
-
-        rootViewModel = ViewModelProviders.of(this).get(RootViewModel.class);
-        rootViewModel.obtenerUsuario().observe(this, new Observer<Usuario>() {
-            @Override
-            public void onChanged(Usuario usuario) {
-                if (usuario != null) {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(RootActivity.this);
-                    sharedPreferences.edit().putLong(Claves.ID_USUARIO, usuario.getId()).apply();
-                }
-            }
-        });
 
         toolbarMenu = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbarMenu);
@@ -184,4 +166,8 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.
+        outState.putInt(SELECTED_FRAGMENT, selectedFragment);
+
+        super.onSaveInstanceState(outState);
+    }
+}

@@ -1,4 +1,4 @@
-package com.megacode.components;
+package com.rockbass2560.megacode.components;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -17,7 +17,7 @@ import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.megacode.R;
+import com.rockbass2560.megacode.R;
 
 import androidx.annotation.Nullable;
 

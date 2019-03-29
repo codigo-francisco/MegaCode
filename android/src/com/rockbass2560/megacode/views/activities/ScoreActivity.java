@@ -14,14 +14,9 @@ public class ScoreActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onEnterAnimationComplete() {
-        super.onEnterAnimationComplete();
-
-
-    }
-
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
 
-        finishAfte
+        finishAfterTransition();
+    }
+}

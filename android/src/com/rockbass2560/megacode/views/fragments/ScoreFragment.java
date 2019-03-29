@@ -1,8 +1,8 @@
-package com.megacode.views.fragments;
+package com.rockbass2560.megacode.views.fragments;
 
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -14,10 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.megacode.R;
-import com.megacode.adapters.ScoreAdapter;
-import com.megacode.models.response.ScoreResponse;
-import com.megacode.viewmodels.ScoreViewModel;
+import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.adapters.ScoreAdapter;
+import com.rockbass2560.megacode.models.database.Score;
+import com.rockbass2560.megacode.viewmodels.ScoreViewModel;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class ScoreFragment extends Fragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.scores_recyclerview);
         SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.score_swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(scoreViewModel::obtenerPuntajes);
+        swipeRefreshLayout.setOnRefreshListener(scoreViewModel::actualizarPuntajes);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -52,28 +52,16 @@ public class ScoreFragment extends Fragment {
 
         recyclerView.setAdapter(scoreAdapter);
 
-        scoreViewModel.getListMutableLiveData().observe(this, new Observer<List<ScoreResponse>>() {
+        scoreViewModel.observadorPuntajes().observe(this, new Observer<List<Score>>() {
             @Override
-            public void onChanged(List<ScoreResponse> scoreResponses) {
-                scoreAdapter.setData(scoreResponses);
+            public void onChanged(List<Score> scoreRespons) {
+                scoreAdapter.setData(scoreRespons);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-        scoreViewModel.obtenerPuntajes();
-
-        if (savedInstanceState!=null){
-            if (savedInstanceState.getParcelableArrayList("scores")!=null){
-                scoreAdapter.setData(savedInstanceState.getParcelableArrayList("scores"));
-            }
-        }
+        scoreViewModel.actualizarPuntajes();
 
         return view;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        //outState.putParcelableArrayList("scores", new ArrayList<>(scoreModelList));
-        super.onSaveInstanceState(outState);
     }
 }

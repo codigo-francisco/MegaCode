@@ -1,16 +1,15 @@
-package com.megacode.components;
+package com.rockbass2560.megacode.components;
 
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import com.megacode.Comando;
-import com.megacode.Level;
-import com.megacode.others.CustomCallback;
-import com.megacode.views.fragments.GameFragment;
+import com.rockbass2560.megacode.Comando;
+import com.rockbass2560.megacode.Level;
+import com.rockbass2560.megacode.others.CustomCallback;
+import com.rockbass2560.megacode.views.fragments.GameFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class WebViewJavaScriptInterface {

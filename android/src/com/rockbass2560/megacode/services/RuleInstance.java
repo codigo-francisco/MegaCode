@@ -1,7 +1,7 @@
-package com.megacode.services;
+package com.rockbass2560.megacode.services;
 
-import com.megacode.models.FeedBack;
-import com.megacode.models.database.Usuario;
+import com.rockbass2560.megacode.models.FeedBack;
+import com.rockbass2560.megacode.models.Usuario;
 
 import org.jeasy.rules.api.Facts;
 import org.jeasy.rules.api.Rule;
@@ -44,7 +44,7 @@ public class RuleInstance {
                 .name("Sin ejercicios")
                 .when(facts ->{
                         Usuario usuario = facts.get("usuario");
-                        return usuario.getComandos() + usuario.getSi() + usuario.getPara() + usuario.getMientras() < 1 ;
+                        return usuario.getPuntajeTotal() < 1 ;
                 })
                 .then(facts -> feedBacks.add(new FeedBack("Consejo", "Te recomiendo probar un ejericio, comienza a jugar")))
                 .build();
@@ -52,7 +52,7 @@ public class RuleInstance {
 
         Rule siCompleto = new RuleBuilder()
                 .name("Si completo")
-                .when(facts -> ((Usuario)facts.get("usuario")).getSi()==5)
+                .when(facts -> ((Usuario)facts.get("usuario")).si==5)
                 .then(facts -> feedBacks.add(new FeedBack("Consejo","Terminaste los ejercicios con si, prueba ejercicios con otro tipo de temas")))
                 .build();
         rules.register(siCompleto);

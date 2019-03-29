@@ -122,4 +122,6 @@ public class Constants {
     // Scoring
     public static final int ENEMY_KILL_SCORE = 100;
     public static final int ENEMY_HIT_SCORE = 25;
-    public static final int POWERUP_SCORE
+    public static final int POWERUP_SCORE = 50;
+
+}

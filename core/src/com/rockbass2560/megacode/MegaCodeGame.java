@@ -26,4 +26,6 @@ public class MegaCodeGame extends Game {
     private LoadGameListener gameListener;
 
     public interface LoadGameListener{
-        void
+        void loadedGame();
+    }
+}

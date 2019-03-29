@@ -1,10 +1,10 @@
-package com.megacode.adapters.model;
+package com.rockbass2560.megacode.adapters.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 
-import com.megacode.adapters.model.enumators.TypeFeed;
+import com.rockbass2560.megacode.adapters.model.enumators.TypeFeed;
 
 public class DataModel implements Parcelable {
 

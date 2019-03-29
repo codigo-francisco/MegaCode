@@ -1,7 +1,7 @@
-package com.megacode.entities;
+package com.rockbass2560.megacode.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacode.util.Assets;
+import com.rockbass2560.megacode.util.Assets;
 
 public class Platform {
 

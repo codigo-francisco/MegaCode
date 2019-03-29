@@ -1,10 +1,16 @@
-package com.megacode.ia;
+package com.rockbass2560.megacode.ia;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
-import com.megacode.Claves;
+import com.google.common.io.Files;
+import com.google.firebase.storage.FirebaseStorage;
+import com.rockbass2560.megacode.Claves;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -14,13 +20,16 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.util.Random;
 
 /**
  * Created by Francisco on 23/02/2018.
@@ -31,47 +40,82 @@ public class FaceRecognition {
 
     private CascadeClassifier cascadeClassifier;
     public EmotionClassification emotionClassification;
-    private static final String url  = "http:/192.168.1.96/emocion";
 
-    public static final String HAAR_CASCADE_DEFAULT = "haarcascade_frontalface_default.xml";
-    public static final String LBP_CASCADE_IMPROVED = "lbpcascade_frontalface_improved.xml";
-    public static final String LBP_CASCADE = "lbpcascade_frontalface.xml";
+    public static final String HAAR_CASCADE_DEFAULT = "haarcascade_frontalface_default";
+    public static final String LBP_CASCADE_IMPROVED = "lbpcascade_frontalface_improved";
+    public static final String LBP_CASCADE = "lbpcascade_frontalface";
 
-    public FaceRecognition(Context context, String cascade) throws IOException{
-        createCascadeFile(context, cascade);
+    public static final String NOT_FOUND = "NoEncontrado";
+
+    private File externalFolder;
+
+    private static FaceRecognition SINGLETON;
+    private Context context;
+
+    public static FaceRecognition getInstance(Context context, String cascade, String model) throws IOException {
+        if (SINGLETON==null){
+            SINGLETON = new FaceRecognition(context, cascade, model);
+        }
+
+        return SINGLETON;
     }
 
-    public FaceRecognition(Context context, String cascade, String model) throws IOException {
+    private FaceRecognition(Context context, String cascade, String model) throws IOException {
         createCascadeFile(context, cascade);
         emotionClassification = EmotionClassification.getEmotionClassification(model, context);
+        externalFolder = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        this.context = context;
     }
 
     private void createCascadeFile(Context context, String cascade) throws IOException {
-        InputStream is = context.getAssets().open(cascade);
-        File mCascadeFile = File.createTempFile("cascade",".xml");
-        FileOutputStream os = new FileOutputStream(mCascadeFile);
+        String nameFile = cascade+".xml";
+        File cascadeFile = new File(context.getFilesDir(), nameFile);
+        if (!cascadeFile.exists()){
+            InputStream is = context.getAssets().open(nameFile);
+            cascadeFile.createNewFile();
 
-        byte[] buffer = new byte[is.available()];
-        is.read(buffer);
-        os.write(buffer);
+            FileOutputStream os = new FileOutputStream(cascadeFile);
+            byte[] buffer = new byte[is.available()];
 
-        is.close();
-        os.close();
+            is.read(buffer);
+            os.write(buffer);
 
-        //cascadeClassifier = new CascadeClassifier(mCascadeFile.getAbsolutePath());
+            is.close();
+            os.close();
+        }
+
         cascadeClassifier = new CascadeClassifier();
-        cascadeClassifier.load(mCascadeFile.getAbsolutePath());
-
-        mCascadeFile.delete();
+        cascadeClassifier.load(cascadeFile.getAbsolutePath());
     }
 
-    /*private String getEncodedString(Bitmap bitmap){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] byteArray = baos.toByteArray();
+    public String detectEmotion(Bitmap bitmap){
+        String result = NOT_FOUND;
 
-        return  Base64.encodeToString(byteArray, Base64.DEFAULT);
-    }*/
+        Mat imagen = new Mat();
+
+        Utils.bitmapToMat(bitmap, imagen);
+
+        MatOfRect matOfRect = new MatOfRect();
+
+        cascadeClassifier.detectMultiScale(imagen, matOfRect);
+
+        if (!matOfRect.empty()){
+            Rect rect = matOfRect.toList().get(0);
+            imagen = new Mat(imagen, rect);
+            org.opencv.imgproc.Imgproc.cvtColor(imagen, imagen, Imgproc.COLOR_RGBA2GRAY);
+            org.opencv.imgproc.Imgproc.resize(imagen, imagen, emotionClassification.tamañoFoto);
+
+            Bitmap faceImage = Bitmap.createBitmap(imagen.cols(), imagen.rows(), Bitmap.Config.RGB_565);
+            String title = new Random().nextInt(Integer.MAX_VALUE)+"";
+            MediaStore.Images.Media.insertImage(context.getContentResolver(), faceImage, title, title);
+
+            result = emotionClassification.classify(imagen);
+        }
+
+        imagen.release();
+
+        return result;
+    }
 
     /**
      * Obtiene el rostro y procesa la emoción
@@ -128,7 +172,7 @@ public class FaceRecognition {
             Rect rect = matOfRect.toArray()[0];
 
             Mat newFace = new Mat(image, rect);
-            org.opencv.imgproc.Imgproc.resize(newFace, newFace, new Size(Claves.DIM_WIDTH, Claves.DIM_HEIGHT));
+            org.opencv.imgproc.Imgproc.resize(newFace, newFace, emotionClassification.tamañoFoto);
 
             String emotion = emotionClassification.classify(newFace);
 

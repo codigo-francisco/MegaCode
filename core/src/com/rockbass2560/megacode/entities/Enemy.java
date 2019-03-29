@@ -1,14 +1,14 @@
-package com.megacode.entities;
+package com.rockbass2560.megacode.entities;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.megacode.util.Assets;
-import com.megacode.util.Constants;
-import com.megacode.util.Enums.Direction;
-import com.megacode.util.Utils;
+import com.rockbass2560.megacode.util.Assets;
+import com.rockbass2560.megacode.util.Constants;
+import com.rockbass2560.megacode.util.Enums.Direction;
+import com.rockbass2560.megacode.util.Utils;
 
 
 public class Enemy {

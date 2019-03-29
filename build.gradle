@@ -17,6 +17,7 @@ buildscript {
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
         classpath "com.badlogicgames.gdx:gdx-tools:1.9.9-SNAPSHOT"
         classpath 'com.badlogicgames.gdx:gdx-freetype:1.9.8@jar'
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 
@@ -70,25 +71,6 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
-
-        implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
-        implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'
-
-        implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-        implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-
-        implementation 'org.jeasy:easy-rules-mvel:3.2.0'
-        implementation 'org.jeasy:easy-rules-core:3.2.0'
-        implementation 'org.jeasy:easy-rules-archetype:3.2.0'
-        implementation 'org.jeasy:easy-rules-support:3.2.0'
-        implementation 'org.jeasy:easy-rules-tutorials:3.2.0'
-
-        //implementation 'org.apache.commons:commons-lang3:3.6'
-
-        implementation 'com.github.bumptech.glide:glide:4.8.0'
-        annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
-
-        implementation 'com.x5dev:chunk-templates:3.5.0'
 
         //debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
         //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'

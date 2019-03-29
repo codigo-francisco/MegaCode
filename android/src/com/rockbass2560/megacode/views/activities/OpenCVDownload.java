@@ -1,4 +1,4 @@
-package com.megacode.views.activities;
+package com.rockbass2560.megacode.views.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -24,7 +24,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.megacode.R;
+import com.rockbass2560.megacode.R;
 
 import java.io.File;
 import java.util.Locale;
@@ -214,7 +214,7 @@ public class OpenCVDownload extends AppCompatActivity {
                     startActivity(install);
                 }else {
                     Intent install = new Intent(Intent.ACTION_INSTALL_PACKAGE);
-                    Uri uriFile = FileProvider.getUriForFile(context, "com.megacode.fileprovider", file);
+                    Uri uriFile = FileProvider.getUriForFile(context, "com.rockbass2560.megacode.fileprovider", file);
                     install.setData(uriFile);
                     install.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 

@@ -1,4 +1,4 @@
-package com.megacode.helpers;
+package com.rockbass2560.megacode.helpers;
 
 import android.content.Context;
 

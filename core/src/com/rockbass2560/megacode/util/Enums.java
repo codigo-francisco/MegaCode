@@ -1,4 +1,4 @@
-package com.megacode.util;
+package com.rockbass2560.megacode.util;
 
 
 public class Enums {

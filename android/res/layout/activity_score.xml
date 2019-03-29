@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/score_fragmento"
-        android:name="com.megacode.views.fragments.ScoreFragment"
+        android:name="com.rockbass2560.megacode.views.fragments.ScoreFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"

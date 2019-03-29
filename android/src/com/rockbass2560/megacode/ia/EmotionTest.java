@@ -1,4 +1,4 @@
-package com.megacode.ia;
+package com.rockbass2560.megacode.ia;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -9,13 +9,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class EmotionTest {
 

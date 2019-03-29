@@ -38,4 +38,7 @@ public class ImageProfileHelper {
         String imageEncoded = Base64.encodeToString(b,Base64.DEFAULT);
 
         Log.d(TAG, imageEncoded);
-        return imageEncoded;
+        return imageEncoded;
+    }
+
+}

@@ -1,4 +1,4 @@
-package com.megacode.adapters;
+package com.rockbass2560.megacode.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.megacode.R;
-import com.megacode.adapters.model.DataModel;
-import com.megacode.views.activities.ScoreActivity;
+import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.adapters.model.DataModel;
+import com.rockbass2560.megacode.views.activities.ScoreActivity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,18 +25,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.rockbass2560.megacode.R;
-import com.rockbass2560.megacode.helpers.ImageProfileHelper;
-import com.rockbass2560.megacode.models.database.Usuario;
-import com.rockbass2560.megacode.viewmodels.UsuarioViewModel;
+import com.rockbass2560.megacode.viewmodels.PerfilViewModel;
 import com.rockbass2560.megacode.views.activities.LoginActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Locale;
 
 import androidx.lifecycle.ViewModelProviders;
@@ -51,48 +62,11 @@ public class PerfilFragment extends Fragment {
     private final static String TAG = "PerfilFragment";
     private static final int REQUEST_CAMERA = 2;
     private AppCompatImageButton fotoPerfil, buttonMegaCode, buttonSheMegaCode;
-    private Usuario usuario;
-    private UsuarioViewModel usuarioViewModel;
-    private CargarImagen cargarImagen;
+    private PerfilViewModel perfilViewModel;
+    private static final int THUMBSIZE = 128;
 
     public PerfilFragment() {
         // Required empty public constructor
-    }
-
-    private static class CargarImagen extends AsyncTask<Uri, Void, String>{
-
-        private ContentResolver contentResolver;
-        private Usuario usuario;
-        private UsuarioViewModel usuarioViewModel;
-
-        private CargarImagen(ContentResolver contentResolver, Usuario usuario, UsuarioViewModel usuarioViewModel){
-            this.contentResolver = contentResolver;
-            this.usuario = usuario;
-            this.usuarioViewModel = usuarioViewModel;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-
-        @Override
-        protected String doInBackground(Uri... uris) {
-
-            String result = null;
-
-            try {
-                Bitmap bitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(uris[0]));
-                result = ImageProfileHelper.encodeTobase64(bitmap);
-
-                usuario.setFotoPerfil(result);
-                usuarioViewModel.update(usuario);
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
-
-            return result;
-        }
     }
 
     @Override
@@ -103,39 +77,74 @@ public class PerfilFragment extends Fragment {
             switch (requestCode){
                 case REQUEST_GET_SINGLE_FILE:
                     if (data!=null){
-                        fotoPerfil.setImageURI(data.getData());
-                        fotoPerfil.setBackgroundResource(R.color.translucent);
-
-                        cargarImagen.execute(data.getData());
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContext().getContentResolver(), data.getData());
+                            almacenarFotografiaPerfil(bitmap);
+                            bitmap.recycle();
+                        } catch (IOException e) {
+                            Log.e(TAG, e.getMessage(), e);
+                        }
                     }
                     break;
                 case REQUEST_CAMERA:
                     if (data!=null){
                         Bitmap bitmap = (Bitmap)data.getExtras().get("data");
-                        Glide.with(getContext()).load(bitmap).into(fotoPerfil);
-                        //fotoPerfil.setImageBitmap(bitmap);
-                        try {
-                            File file = File.createTempFile("fotoPerfil","png");
-                            try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-                                if (bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream)){
-                                   cargarImagen.execute(Uri.fromFile(file));
-                                }
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        almacenarFotografiaPerfil(bitmap);
+                        bitmap.recycle();
                     }
-                    break;
-                case REQUEST_CAMERA_PERMISSION:
-                    solicitarFotografiaCamara();
                     break;
             }
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CAMERA){
+            if (Arrays.stream(grantResults).anyMatch( p -> p == PackageManager.PERMISSION_GRANTED )){
+                solicitarFotografiaCamara();
+            }
+        }
+    }
+
+    private void almacenarFotografiaPerfil(Bitmap bp){
+        final Bitmap bitmap = ThumbnailUtils.extractThumbnail(
+                bp,
+                THUMBSIZE,
+                THUMBSIZE
+        );
+
+        Glide.with(this)
+                .load(getResources().getDrawable(R.drawable.progress_animation))
+                .placeholder(getResources().getDrawable(R.drawable.progress_animation))
+                .into(fotoPerfil);
+
+        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference(user.getUid()+"/fotoPerfil.png");
+
+            //Guardar imagen
+            storageReference.putBytes(outputStream.toByteArray())
+                .addOnCompleteListener(task -> {
+                    Glide.with(this)
+                            .load(bitmap)
+                            .into(fotoPerfil);
+                }
+            );
+        }catch (IOException ex){
+            Log.e(TAG, ex.getMessage(), ex);
+        }
+    }
+
     private void solicitarFotografiaCamara(){
-        Intent intentCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intentCamara, REQUEST_CAMERA);
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{ Manifest.permission.CAMERA }, REQUEST_CAMERA_PERMISSION);
+        }else{
+            Intent intentCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intentCamara, REQUEST_CAMERA);
+        }
     }
 
     @Override
@@ -144,59 +153,60 @@ public class PerfilFragment extends Fragment {
 
         View fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false);
 
-        cargarImagen = new CargarImagen(getContext().getContentResolver(), usuario, usuarioViewModel);
-
-        usuarioViewModel = ViewModelProviders.of(this).get(UsuarioViewModel.class);
+        perfilViewModel = ViewModelProviders.of(this).get(PerfilViewModel.class);
 
         fotoPerfil = fragmentView.findViewById(R.id.foto_perfil);
 
-        usuarioViewModel.obtenerUsuario().observe(this, usuario -> {
-            this.usuario = usuario;
+        perfilViewModel.consultarUsuario().observe(this, usuario -> {
             //Se colocan los valores
             if (usuario!=null) {
-                ((TextView) fragmentView.findViewById(R.id.name_view)).setText(usuario.getNombre());
+                ((TextView) fragmentView.findViewById(R.id.name_view)).setText(usuario.nombre);
                 ((TextView) fragmentView.findViewById(R.id.text_age)).setText(String.format(Locale.getDefault(), "%d %s",
-                        usuario.getEdad(), getResources().getString(R.string.anios)));
-                ((TextView) fragmentView.findViewById(R.id.text_sex)).setText(usuario.getSexo());
+                        usuario.edad, getResources().getString(R.string.anios)));
+                ((TextView) fragmentView.findViewById(R.id.text_sex)).setText(usuario.sexo);
 
-                //Cargar imagen
-                if (usuario.getFotoPerfil() != null) {
-                    byte[] bytes = Base64.decode(usuario.getFotoPerfil(), Base64.DEFAULT);
-                    fotoPerfil.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                }
+                StorageReference imageReference = FirebaseStorage.getInstance()
+                        .getReference(usuario.id+"/fotoPerfil.png");
+
+                imageReference.getDownloadUrl()
+                    .addOnSuccessListener(url -> {
+                        if (this.getActivity() != null) {
+                            //Carga de la imagen
+                            Glide.with(this)
+                                    .load(url)
+                                    .into(fotoPerfil);
+                        }
+                    });
             }
         });
 
-        fotoPerfil.setOnClickListener(view -> {
-            AlertDialog dialog = new AlertDialog.Builder(getContext())
-                    .setTitle("Escoga una opción")
-                    .setItems(new String[]{
-                            "Dispositivo",
-                            "Camara"
-                    }, (dialogInterface, index) -> {
-                        switch (index){
-                            case 0:
-                                Intent intentDispositivo = new Intent(Intent.ACTION_GET_CONTENT);
-                                intentDispositivo.setType("image/*");
-                                startActivityForResult(Intent.createChooser(intentDispositivo, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
-                                break;
-                            case 1:
-                                if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(requireActivity(), new String[]{ Manifest.permission.CAMERA }, REQUEST_CAMERA_PERMISSION);
-                                }else{
-                                    solicitarFotografiaCamara();
-                                }
-                        }
-                    })
-                    .create();
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("Escoga una opción")
+                .setItems(new String[]{
+                        "Dispositivo",
+                        "Camara"
+                }, (dialogInterface, index) -> {
+                    switch (index){
+                        case 0:
+                            Intent intentDispositivo = new Intent(Intent.ACTION_GET_CONTENT);
+                            intentDispositivo.setType("image/*");
+                            startActivityForResult(Intent.createChooser(intentDispositivo, "Selecciona una imagen"), REQUEST_GET_SINGLE_FILE);
+                            break;
+                        case 1:
+                            solicitarFotografiaCamara();
+                    }
+                })
+                .create();
 
+        fotoPerfil.setOnClickListener(view -> {
             dialog.show();
         });
 
         Button button = fragmentView.findViewById(R.id.perfil_cerrarsesion);
         button.setOnClickListener(view -> {
 
-            usuarioViewModel.borrarBaseDeDatos();
+            //Cerrar sesión
+            FirebaseAuth.getInstance().signOut();
 
             //Cambiar de actividad con una tarea nueva
             Intent intent = new Intent(this.getActivity(), LoginActivity.class);
@@ -227,4 +237,5 @@ public class PerfilFragment extends Fragment {
                     break;
             }
         }
-    };
+    };
+}

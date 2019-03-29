@@ -1,4 +1,4 @@
-package com.rockbass2560.megacode.models.database;
+package com.rockbass2560.megacode.models;
 
 import com.google.firebase.firestore.Exclude;
 
@@ -7,7 +7,6 @@ import com.google.firebase.firestore.Exclude;
  */
 public class Usuario {
 
-    @Exclude
     public String id;
     @Exclude
     public String email;
@@ -19,6 +18,10 @@ public class Usuario {
     public int comandos;
     public String fotoPerfil;
     public int edad;
+
+    public int getPuntajeTotal(){
+        return comandos+si+para+mientras;
+    }
 
     public Usuario(){
 

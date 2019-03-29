@@ -14,19 +14,4 @@
         android:scrollbars="vertical"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/skilltree_play"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/ic_outline_videogame_asset_24px"
-        android:layout_gravity="end|bottom"
-        android:backgroundTint="#48C81E"
-        android:scaleType="center"
-        app:fabSize="normal"
-        android:elevation="11dp"
-        app:fabCustomSize="64dp"
-        app:maxImageSize="40dp"
-        android:visibility="gone"
-        android:layout_margin="16dp"/>
-
 </FrameLayout>

@@ -1,10 +1,9 @@
-package com.megacode.models.database;
+package com.rockbass2560.megacode.models.database;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.megacode.R;
-import com.megacode.adapters.model.enumators.TypeLevel;
+import com.rockbass2560.megacode.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,8 +13,6 @@ import java.util.List;
 
 import androidx.room.Embedded;
 import androidx.room.Relation;
-
-import static com.megacode.adapters.model.enumators.TypeLevel.*;
 
 public class NivelConTerminado implements Parcelable {
     @Embedded
@@ -34,21 +31,21 @@ public class NivelConTerminado implements Parcelable {
     public int getImageResource(boolean bloqueado){
         Integer imageResource = null;
 
-        TypeLevel typeLevel = nivel.getTypeLevel();
-        boolean isTerminado = !nivelesTerminados.isEmpty() && nivelesTerminados.get(0).isTerminado();
+        int typeLevel = nivel.tipoNivel;
+        boolean isTerminado = !nivelesTerminados.isEmpty() && nivelesTerminados.get(0).terminado;
 
         if (!bloqueado) {
             switch (typeLevel) {
-                case COMANDO:
+                case 1:
                     imageResource = R.drawable.ic_c;
                     break;
-                case SI:
+                case 2:
                     imageResource = R.drawable.ic_s;
                     break;
-                case PARA:
+                case 3:
                     imageResource = R.drawable.ic_p;
                     break;
-                case MIENTRAS:
+                case 4:
                     imageResource = R.drawable.ic_m;
                     break;
                 default:
@@ -57,16 +54,16 @@ public class NivelConTerminado implements Parcelable {
             }
         }else{
             switch (typeLevel) {
-                case COMANDO:
+                case 1:
                     imageResource = R.drawable.ic_c_gray;
                     break;
-                case SI:
+                case 2:
                     imageResource = R.drawable.ic_s_gray;
                     break;
-                case PARA:
+                case 3:
                     imageResource = R.drawable.ic_p_gray;
                     break;
-                case MIENTRAS:
+                case 4:
                     imageResource = R.drawable.ic_m_gray;
                     break;
                 default:
@@ -86,12 +83,12 @@ public class NivelConTerminado implements Parcelable {
 
         for (NivelConTerminado nivelConTerminado : niveles) {
             Nivel nivel = nivelConTerminado.nivel;
-            if (nivel.getGrupo() != grupoActual) {
+            if (nivel.grupo != grupoActual) {
                 if (nuevoGrupo.size() > 0){
                     nivelesPorGrupo.add(nuevoGrupo);
                     nuevoGrupo = new ArrayList<>();
                 }
-                grupoActual = nivel.getGrupo();
+                grupoActual = nivel.grupo;
             }
             nuevoGrupo.add(nivelConTerminado);
         }

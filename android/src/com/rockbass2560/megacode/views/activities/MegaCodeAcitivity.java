@@ -1,75 +1,108 @@
-package com.megacode.views.activities;
+package com.rockbass2560.megacode.views.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
-import android.os.Build;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.Image;
+import android.media.ImageReader;
+import android.media.ImageWriter;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.util.Range;
+import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
-import com.megacode.Claves;
-import com.megacode.R;
-import com.megacode.components.CustomWebChromeClient;
-import com.megacode.components.WebViewJavaScriptInterface;
-import com.megacode.helpers.HtmlHelper;
-import com.megacode.helpers.StringHelper;
-import com.megacode.ia.EmotionClassification;
-import com.megacode.models.InfoNivel;
-import com.megacode.models.database.Nivel;
-import com.megacode.models.database.NivelTerminado;
-import com.megacode.models.database.Sesion;
-import com.megacode.models.database.Usuario;
-import com.megacode.others.CustomCallback;
-import com.megacode.ia.FaceRecognition;
-import com.megacode.viewmodels.MegaCodeViewModel;
-import com.megacode.views.fragments.GameFragment;
+import com.google.common.collect.Lists;
+import com.google.firebase.Timestamp;
+import com.google.firebase.storage.FirebaseStorage;
+import com.rockbass2560.megacode.Claves;
+import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.components.CustomWebChromeClient;
+import com.rockbass2560.megacode.components.WebViewJavaScriptInterface;
+import com.rockbass2560.megacode.helpers.HtmlHelper;
+import com.rockbass2560.megacode.helpers.StringHelper;
+import com.rockbass2560.megacode.ia.CameraManagerIA;
+import com.rockbass2560.megacode.ia.EmotionClassification;
+import com.rockbass2560.megacode.models.InfoNivel;
+import com.rockbass2560.megacode.models.database.Emocion;
+import com.rockbass2560.megacode.models.database.Nivel;
+import com.rockbass2560.megacode.models.database.NivelTerminado;
+import com.rockbass2560.megacode.models.database.Sesion;
+import com.rockbass2560.megacode.models.Usuario;
+import com.rockbass2560.megacode.others.CustomCallback;
+import com.rockbass2560.megacode.ia.FaceRecognition;
+import com.rockbass2560.megacode.viewmodels.MegaCodeViewModel;
+import com.rockbass2560.megacode.views.fragments.GameFragment;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.sql.Date;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFragmentApplication.Callbacks {
+public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragmentApplication.Callbacks {
 
 	private Sesion sesionActual;
 	private final static String TAG = MegaCodeAcitivity.class.getName();
-	private CameraBridgeViewBase cameraBridgeViewBase;
-	//private FaceRecognition faceRecognition;
+	private final static int REQUEST_CAMERA = 0;
 	private TextView textViewEmotion;
-	private ImageView imageViewFace;
-	private LinearLayout linearLayoutCamera;
 	private WebView webView;
 	private GameFragment libgdxFragment;
 	private Nivel nivelActual;
@@ -79,30 +112,16 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
     private final static int idMostrarCodigo = 2;
     private WebViewJavaScriptInterface javaScriptInterface;
     private String paginaHtml;
-    private Usuario usuario;
-
-    private CameraBridgeViewBase.CvCameraViewListener2 listenerCamera = new CameraBridgeViewBase.CvCameraViewListener2() {
-		@Override
-		public void onCameraViewStarted(int width, int height) {
-
-		}
-
-		@Override
-		public void onCameraViewStopped() {
-
-		}
-
-		@Override
-		public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-			Mat frame = inputFrame.rgba();
-
-			return faceRecognition.markAndDetectEmotion(frame, true);
-		}
-	};
+    private SharedPreferences sharedPreferences;
+    private int format;
+    private CameraManagerIA cameraManagerIA;
+    private Handler.Callback handler;
+    private int etapa;
+    private Looper myLooper;
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		if (requestCode==0){
+		if (requestCode==REQUEST_CAMERA){
             if (grantResults.length>0){
                 inicializarCamara();
             }
@@ -111,7 +130,6 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, idMenuCamera, Menu.NONE, "Abrir/Cerrar Camara");
         menu.add(Menu.NONE, idRecargarBlockly, Menu.NONE, "Recargar Blockly");
         menu.add(Menu.NONE, idMostrarCodigo, Menu.NONE, "Mostrar Codigo Generado");
 
@@ -122,18 +140,7 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
     public boolean onOptionsItemSelected(MenuItem item) {
         int idItem = item.getItemId();
 
-        if (idItem==idMenuCamera){
-            if (linearLayoutCamera.getVisibility() == View.GONE) {
-                linearLayoutCamera.setVisibility(View.VISIBLE);
-                //camera.enableView();
-                cameraBridgeViewBase.setVisibility(View.VISIBLE);
-            }
-            else {
-                //camera.disableView();
-                cameraBridgeViewBase.setVisibility(View.GONE);
-                linearLayoutCamera.setVisibility(View.GONE);
-            }
-        }else if (idItem==idRecargarBlockly){
+        if (idItem==idRecargarBlockly){
         	//webView.reload();
 			webView.loadUrl("about:blank");
             webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
@@ -159,14 +166,10 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
     }
 
 	private void inicializarCamara(){
-		OpenCVLoader.initDebug();
-
-		cameraBridgeViewBase.enableView();
-		try {
-			faceRecognition = new FaceRecognition(this, FaceRecognition.LBP_CASCADE, EmotionClassification.RAFD_MODEL);
-		} catch (IOException e) {
-			Log.e(TAG, e.getMessage(), e);
-		}
+		if (cameraManagerIA == null)
+        	cameraManagerIA = new CameraManagerIA(this, handler);
+		if (!cameraManagerIA.isRunning)
+			cameraManagerIA.iniciarCamara();
 	}
 
 	private Timer contador = new Timer("contadorTiempo");
@@ -178,7 +181,28 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			public void run() {
 				sesionActual.tiempo++;
 			}
-		}, Claves.RETRASO_CONTADOR_TIEMPO_SESION, Claves.INTERMITENCIA_CONTADOR_TIEMPO_SESION);
+		}, Claves.RETRASO_CONTADOR_TIEMPO_SESION,
+				Claves.INTERMITENCIA_CONTADOR_TIEMPO_SESION);
+	}
+
+	private Handler _idleHandler = new Handler();
+	Runnable _idleRunnable = new Runnable() {
+		@Override
+		public void run() {
+			sesionActual.inactividad+=10;
+			delayedIdle();
+		}
+	};
+
+	@Override
+	public void onUserInteraction() {
+		super.onUserInteraction();
+		delayedIdle();
+	}
+
+	private void delayedIdle(){
+		_idleHandler.removeCallbacks(_idleRunnable);
+		_idleHandler.postDelayed(_idleRunnable, 10*1000);
 	}
 
 	@SuppressLint({"SetJavaScriptEnabled"})
@@ -186,6 +210,10 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		etapa = 1;
+
+		sharedPreferences = getSharedPreferences(Claves.SHARED_MEGACODE_PREFERENCES, 0);
 
 		Intent intent = getIntent();
 		if (intent!=null){
@@ -199,54 +227,52 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 
 		megaCodeViewModel = ViewModelProviders.of(this).get(MegaCodeViewModel.class);
 
-		megaCodeViewModel.getUsuario().observe(this, usuario -> {
-			this.usuario = usuario;
-		});
+		handler = new Handler.Callback(){
+            @Override
+            public boolean handleMessage(Message msg) {
+            	boolean result = false;
 
-		cameraBridgeViewBase = findViewById(R.id.camera_view);
-		cameraBridgeViewBase.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
-		cameraBridgeViewBase.setVisibility(SurfaceView.VISIBLE);
-		cameraBridgeViewBase.setCvCameraViewListener(listenerCamera);
+                if (msg.what == Claves.EMOTION_FOUND){
+                    Bundle bundle = msg.getData();
+                    String emotion = bundle.getString(Claves.EMOTION);
+                    Emocion emocion = new Emocion();
+                    emocion.etapa = etapa;
+                    emocion.label = emotion;
+                    emocion.momento = Timestamp.now();
+                    sesionActual.emociones.add(emocion);
 
-		//textViewEmotion = findViewById(R.id.text_view_emotion);
-		imageViewFace = findViewById(R.id.image_view_face);
-		linearLayoutCamera = findViewById(R.id.linear_layout_camera);
+                    result = true;
+                }
 
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA }, 0);
+                return result;
+            }
+        };
+
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+			|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, REQUEST_CAMERA);
 		}else{
 			inicializarCamara();
 		}
-
-		/*Button butonCamera = findViewById(R.id.button_camera);
-		butonCamera.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Bitmap imageFace = Bitmap.createBitmap(lastFrame.width(), lastFrame.height(), Bitmap.Config.ARGB_8888);
-				Utils.matToBitmap(lastFrame, imageFace);
-				imageViewFace.setImageBitmap(imageFace);
-				textViewEmotion.setText("Detectando emocion...");
-				faceRecognition.detectEmotion(lastFrame, response -> textViewEmotion.setText(response));
-			}
-		});*/
 
 		webView = findViewById(R.id.megacode_activity_webview);
 		webView.setWebChromeClient(new CustomWebChromeClient());
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 
-		paginaHtml = HtmlHelper.generarHtml(nivelActual.getRuta(), this);
+		paginaHtml = HtmlHelper.generarHtml(nivelActual.ruta, this);
 
 		webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
 
         findViewById(R.id.megacode_play).setOnClickListener(view -> {
+            etapa = 2;
         	sesionActual.intentos++;
         	webView.loadUrl("javascript:runBlockly()");
         });
 
         InfoNivel infoNivel = new InfoNivel();
-        infoNivel.rutaNivel = nivelActual.getRuta();
-        infoNivel.zoomInicial = nivelActual.getZoomInicial();
+        infoNivel.rutaNivel = nivelActual.ruta;
+        infoNivel.zoomInicial = nivelActual.zoomInicial;
 
         cargarJuego(infoNivel);
 
@@ -265,69 +291,33 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			inicializarTiempo();
 
 			libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(screen -> {
+			    etapa = 3;
 				//Se registran todos los avances del nivel
-				String cadenaOptima = nivelActual.getCadenaOptima();
+				String cadenaOptima = nivelActual.cadenaOptima;
 				String cadenaGenerada = javaScriptInterface.getUltimoCodigoGenerado();
 				int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
 				int puntaje = (int) Math.round((double) distance / Math.max(cadenaOptima.length(), cadenaGenerada.length()) * 100);
 				NivelTerminado nivelTerminado = new NivelTerminado();
-				nivelTerminado.setNivelId(nivelActual.getId());
-				nivelTerminado.setPuntaje(puntaje);
-				nivelTerminado.setTerminado(true);
-				long idUsuario = usuario.getId(); //PreferenceManager.getDefaultSharedPreferences(MegaCodeAcitivity.this).getLong(Claves.ID_USUARIO, 0);
-				nivelTerminado.setUsuarioId(idUsuario);
-				nivelTerminado.setNewId();
-				megaCodeViewModel.insertarNivelTerminadoSync(nivelTerminado);
+				nivelTerminado.nivelId = nivelActual.id;
+				nivelTerminado.puntaje = puntaje;
+				nivelTerminado.terminado  = true;
+				megaCodeViewModel.agregarNivelTerminado(nivelTerminado);
 
-				//Actualizar puntajes del usuario
-				if (nivelTerminado.isTerminado() && usuario != null) {
-					int puntajeComandos = usuario.getComandos() + nivelActual.getComandos();
-					int puntajeSi = usuario.getSi() + nivelActual.getSi();
-					int puntajePara = usuario.getPara() + nivelActual.getPara();
-					int puntajeMientras = usuario.getMientras() + nivelActual.getMientras();
+				Map<String, Integer> puntajes = new HashMap<>();
+				puntajes.put("comandos", nivelActual.comandos);
+				puntajes.put("si", nivelActual.si);
+				puntajes.put("para", nivelActual.para);
+				puntajes.put("mientras", nivelActual.mientras);
 
-					usuario.setComandos(puntajeComandos);
-					usuario.setSi(puntajeSi);
-					usuario.setPara(puntajePara);
-					usuario.setMientras(puntajeMientras);
+				megaCodeViewModel.actualizarPuntajes(puntajes);
 
-					megaCodeViewModel.actualizarUsuario(usuario);
-				}
+				//Guardar sesión nueva
+				sesionActual.nivelId = nivelActual.id;
+				sesionActual.conexionId = sharedPreferences.getString(Claves.CONEXION_ID, Claves.EMPTY_STRING);
+				megaCodeViewModel.agregarSesion(sesionActual);
 
 				MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
 				MegaCodeAcitivity.this.finish();
-			/*runOnUiThread(() -> {
-				DataModel siguienteEjercicio = megaCodeViewModel.siguienteEjercicioSync();
-				if (siguienteEjercicio != null) {
-					libgdxFragment.handler.post(new Runnable() {
-						@Override
-						public void run() {
-							AlertDialog alertDialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
-									.setTitle("Continuar los ejercicios")
-									.setMessage("¿Quieres pasar a otro nivel?")
-									.setPositiveButton("Si", (dialogInterface, i) -> {
-										screen.dispose();
-										libgdxFragment.getGame().dispose();
-										libgdxFragment = null;
-										//Mejor solución pendiente
-										InfoNivel infoNivelSiguiente = new InfoNivel();
-										infoNivelSiguiente.rutaNivel =
-										cargarJuego();
-									})
-									.setNegativeButton("No", (dialogInterface, i) -> MegaCodeAcitivity.this.finish())
-									.setCancelable(false)
-									.show();
-						}
-					});
-				} else {
-					AlertDialog alertDialog = new AlertDialog.Builder(MegaCodeAcitivity.this)
-							.setTitle("Ejercicio terminado")
-							.setMessage("Felicidades, selecciona otro ejercicio en el menu")
-							.setPositiveButton("Volver al menu", null)
-							.setOnDismissListener(dialogInterface -> MegaCodeAcitivity.this.finish())
-							.show();
-				}
-			});*/
 			});
 		});
 
@@ -341,7 +331,38 @@ public class MegaCodeAcitivity extends AppCompatActivity implements  AndroidFrag
 			transaction.add(R.id.game_fragment, libgdxFragment).commit();
 	}
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        inicializarCamara();
+    }
+
 	@Override
+	protected void onStart() {
+		super.onStart();
+
+		inicializarCamara();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		if (cameraManagerIA!=null){
+			cameraManagerIA.cerrarCamara();
+		}
+	}
+
+	@Override
+    protected void onStop() {
+        super.onStop();
+
+        if (cameraManagerIA != null)
+            cameraManagerIA.cerrarTodo();
+    }
+
+    @Override
 	public void exit() {
 		Log.d(TAG, "exit");
 	}

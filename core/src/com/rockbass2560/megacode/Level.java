@@ -1,4 +1,4 @@
-package com.megacode;
+package com.rockbass2560.megacode;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,20 +8,18 @@ import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.megacode.entities.Bullet;
-import com.megacode.entities.Enemy;
-import com.megacode.entities.ExitPortal;
-import com.megacode.entities.Explosion;
-import com.megacode.entities.MegaCode;
-import com.megacode.entities.Platform;
-import com.megacode.entities.Powerup;
-import com.megacode.util.ChaseCam;
-import com.megacode.util.Constants;
-import com.megacode.util.Enums.Direction;
+import com.rockbass2560.megacode.entities.Bullet;
+import com.rockbass2560.megacode.entities.Enemy;
+import com.rockbass2560.megacode.entities.ExitPortal;
+import com.rockbass2560.megacode.entities.Explosion;
+import com.rockbass2560.megacode.entities.MegaCode;
+import com.rockbass2560.megacode.entities.Platform;
+import com.rockbass2560.megacode.entities.Powerup;
+import com.rockbass2560.megacode.util.ChaseCam;
+import com.rockbass2560.megacode.util.Constants;
+import com.rockbass2560.megacode.util.Enums.Direction;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 public class Level {

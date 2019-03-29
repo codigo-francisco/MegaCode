@@ -1,11 +1,11 @@
 package com.rockbass2560.megacode.views.activities;
 
-import android.content.Intent;
-
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import androidx.appcompat.app.AlertDialog;
+
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -13,26 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.rockbass2560.megacode.R;
-import com.rockbass2560.megacode.helpers.ImageProfileHelper;
-import com.rockbass2560.megacode.models.database.Usuario;
+import com.rockbass2560.megacode.models.Usuario;
 import com.rockbass2560.megacode.viewmodels.LoginViewModel;
-import com.rockbass2560.megacode.viewmodels.UsuarioViewModel;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-public class RegisterActivity extends ActivityBase {
+public class RegisterActivity extends FragmentActivity {
 
     private final static String TAG = "RegisterActivity";
     private MaterialBetterSpinner spinnerSex;
     private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
-    private Usuario usuario;
-    private Toast message;
-    private AlertDialog alertDialog;
-    private UsuarioViewModel usuarioViewModel;
+    private LoginViewModel loginViewModel;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,26 +39,36 @@ public class RegisterActivity extends ActivityBase {
 
         LoginViewModel loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
-        loginViewModel.getUsuarioMutableLiveData().observe(this, usuario -> {
-            if (usuario!=null){
-                if (!usuario.hasError()){
-                    Intent intentActivity = new Intent(RegisterActivity.this, RootActivity.class);
-                    intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intentActivity);
-                }else{
-                    if (usuario.getErrorCode() == 403){
-                        alertDialog.show();
-                    }else{
-                        message.show();
-                    }
-                }
-            }else{
-                message.show();
+        ProgressBar progressBar = findViewById(R.id.progressbar_register);
+        MaterialButton registrarButton = findViewById(R.id.button_registrarse);
+        spinnerSex = findViewById(R.id.login_spinner_sexo);
+        nameTextEdit = findViewById(R.id.login_text_name);
+        ageTextEdit = findViewById(R.id.login_text_age);
+        emailTextEdit = findViewById(R.id.login_text_email);
+        contrasenaTextEdit = findViewById(R.id.login_text_contrasena);
+        contrasena2TextEdit = findViewById(R.id.login_text_contrasena2);
+
+        loginViewModel.observadorUsuario().observe(this, user ->{
+            if (user != null){
+                Intent intent = new Intent(this, RootActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
             }
         });
 
-        MaterialButton materialButton = findViewById(R.id.button_registrarse);
-        materialButton.setOnClickListener(view -> {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this)
+                .setTitle("No se ha podido realizar el registro")
+                .setPositiveButton("Ok", null);
+
+        loginViewModel.observadorError().observe(this, error ->{
+            progressBar.setVisibility(ProgressBar.GONE);
+            registrarButton.setEnabled(true);
+
+            dialogBuilder.setMessage(error);
+            dialogBuilder.show();
+        });
+
+        registrarButton.setOnClickListener(view -> {
             //Validar campos
             boolean name, age, sex, email, contrasena, contrasena2, contrasenaDiferentes = false;
 
@@ -75,48 +83,23 @@ public class RegisterActivity extends ActivityBase {
             boolean todoValido = name && age && sex && email && contrasena && contrasena2 && contrasenaDiferentes;
 
             if (todoValido) {
-                //Se guarda en base de datos remoto y se obtiene el token
-                usuario = buildPersona();
+                progressBar.setVisibility(ProgressBar.VISIBLE);
+                registrarButton.setEnabled(false);
 
-                loginViewModel.registrarUsuario(usuario);
+                //Se guarda en base de datos remoto y se obtiene el token
+                Usuario usuario = new Usuario();
+                usuario.nombre = nameTextEdit.getText().toString();
+                usuario.sexo = spinnerSex.getText().toString();
+                usuario.edad = Integer.parseInt(ageTextEdit.getText().toString());
+
+                loginViewModel.registrarUsuario(emailTextEdit.getText().toString(), contrasenaTextEdit.getText().toString(), usuario);
             }
         });
-
-        message = Toast.makeText(this, "Ocurrió un error al intentar agregar al usuario",Toast.LENGTH_LONG);
-        alertDialog = new AlertDialog.Builder(this)
-                .setMessage("El email se encuentra registrado")
-                .setPositiveButton("Ok", null)
-                .create();
-
-        spinnerSex = findViewById(R.id.login_spinner_sexo);
-        nameTextEdit = findViewById(R.id.login_text_name);
-        ageTextEdit = findViewById(R.id.login_text_age);
-        emailTextEdit = findViewById(R.id.login_text_email);
-        contrasenaTextEdit = findViewById(R.id.login_text_contrasena);
-        contrasena2TextEdit = findViewById(R.id.login_text_contrasena2);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexos, android.R.layout.simple_dropdown_item_1line);
         spinnerSex.setAdapter(adapter);
 
         setFocusChildListener(findViewById(R.id.login_layout_root));
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
-    private Usuario buildPersona(){
-        Usuario usuario = new Usuario();
-        usuario.setNombre(nameTextEdit.getText().toString());
-        usuario.setEdad(Integer.parseInt(ageTextEdit.getText().toString()));
-        usuario.setSexo(spinnerSex.getText().toString());
-        usuario.setEmail(emailTextEdit.getText().toString());
-        usuario.setContrasena(contrasenaTextEdit.getText().toString());
-        //Establecer imagen de perfil por default
-        usuario.setFotoPerfil(ImageProfileHelper.getDefaultProfileImage(getAssets()));
-
-        return usuario;
     }
 
     private void setFocusChildListener(View view){

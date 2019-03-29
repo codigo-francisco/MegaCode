@@ -1,4 +1,4 @@
-package com.megacode.models;
+package com.rockbass2560.megacode.models;
 
 public class FeedBack {
 

@@ -1,26 +1,21 @@
-package com.megacode.models.database;
+package com.rockbass2560.megacode.models.database;
 
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.Index;
-import androidx.room.PrimaryKey;
+import com.google.firebase.firestore.Exclude;
 
-@Entity(tableName = "Sesion",
-    indices = {@Index("id"), @Index("nivelId"), @Index("usuarioId")},
-    foreignKeys = {
-        @ForeignKey(entity = Usuario.class, parentColumns = "id", childColumns = "usuarioId"),
-        @ForeignKey(entity = Nivel.class, parentColumns = "id", childColumns = "nivelId"),
-        @ForeignKey(entity = Sesion.class, parentColumns = "id", childColumns = "sesionId")
-    }
-)
+import java.util.ArrayList;
+import java.util.List;
+
 public class Sesion {
-    @PrimaryKey
-    public long id;
-    public long usuarioId;
+    @Exclude
+    public String id;
+    @Exclude
+    public String usuarioId;
+    public List<Emocion> emociones = new ArrayList<>();
     public int nivelId;
-    public long conexionId;
+    public String conexionId;
     public int tiempo;
     public int intentos;
     public int ayudas;
     public int inactividad;
+
 }

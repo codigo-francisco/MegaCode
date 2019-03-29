@@ -294,4 +294,10 @@ public class MegaCode {
         } else if (facing == Direction.LEFT && walkState == Enums.WalkState.WALKING) {
             float walkTimeSeconds = Utils.secondsSince(walkStartTime);
             region = (TextureRegion)Assets.instance.gigaGalAssets.walkingLeftAnimation.getKeyFrame(walkTimeSeconds);
- 
+        }
+
+        Utils.drawTextureRegion(batch, region, position, Constants.GIGAGAL_EYE_POSITION);
+
+    }
+
+}

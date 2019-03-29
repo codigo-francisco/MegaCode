@@ -1,4 +1,4 @@
-package com.megacode;
+package com.rockbass2560.megacode;
 
 /**
  * Created by Francisco on 22/02/2018.

@@ -1,4 +1,4 @@
-package com.megacode.overlays;
+package com.rockbass2560.megacode.overlays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.megacode.entities.MegaCode;
-import com.megacode.util.Assets;
-import com.megacode.util.Constants;
-import com.megacode.util.Utils;
+import com.rockbass2560.megacode.entities.MegaCode;
+import com.rockbass2560.megacode.util.Assets;
+import com.rockbass2560.megacode.util.Constants;
+import com.rockbass2560.megacode.util.Utils;
 
 
 public class OnscreenControls extends InputAdapter {

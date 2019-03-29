@@ -1,15 +1,16 @@
-package com.megacode.base;
+package com.rockbass2560.megacode.base;
 
 import android.app.Application;
 import android.content.pm.ApplicationInfo;
-import android.os.Build;
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.megacode.helpers.HtmlHelper;
-import com.megacode.ia.EmotionClassification;
-import com.megacode.ia.EmotionTest;
-import com.megacode.ia.FaceRecognition;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.storage.FirebaseStorage;
+import com.rockbass2560.megacode.helpers.HtmlHelper;
+import com.rockbass2560.megacode.ia.EmotionClassification;
+import com.rockbass2560.megacode.ia.EmotionTest;
+import com.rockbass2560.megacode.ia.FaceRecognition;
 import com.x5.template.Theme;
 import com.x5.template.providers.AndroidTemplates;
 
@@ -36,13 +37,15 @@ public class ApplicationBase extends Application {
 
         HtmlHelper.theme = new Theme(new AndroidTemplates(this));
 
-        try {
-            OpenCVLoader.initDebug();
-            FaceRecognition faceRecognition = new FaceRecognition(this, FaceRecognition.HAAR_CASCADE_DEFAULT, EmotionClassification.RAFD_MODEL);
-            EmotionTest test = new EmotionTest(faceRecognition, this);
-            test.doTest();
+        OpenCVLoader.initDebug();
+
+        /*try {
+
+            //FaceRecognition faceRecognition = new FaceRecognition(this, FaceRecognition.HAAR_CASCADE_DEFAULT, EmotionClassification.RAFD_MODEL);
+            //EmotionTest test = new EmotionTest(faceRecognition, this);
+            //test.doTest();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage(), e);
-        }
+        }*/
     }
 }

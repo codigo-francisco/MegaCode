@@ -1,18 +1,14 @@
-package com.megacode.overlays;
+package com.rockbass2560.megacode.overlays;
 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.megacode.entities.Explosion;
-import com.megacode.util.Constants;
+import com.rockbass2560.megacode.util.Constants;
 
 public class VictoryOverlay {
 

@@ -1,15 +1,15 @@
-package com.megacode.util;
+package com.rockbass2560.megacode.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.megacode.Level;
-import com.megacode.entities.Enemy;
-import com.megacode.entities.ExitPortal;
-import com.megacode.entities.MegaCode;
-import com.megacode.entities.Platform;
-import com.megacode.entities.Powerup;
+import com.rockbass2560.megacode.Level;
+import com.rockbass2560.megacode.entities.Enemy;
+import com.rockbass2560.megacode.entities.ExitPortal;
+import com.rockbass2560.megacode.entities.MegaCode;
+import com.rockbass2560.megacode.entities.Platform;
+import com.rockbass2560.megacode.entities.Powerup;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

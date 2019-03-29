@@ -1,26 +1,23 @@
-package com.megacode.ia;
+package com.rockbass2560.megacode.ia;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 
-import com.megacode.Claves;
-import com.megacode.helpers.FileHelper;
+import com.rockbass2560.megacode.Claves;
+import com.rockbass2560.megacode.helpers.FileHelper;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 import org.tensorflow.lite.Interpreter;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.MappedByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.DoubleToIntFunction;
-import java.util.stream.Stream;
 
 public class EmotionClassification {
+
+    private static final String TAG = EmotionClassification.class.getName();
 
     //Variables de configuración
     private final static String[] EMOTIONS_RAFD = new String[]{
@@ -32,7 +29,20 @@ public class EmotionClassification {
             "TRISTE"
     };
 
+    private final static String[] EMOTIONS_EMOTIV_INSIGHT = new String[]{
+            "bored",
+            "engaged",
+            "excited",
+            "focused",
+            "interested",
+            "neutral"
+    };
+
+    private boolean color;
+
     public final static String RAFD_MODEL = "model.tflite";
+    public final static String EMOTIV_INSIGHT_MODEL = "CNN_AG.tflite";
+    private final static int TAMAÑO_DATA = 4;
 
     private static EmotionClassification emotionClassification;
     public String[] emotions;
@@ -53,14 +63,18 @@ public class EmotionClassification {
 
     private EmotionClassification(String model, Context context){
         tflite = new Interpreter(FileHelper.assetToByteBuffer(model, context));
+        selectEmotions(model);
 
-        //4 Magico >=(
-        imgData = ByteBuffer.allocateDirect(4*240*240*3);
+        int tamañoBuffer=0;
+        if (color)
+            tamañoBuffer = TAMAÑO_DATA * (int)tamañoFoto.width * (int)tamañoFoto.height * 3;
+        else
+            tamañoBuffer = TAMAÑO_DATA * (int)tamañoFoto.width * (int)tamañoFoto.height;
+
+        imgData = ByteBuffer.allocateDirect(tamañoBuffer);
         imgData.order(ByteOrder.nativeOrder());
 
-        intValues = new int[240*240];
-
-        selectEmotions(model);
+        intValues = new int[(int)tamañoFoto.width * (int)tamañoFoto.height];
     }
 
     private void selectEmotions(String model){
@@ -68,6 +82,12 @@ public class EmotionClassification {
             case RAFD_MODEL:
                 emotions = EMOTIONS_RAFD;
                 tamañoFoto = new Size(240, 240);
+                color = true;
+                break;
+            case EMOTIV_INSIGHT_MODEL:
+                emotions = EMOTIONS_EMOTIV_INSIGHT;
+                tamañoFoto = new Size(150, 150);
+                color = false;
                 break;
         }
 
@@ -78,33 +98,22 @@ public class EmotionClassification {
     {
         imgData.rewind();
         double[] values;
-        for (int i = 0; i < Claves.DIM_HEIGHT; ++i) {
-            for (int j = 0; j < Claves.DIM_WIDTH; ++j) {
+        for (int i = 0; i < tamañoFoto.height; ++i) {
+            for (int j = 0; j < tamañoFoto.width; ++j) {
                 values = mat.get(i,j);
-                imgData.putFloat((float)values[0]);
-                imgData.putFloat((float)values[1]);
-                imgData.putFloat((float)values[2]);
+                if (color){
+                    imgData.putFloat((float)values[0]);
+                    imgData.putFloat((float)values[1]);
+                    imgData.putFloat((float)values[2]);
+                }else{
+                    imgData.putFloat((float)values[0]);
+                }
             }
         }
     }
 
     public void convertBitmapToByteBuffer(Bitmap bitmap) {
 
-        imgData.rewind();
-
-        bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0,
-                bitmap.getWidth(), bitmap.getHeight());
-        // Encode the image pixels into a byte buffer representation matching the expected
-        // input of the Tensorflow model
-        int pixel = 0;
-        for (int i = 0; i < bitmap.getWidth(); ++i) {
-            for (int j = 0; j < bitmap.getHeight(); ++j) {
-                final int val = intValues[pixel++];
-                imgData.putInt(((val >> 16) & 0xFF));
-                imgData.putInt(((val >> 8) & 0xFF));
-                imgData.putInt((val & 0xFF));
-            }
-        }
     }
 
     public String classify(Bitmap image){
@@ -123,7 +132,9 @@ public class EmotionClassification {
         Arrays.fill(probsEmotions[0], 0);
         tflite.run(imgData, probsEmotions);
 
-        return emotions[(int)argmax(probsEmotions[0])[0]];
+        float[] probs = probsEmotions[0];
+
+        return emotions[(int)argmax(probs)[0]];
     }
 
     private Object[] argmax(float[] array){

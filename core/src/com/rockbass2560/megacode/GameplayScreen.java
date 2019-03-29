@@ -1,4 +1,4 @@
-package com.megacode;
+package com.rockbass2560.megacode;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -7,15 +7,15 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.megacode.entities.MegaCode;
-import com.megacode.models.InfoNivel;
-import com.megacode.overlays.GameOverOverlay;
-import com.megacode.overlays.VictoryOverlay;
-import com.megacode.util.Assets;
-import com.megacode.util.ChaseCam;
-import com.megacode.util.Constants;
-import com.megacode.util.LevelLoader;
-import com.megacode.util.Utils;
+import com.rockbass2560.megacode.entities.MegaCode;
+import com.rockbass2560.megacode.models.InfoNivel;
+import com.rockbass2560.megacode.overlays.GameOverOverlay;
+import com.rockbass2560.megacode.overlays.VictoryOverlay;
+import com.rockbass2560.megacode.util.Assets;
+import com.rockbass2560.megacode.util.ChaseCam;
+import com.rockbass2560.megacode.util.Constants;
+import com.rockbass2560.megacode.util.LevelLoader;
+import com.rockbass2560.megacode.util.Utils;
 
 
 

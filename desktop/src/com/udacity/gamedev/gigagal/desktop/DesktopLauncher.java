@@ -2,7 +2,7 @@ package com.udacity.gamedev.gigagal.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.megacode.MegaCodeGame;
+import com.rockbass2560.megacode.MegaCodeGame;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {

@@ -1,31 +1,20 @@
-package com.megacode.adapters;
+package com.rockbass2560.megacode.adapters;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Outline;
-import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.megacode.Claves;
-import com.megacode.R;
-import com.megacode.adapters.model.enumators.TypeLevel;
-import com.megacode.helpers.MetricsHelper;
-import com.megacode.models.database.Nivel;
-import com.megacode.models.database.NivelConTerminado;
-import com.megacode.models.database.NivelTerminado;
-import com.megacode.views.fragments.InfoNivelFragment;
+import com.rockbass2560.megacode.Claves;
+import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.models.database.NivelConTerminado;
+import com.rockbass2560.megacode.models.database.NivelTerminado;
+import com.rockbass2560.megacode.views.fragments.InfoNivelFragment;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -78,9 +67,9 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
                 imageView.setBackgroundColor(cardView.getResources().getColor(R.color.md_grey_300));
             }else{
 
-                if (!nivelesTerminados.isEmpty() && nivelesTerminados.get(0).isTerminado()) {
+                if (!nivelesTerminados.isEmpty() && nivelesTerminados.get(0).terminado) {
                     nodosTerminados++;
-                    puntaje = nivelesTerminados.get(0).getPuntaje();
+                    puntaje = nivelesTerminados.get(0).puntaje;
                 }
 
                 ProgressBar progressBar = cardView.findViewById(R.id.skillnode_layout_progress);

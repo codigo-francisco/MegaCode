@@ -1,4 +1,4 @@
-package com.megacode.util;
+package com.rockbass2560.megacode.util;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

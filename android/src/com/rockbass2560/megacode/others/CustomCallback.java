@@ -5,4 +5,5 @@ package com.rockbass2560.megacode.others;
  */
 
 public interface CustomCallback<T> {
-    void processResponse(T re
+    void processResponse(T response);
+}

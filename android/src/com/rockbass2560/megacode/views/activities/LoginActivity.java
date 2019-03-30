@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.helpers.ViewHelper;
 import com.rockbass2560.megacode.viewmodels.LoginViewModel;
 
 import androidx.fragment.app.FragmentActivity;
@@ -76,6 +77,8 @@ public class LoginActivity extends FragmentActivity {
 
             String email = emailEditText.getText().toString();
             String contrasena = contrasenaEditText.getText().toString();
+
+            ViewHelper.closeKeyboard(this, view.getWindowToken());
 
             loginViewModel.loginUsuario(email, contrasena);
         });

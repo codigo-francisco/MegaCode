@@ -290,6 +290,10 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
 			//Se inicializa el contador de tiempo
 			inicializarTiempo();
 
+			libgdxFragment.getGamePlayScreen().addEjecucionNivelCompletado(()->{
+				etapa = 1;
+			});
+
 			libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(screen -> {
 			    etapa = 3;
 				//Se registran todos los avances del nivel

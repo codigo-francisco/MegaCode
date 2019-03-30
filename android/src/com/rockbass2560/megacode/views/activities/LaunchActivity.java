@@ -16,8 +16,9 @@ public class LaunchActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Launcher);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_launch);
+        //setContentView(R.layout.activity_launch);
 
         LoginViewModel loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
@@ -31,6 +32,8 @@ public class LaunchActivity extends FragmentActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             }
+
+            finish();
         });
 
         loginViewModel.validarUsuario();

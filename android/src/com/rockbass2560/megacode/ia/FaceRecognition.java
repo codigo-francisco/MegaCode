@@ -105,9 +105,10 @@ public class FaceRecognition {
             org.opencv.imgproc.Imgproc.cvtColor(imagen, imagen, Imgproc.COLOR_RGBA2GRAY);
             org.opencv.imgproc.Imgproc.resize(imagen, imagen, emotionClassification.tamañoFoto);
 
-            Bitmap faceImage = Bitmap.createBitmap(imagen.cols(), imagen.rows(), Bitmap.Config.RGB_565);
+            /*Bitmap faceImage = Bitmap.createBitmap(imagen.cols(), imagen.rows(), Bitmap.Config.RGB_565);
+            Utils.matToBitmap(imagen, faceImage);
             String title = new Random().nextInt(Integer.MAX_VALUE)+"";
-            MediaStore.Images.Media.insertImage(context.getContentResolver(), faceImage, title, title);
+            MediaStore.Images.Media.insertImage(context.getContentResolver(), faceImage, title, title);*/
 
             result = emotionClassification.classify(imagen);
         }

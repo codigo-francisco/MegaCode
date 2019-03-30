@@ -89,6 +89,11 @@ public class WebViewJavaScriptInterface {
         libgdxFragment.getGamePlayScreen().level.prepararNivel();
     }
 
+    @JavascriptInterface
+    public void finalizarNivel(){
+        libgdxFragment.getGamePlayScreen().ejecucionCompletada();
+    }
+
     private boolean ejecutarComando(Comando comando){
         agregarCodigo(comando);
 

@@ -36,6 +36,7 @@ public class Level {
     private ExitPortal exitPortal;
     private Array<Platform> platforms;
     private DelayedRemovalArray<Enemy> enemies;
+    public Array<Enemy> originalEnemies;
     private DelayedRemovalArray<Bullet> bullets;
     private DelayedRemovalArray<Explosion> explosions;
     private DelayedRemovalArray<Powerup> powerups;
@@ -46,6 +47,7 @@ public class Level {
         megaCode = new MegaCode(new Vector2(50, 50), this);
         platforms = new Array<Platform>();
         enemies = new DelayedRemovalArray<Enemy>();
+        originalEnemies = new Array<>();
         bullets = new DelayedRemovalArray<Bullet>();
         explosions = new DelayedRemovalArray<Explosion>();
         powerups = new DelayedRemovalArray<Powerup>();
@@ -54,8 +56,6 @@ public class Level {
         gameOver = false;
         victory = false;
         score = 0;
-
-
     }
 
     public static Level debugLevel() {
@@ -84,8 +84,20 @@ public class Level {
 
     public void prepararNivel(){
         eliminarTasksPendientes();
+        //Reposicionar al personaje principal
         megaCode.respawn();
         megaCode.respawn = false;
+
+        //Eliminar enemigos restantes y posicionar los originales de nuevo
+        enemies.begin();
+        enemies.clear();
+        for (Enemy enemy : originalEnemies){
+            //Hay que crear objetos nuevos, elimina por referencia y no vuelve a agregar
+            //En este caso clono el objeto original
+            enemies.add((Enemy)enemy.clone());
+        }
+        enemies.end();
+
         cam.resetCameraPosition(true);
     }
 

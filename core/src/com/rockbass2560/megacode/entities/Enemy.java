@@ -11,7 +11,7 @@ import com.rockbass2560.megacode.util.Enums.Direction;
 import com.rockbass2560.megacode.util.Utils;
 
 
-public class Enemy {
+public class Enemy implements Cloneable {
 
     final long startTime;
     final float bobOffset;
@@ -54,5 +54,14 @@ public class Enemy {
     public void render(SpriteBatch batch) {
         final TextureRegion region = Assets.instance.enemyAssets.enemy;
         Utils.drawTextureRegion(batch, region, position, Constants.ENEMY_CENTER);
+    }
+
+    @Override
+    public Object clone(){
+        Enemy enemy = new Enemy(this.platform);
+        enemy.direction = this.direction;
+        enemy.health = this.health;
+        enemy.position = this.position.cpy();
+        return enemy;
     }
 }

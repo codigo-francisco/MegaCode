@@ -24,7 +24,7 @@
             android:name=".views.activities.MegaCodeAcitivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
-            android:screenOrientation="userLandscape"
+            android:screenOrientation="reverseLandscape"
             android:theme="@style/GdxTheme"/>
         <activity
             android:name=".views.activities.RootActivity"
@@ -47,7 +47,7 @@
             android:name=".views.activities.LaunchActivity"
             android:launchMode="singleTask"
             android:noHistory="true"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:theme="@style/Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -20,6 +21,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -29,6 +31,7 @@ import com.rockbass2560.megacode.Claves;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Random;
 
 import androidx.annotation.NonNull;
 
@@ -48,11 +51,14 @@ public class CameraManagerIA {
     private static final String NAME_THREAD = "CameraManagerIA";
     private Handler.Callback handlerCallback;
     public boolean isRunning = false;
+    private Context context;
 
     public CameraManagerIA(Context context, Handler.Callback handlerCallback){
         try {
             faceRecognition = FaceRecognition.getInstance(context, FaceRecognition.HAAR_CASCADE_DEFAULT,
                     EmotionClassification.EMOTIV_INSIGHT_MODEL);
+
+            this.context = context;
 
             this.handlerCallback = handlerCallback;
 
@@ -74,36 +80,46 @@ public class CameraManagerIA {
         @Override
         public void onImageAvailable(ImageReader reader) {
             //Imagen
-            Image image = reader.acquireLatestImage();
-            if (format == ImageFormat.FLEX_RGBA_8888){
+            Image image = reader.acquireNextImage();
+
+            if (format == ImageFormat.FLEX_RGBA_8888) {
                 Image.Plane[] planes = image.getPlanes();
                 ByteBuffer r = planes[0].getBuffer();
                 ByteBuffer g = planes[1].getBuffer();
                 ByteBuffer b = planes[2].getBuffer();
                 ByteBuffer a = planes[3].getBuffer();
 
-                int [] pixels = new int[size.getHeight()*size.getWidth()];
+                int[] pixels = new int[size.getHeight() * size.getWidth()];
 
-                for (int index = 0; index < pixels.length; index++){
-                    int color = Color.argb((int)a.get(),(int)r.get(),(int)g.get(),(int)b.get());
+                for (int index = 0; index < pixels.length; index++) {
+                    int color = Color.argb((int) a.get(), (int) r.get(), (int) g.get(), (int) b.get());
                     pixels[index] = color;
                 }
 
-                Bitmap bitmap = Bitmap.createBitmap(pixels,image.getWidth(), image.getHeight(),
+                Bitmap bitmap = Bitmap.createBitmap(pixels, image.getWidth(), image.getHeight(),
                         Bitmap.Config.ARGB_8888);
 
                 String emotion = faceRecognition.detectEmotion(bitmap);
 
                 Log.d(TAG, emotion);
-            }else if (image.getFormat() == ImageFormat.JPEG){
+            } else if (image.getFormat() == ImageFormat.JPEG) {
                 ByteBuffer byteBuffer = image.getPlanes()[0].getBuffer();
                 byteBuffer.rewind();
                 byte[] imageData = new byte[byteBuffer.remaining()];
                 byteBuffer.get(imageData);
 
-                Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                Bitmap orgBitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(180);
+                Bitmap bitmap = Bitmap.createBitmap(orgBitmap, 0, 0, orgBitmap.getWidth(), orgBitmap.getHeight(), matrix, true);
+
+                /*String title = new Random().nextInt(Integer.MAX_VALUE)+"";
+                MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, title, title);*/
 
                 String emotion = faceRecognition.detectEmotion(bitmap);
+
+                orgBitmap.recycle();
+                bitmap.recycle();
 
                 if (!emotion.equals(FaceRecognition.NOT_FOUND)) {
                     Bundle bundle = new Bundle();
@@ -115,6 +131,7 @@ public class CameraManagerIA {
                     handler.sendMessage(message);
                 }
             }
+
             image.close();
         }
     };
@@ -125,7 +142,7 @@ public class CameraManagerIA {
             try {
                 cameraDevice = camera;
 
-                imageReader = ImageReader.newInstance(size.getWidth(),size.getHeight(), format, 1);
+                imageReader = ImageReader.newInstance(size.getWidth(),size.getHeight(), format, 2);
                 imageReader.setOnImageAvailableListener(imageAvailableListener, handler);
                 Surface imageSurface = imageReader.getSurface();
 

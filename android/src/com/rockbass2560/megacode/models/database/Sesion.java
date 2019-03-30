@@ -10,6 +10,7 @@ public class Sesion {
     public String id;
     @Exclude
     public String usuarioId;
+    @Exclude
     public List<Emocion> emociones = new ArrayList<>();
     public int nivelId;
     public String conexionId;

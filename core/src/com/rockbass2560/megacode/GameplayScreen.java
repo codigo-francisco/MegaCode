@@ -172,9 +172,22 @@ public class GameplayScreen extends ScreenAdapter {
     }
 
     private NivelCompletadoListener nivelCompletadoListener;
+    private EjecucionNivelCompletaListener ejecucionNivelCompletaListener;
+
+    public void ejecucionCompletada(){
+        ejecucionNivelCompletaListener.ejecucionTerminada();
+    }
+
+    public void addEjecucionNivelCompletado(EjecucionNivelCompletaListener listener){
+        ejecucionNivelCompletaListener = listener;
+    }
 
     public void addNivelCompletadoListener(NivelCompletadoListener listener){
         nivelCompletadoListener = listener;
+    }
+
+    public interface EjecucionNivelCompletaListener{
+        void ejecucionTerminada();
     }
 
     public interface NivelCompletadoListener{

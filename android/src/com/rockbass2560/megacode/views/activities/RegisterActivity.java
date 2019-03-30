@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuthException;
 import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.helpers.ViewHelper;
 import com.rockbass2560.megacode.models.Usuario;
 import com.rockbass2560.megacode.viewmodels.LoginViewModel;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
@@ -91,6 +92,8 @@ public class RegisterActivity extends FragmentActivity {
                 usuario.nombre = nameTextEdit.getText().toString();
                 usuario.sexo = spinnerSex.getText().toString();
                 usuario.edad = Integer.parseInt(ageTextEdit.getText().toString());
+
+                ViewHelper.closeKeyboard(this, view.getWindowToken());
 
                 loginViewModel.registrarUsuario(emailTextEdit.getText().toString(), contrasenaTextEdit.getText().toString(), usuario);
             }

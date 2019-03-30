@@ -108,6 +108,8 @@ function doStep(){
           }
           if (hasMoreCode && highlightPause){
             window.setTimeout(doStep, 1);
+          } else if (!hasMoreCode){
+             megacode.finalizarNivel();
           }
         } finally {
         }

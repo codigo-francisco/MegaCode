@@ -22,11 +22,6 @@ android {
         applicationId "com.rockbass2560.megacode"
         versionCode="1"
         versionName="1.0"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     productFlavors {
@@ -87,8 +82,6 @@ dependencies {
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0"
     implementation 'androidx.lifecycle:lifecycle-common-java8:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
-    implementation 'androidx.room:room-runtime:2.1.0-alpha04'
-    annotationProcessor "androidx.room:room-compiler:2.1.0-alpha04"
 
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.google.firebase:firebase-auth:16.2.0'
@@ -100,21 +93,17 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite:1.13.1'
 
     implementation 'com.weiwangcn.betterspinner:library-material:1.1.0'
-    implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'
-
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     implementation 'org.jeasy:easy-rules-mvel:3.2.0'
     implementation 'org.jeasy:easy-rules-core:3.2.0'
     implementation 'org.jeasy:easy-rules-archetype:3.2.0'
     implementation 'org.jeasy:easy-rules-support:3.2.0'
-    implementation 'org.jeasy:easy-rules-tutorials:3.2.0'
 
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
     implementation 'com.x5dev:chunk-templates:3.5.0'
+    implementation 'org.jetbrains:annotations:15.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

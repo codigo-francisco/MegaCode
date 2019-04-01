@@ -55,12 +55,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.common.collect.Lists;
 import com.google.firebase.Timestamp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.rockbass2560.megacode.Claves;
 import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.base.ActivityToolbarBase;
 import com.rockbass2560.megacode.components.CustomWebChromeClient;
+import com.rockbass2560.megacode.components.MediaPlayerManager;
 import com.rockbass2560.megacode.components.WebViewJavaScriptInterface;
 import com.rockbass2560.megacode.helpers.HtmlHelper;
 import com.rockbass2560.megacode.helpers.StringHelper;
@@ -97,7 +100,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragmentApplication.Callbacks {
+public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFragmentApplication.Callbacks {
 
 	private Sesion sesionActual;
 	private final static String TAG = MegaCodeAcitivity.class.getName();
@@ -117,7 +120,10 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
     private CameraManagerIA cameraManagerIA;
     private Handler.Callback handler;
     private int etapa;
-    private Looper myLooper;
+
+    public MegaCodeAcitivity(){
+    	super(R.layout.activity_main);
+	}
 
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -130,17 +136,21 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, idRecargarBlockly, Menu.NONE, "Recargar Blockly");
+		super.onCreateOptionsMenu(menu);
+        //menu.add(Menu.NONE, idRecargarBlockly, Menu.NONE, "Recargar Blockly");
         menu.add(Menu.NONE, idMostrarCodigo, Menu.NONE, "Mostrar Codigo Generado");
 
-        return super.onCreateOptionsMenu(menu);
+        MenuItem reloadItem = menu.findItem(R.id.button_reload);
+        reloadItem.setVisible(true);
+
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int idItem = item.getItemId();
 
-        if (idItem==idRecargarBlockly){
+        if (idItem==R.id.button_reload){
         	//webView.reload();
 			webView.loadUrl("about:blank");
             webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
@@ -162,14 +172,19 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
 			webView.loadUrl("javascript:getCodeBlockly()"); //Se ejecuta funcion para obtener codigo generado
 		}
 
+		mediaPlayerSoundClick.seekTo(0);
+		mediaPlayerSoundClick.start();
+
         return super.onOptionsItemSelected(item);
     }
 
 	private void inicializarCamara(){
-		if (cameraManagerIA == null)
-        	cameraManagerIA = new CameraManagerIA(this, handler);
-		if (!cameraManagerIA.isRunning)
-			cameraManagerIA.iniciarCamara();
+    	if (checkSelfPermission(Manifest.permission.CAMERA)==PackageManager.PERMISSION_GRANTED) {
+			if (cameraManagerIA == null)
+				cameraManagerIA = new CameraManagerIA(this, handler);
+			if (!cameraManagerIA.isRunning)
+				cameraManagerIA.iniciarCamara();
+		}
 	}
 
 	private Timer contador = new Timer("contadorTiempo");
@@ -207,13 +222,21 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
 
 	@SuppressLint({"SetJavaScriptEnabled"})
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
+	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		//setContentView(R.layout.activity_main);
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+				|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, REQUEST_CAMERA);
+		}else{
+			inicializarCamara();
+		}
 
 		etapa = 1;
 
 		sharedPreferences = getSharedPreferences(Claves.SHARED_MEGACODE_PREFERENCES, 0);
+
+		mediaPlayerManager.setBackActivity(true);
 
 		Intent intent = getIntent();
 		if (intent!=null){
@@ -248,13 +271,6 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
             }
         };
 
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-			|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, REQUEST_CAMERA);
-		}else{
-			inicializarCamara();
-		}
-
 		webView = findViewById(R.id.megacode_activity_webview);
 		webView.setWebChromeClient(new CustomWebChromeClient());
 		WebSettings webSettings = webView.getSettings();
@@ -267,7 +283,8 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
         findViewById(R.id.megacode_play).setOnClickListener(view -> {
             etapa = 2;
         	sesionActual.intentos++;
-        	webView.loadUrl("javascript:runBlockly()");
+
+			webView.loadUrl("javascript:runBlockly()");
         });
 
         InfoNivel infoNivel = new InfoNivel();
@@ -275,9 +292,22 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
         infoNivel.zoomInicial = nivelActual.zoomInicial;
 
         cargarJuego(infoNivel);
+        configurarMusica(nivelActual);
 
 		javaScriptInterface = new WebViewJavaScriptInterface(libgdxFragment);
 		webView.addJavascriptInterface(javaScriptInterface, "megacode");
+	}
+
+	private void configurarMusica(Nivel nivel){
+		if (nivel.tipoNivel == Nivel.TIPO_COMANDOS){
+			mediaPlayerManager.cambiarCancion(MediaPlayerManager.MUSICA_COMANDOS);
+		}else if (nivel.tipoNivel == Nivel.TIPO_SI){
+			mediaPlayerManager.cambiarCancion(MediaPlayerManager.MUSICA_SI);
+		}else if (nivel.tipoNivel == Nivel.TIPO_PARA){
+			mediaPlayerManager.cambiarCancion(MediaPlayerManager.MUSICA_PARA);
+		}else if (nivel.tipoNivel == Nivel.TIPO_MIENTRAS){
+			mediaPlayerManager.cambiarCancion(MediaPlayerManager.MUSICA_SI);
+		}
 	}
 
 	private void cargarJuego(InfoNivel infoNivel){
@@ -337,14 +367,7 @@ public class MegaCodeAcitivity extends FragmentActivity implements  AndroidFragm
 
     @Override
     protected void onResume() {
-        super.onResume();
-
-        inicializarCamara();
-    }
-
-	@Override
-	protected void onStart() {
-		super.onStart();
+		super.onResume();
 
 		inicializarCamara();
 	}

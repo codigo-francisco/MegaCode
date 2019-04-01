@@ -2,6 +2,7 @@ package com.rockbass2560.megacode.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -36,8 +37,17 @@ public class MegaCode {
     private long jumpStartTime;
     private int ammo;
     public boolean respawn = false;
+    private Sound jumpSound;
+    private long soundId;
+    private Sound shootSound;
 
     public MegaCode(Vector2 spawnLocation, Level level) {
+        if (jumpSound == null){
+            jumpSound = Gdx.audio.newSound(Gdx.files.internal("sounds/jump_02.wav"));
+        }
+        if (shootSound == null){
+            shootSound = Gdx.audio.newSound(Gdx.files.internal("sounds/fire_1.mp3"));
+        }
         this.spawnLocation = spawnLocation;
         this.level = level;
         position = new Vector2();
@@ -187,6 +197,7 @@ public class MegaCode {
 
     public void shoot() {
         if (ammo > 0) {
+            shootSound.play();
 
             ammo--;
             Vector2 bulletPosition;
@@ -244,6 +255,7 @@ public class MegaCode {
     }
 
     private void startJump() {
+        jumpSound.play();
         jumpState = Enums.JumpState.JUMPING;
         jumpStartTime = TimeUtils.nanoTime();
         continueJump();
@@ -261,6 +273,7 @@ public class MegaCode {
 
     private void endJump() {
         if (jumpState == Enums.JumpState.JUMPING) {
+            jumpSound.stop(soundId);
             jumpState = Enums.JumpState.FALLING;
         }
     }

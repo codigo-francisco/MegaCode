@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.rockbass2560.megacode.R;
 
 public class Nivel implements Parcelable {
+    public final static int TIPO_COMANDOS = 1, TIPO_SI = 2, TIPO_PARA = 3, TIPO_MIENTRAS = 4;
+
     public int id;
     public String nombre;
     public int dificultad;

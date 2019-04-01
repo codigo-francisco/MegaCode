@@ -14,22 +14,7 @@
         android:layout_height="match_parent"
         tools:context="com.megacode.views.activities.RootActivity" >
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/bar_layout"
-            >
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_main"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:title=""
-                app:layout_scrollFlags="scroll|enterAlways"
-                />
-
-        </com.google.android.material.appbar.AppBarLayout>
+        <include layout="@layout/appbar_general" />
 
         <FrameLayout
             android:layout_width="match_parent"

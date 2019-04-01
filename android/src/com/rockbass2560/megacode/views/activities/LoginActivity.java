@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.components.MediaPlayerManager;
 import com.rockbass2560.megacode.helpers.ViewHelper;
 import com.rockbass2560.megacode.viewmodels.LoginViewModel;
 

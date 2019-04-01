@@ -25,4 +25,5 @@ public final class Claves {
     public final static int EMOTION_FOUND = 1;
 
     public final static String EMOTION = "EMOTION";
+    public static final String MUSIC_VOLUME = "MUSIC_VOLUME";
 }

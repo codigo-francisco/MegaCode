@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import com.google.android.material.navigation.NavigationView;
 import com.rockbass2560.megacode.Claves;
 import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.base.ActivityToolbarBase;
+import com.rockbass2560.megacode.components.MediaPlayerManager;
 import com.rockbass2560.megacode.views.fragments.FeedFragment;
 import com.rockbass2560.megacode.views.fragments.PerfilFragment;
 import com.rockbass2560.megacode.views.fragments.ProgresoFragment;
@@ -18,40 +20,66 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 
+import android.provider.MediaStore;
 import android.util.SparseArray;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SoundEffectConstants;
+import android.view.View;
 import android.widget.Toast;
 
-public class RootActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class RootActivity extends ActivityToolbarBase implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private int selectedFragment;
     private final static String SELECTED_FRAGMENT = "selectedFragment";
     private int RESULT_GAME = 1;
     private NavigationView navigationView;
-    private Toolbar toolbarMenu;
+    private MediaPlayer mediaPlayerClickOn;
+    private MediaPlayer mediaPlayerClickOff;
+
+    public RootActivity(){
+        super(R.layout.activity_root);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_root);
-
-        toolbarMenu = findViewById(R.id.toolbar_main);
-        setSupportActionBar(toolbarMenu);
+        //setContentView(R.layout.activity_root);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.menu_navigation);
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbarMenu,R.string.abierto, R.string.cerrado);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
+                toolbarMenu, R.string.abierto, R.string.cerrado){
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+                if (newState == DrawerLayout.STATE_SETTLING){
+                    if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+                        mediaPlayerClickOff.seekTo(0);
+                        mediaPlayerClickOff.setVolume(1,1);
+                        mediaPlayerClickOff.start();
+                    }else{
+                        mediaPlayerClickOn.seekTo(0);
+                        mediaPlayerClickOn.setVolume(1, 1);
+                        mediaPlayerClickOn.start();
+                    }
+                }
+
+                super.onDrawerStateChanged(newState);
+            }
+        };
+
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
-
-        int selectedFragment;
 
         if (savedInstanceState!=null){
             selectedFragment = savedInstanceState.getInt(SELECTED_FRAGMENT, R.id.feed);
@@ -62,6 +90,26 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setCheckedItem(selectedFragment);
         //Cargar el perfil por default
         selectFragment(selectedFragment);
+
+        MediaPlayerManager.getInstance(this).reiniciarPosicion();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        changeVolumeIcon();
+
+        mediaPlayerClickOff = MediaPlayer.create(this, R.raw.click_off);
+        mediaPlayerClickOn = MediaPlayer.create(this, R.raw.click_on);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mediaPlayerClickOn.release();
+        mediaPlayerClickOff.release();
     }
 
     @Override
@@ -101,7 +149,7 @@ public class RootActivity extends AppCompatActivity implements NavigationView.On
                 //Aquí se hace el cambio de fragmento
                 switch (id) {
                     case R.id.feed:
-                        toolbarMenu.setTitle("Feed");
+                        toolbarMenu.setTitle("Noticias");
                         fragment = new FeedFragment();
                         break;
                     case R.id.perfil:

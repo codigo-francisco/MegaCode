@@ -3,6 +3,7 @@ package com.rockbass2560.megacode.views.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -20,6 +21,7 @@ import com.rockbass2560.megacode.Claves;
 import com.rockbass2560.megacode.R;
 import com.rockbass2560.megacode.adapters.AdapterRecyclerSkillTree;
 import com.rockbass2560.megacode.adapters.model.DataModel;
+import com.rockbass2560.megacode.components.MediaPlayerManager;
 import com.rockbass2560.megacode.models.database.NivelConTerminado;
 import com.rockbass2560.megacode.viewmodels.NivelViewModel;
 
@@ -35,6 +37,8 @@ public class SkillTreeFragment extends Fragment {
     private final static String TAG = SkillTreeFragment.class.getName();
     private AdapterRecyclerSkillTree adapterRecyclerSkillTree;
     private NivelViewModel nivelViewModel;
+    private MediaPlayer mediaPlayerClickDialog;
+    private MediaPlayerManager mediaPlayerManager;
 
     public SkillTreeFragment() {
         // Required empty public constructor
@@ -47,6 +51,29 @@ public class SkillTreeFragment extends Fragment {
                 nivelViewModel.listarNiveles();
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mediaPlayerManager.isBackActivity()) {
+            mediaPlayerManager.cambiarCancion(MediaPlayerManager.ENTRADA);
+            mediaPlayerManager.setBackActivity(false);
+            mediaPlayerManager.iniciarMediaPlayer();
+        }
+
+        mediaPlayerClickDialog = MediaPlayer.create(this.getContext(), R.raw.button_click_dialog);
+        mediaPlayerClickDialog.setVolume(1,1);
+        adapterRecyclerSkillTree.setMediaPlayerSound(mediaPlayerClickDialog);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        mediaPlayerClickDialog.release();
+        mediaPlayerClickDialog = null;
     }
 
     @Override
@@ -66,6 +93,8 @@ public class SkillTreeFragment extends Fragment {
         nivelViewModel.getNiveles().observe(this, lists -> adapterRecyclerSkillTree.setData(lists));
 
         nivelViewModel.listarNiveles();
+
+        mediaPlayerManager = MediaPlayerManager.getInstance(this.getContext());
 
         return view;
     }

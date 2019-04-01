@@ -2,6 +2,7 @@ package com.rockbass2560.megacode.adapters;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +28,15 @@ import androidx.recyclerview.widget.RecyclerView;
 public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecyclerSkillTree.SkillTreeViewHolder>{
 
     private LinkedList<List<NivelConTerminado>> nodes = new LinkedList<>();
-
+    private MediaPlayer mediaPlayerSound;
     private FragmentManager fragmentManager;
 
     public AdapterRecyclerSkillTree(FragmentManager fragmentManager){
         this.fragmentManager = fragmentManager;
+    }
+
+    public void setMediaPlayerSound(MediaPlayer mediaPlayerSound) {
+        this.mediaPlayerSound = mediaPlayerSound;
     }
 
     @NonNull
@@ -102,6 +107,9 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
                 bundle.putInt("sourceY", locations[1]);
 
                 bundle.putInt("heightView", view.getHeight());
+
+                mediaPlayerSound.seekTo(0);
+                mediaPlayerSound.start();
 
                 dialogFragment.setArguments(bundle);
                 dialogFragment.show(fragmentManager, Claves.INFO_NIVEL_FRAGMENT_TAG);

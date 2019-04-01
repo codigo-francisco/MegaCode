@@ -11,18 +11,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import androidx.room.Embedded;
-import androidx.room.Relation;
-
 public class NivelConTerminado implements Parcelable {
-    @Embedded
     public Nivel nivel;
 
-    @Relation(
-            parentColumn = "id",
-            entityColumn = "nivelId",
-            entity = NivelTerminado.class
-    )
     public List<NivelTerminado> nivelesTerminados;
 
     public NivelConTerminado() {

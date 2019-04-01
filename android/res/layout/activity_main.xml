@@ -9,8 +9,11 @@
     android:keepScreenOn="true"
     tools:context="com.megacode.views.activities.MegaCodeAcitivity">
 
+    <include android:id="@+id/layout_appbar" android:layout_alignParentTop="true" layout="@layout/appbar_general" />
+
     <LinearLayout
         android:id="@+id/linear_layout"
+        android:layout_below="@id/layout_appbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -38,12 +41,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:padding="0dp"
+        android:layout_margin="8dp"
         android:id="@+id/megacode_play"
-        android:layout_margin="16dp"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        app:fabSize="normal"
-        app:fabCustomSize="64dp"
-        app:maxImageSize="40dp"
-        android:src="@drawable/ic_play_circle_filled_black_24dp"/>
+        android:scaleType="fitXY"
+        app:borderWidth="0dp"
+        app:useCompatPadding="true"
+        android:src="@drawable/ic_outline_play"
+        />
 </RelativeLayout>

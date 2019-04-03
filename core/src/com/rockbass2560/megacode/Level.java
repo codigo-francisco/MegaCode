@@ -1,5 +1,7 @@
 package com.rockbass2560.megacode;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -40,8 +42,13 @@ public class Level {
     private DelayedRemovalArray<Bullet> bullets;
     private DelayedRemovalArray<Explosion> explosions;
     private DelayedRemovalArray<Powerup> powerups;
+    private Sound explosionSound;
 
     public Level() {
+        if (explosionSound ==  null){
+            explosionSound = Gdx.audio.newSound(Gdx.files.internal("sounds/explosion_03.mp3"));
+        }
+
         viewport = new ExtendViewport(Constants.WORLD_SIZE, Constants.WORLD_SIZE, new OrthographicCamera());
 
         megaCode = new MegaCode(new Vector2(50, 50), this);
@@ -73,7 +80,7 @@ public class Level {
     private Queue<Timer.Task> tasks = new ArrayDeque<>();
     private Comando lastMovement = Comando.NADA;
 
-    private void eliminarTasksPendientes(){
+    public void eliminarTasksPendientes(){
         while(tasks.size() > 0){
             Timer.Task task = tasks.poll();
             task.cancel();
@@ -82,11 +89,36 @@ public class Level {
         recibirComandos = true;
     }
 
+    public void reposicionarPersonaje(){
+        Gdx.graphics.setContinuousRendering(false);
+        //Reposicionar al personaje principal
+        megaCode.respawn();
+        megaCode.respawn = false;
+        cam.following = false;
+        cam.getCamera().position.x = cam.target.getPosition().x;
+        cam.getCamera().position.y = cam.target.getPosition().y;
+        eliminarTasksPendientes();
+        reponerEnemigos();
+        Gdx.graphics.setContinuousRendering(true);
+    }
+
     public void prepararNivel(){
         eliminarTasksPendientes();
         //Reposicionar al personaje principal
         megaCode.respawn();
         megaCode.respawn = false;
+
+        /*if (reposicionarEnemigos){
+            reposicionarEnemigos = false;
+            level.reponerEnemigos();
+        }*/
+
+        //reponerEnemigos();
+
+        cam.resetCameraPosition(true);
+    }
+
+    public void reponerEnemigos(){
 
         //Eliminar enemigos restantes y posicionar los originales de nuevo
         enemies.begin();
@@ -97,8 +129,6 @@ public class Level {
             enemies.add((Enemy)enemy.clone());
         }
         enemies.end();
-
-        cam.resetCameraPosition(true);
     }
 
     public void procesarComando(Comando comando){
@@ -222,6 +252,7 @@ public class Level {
                 enemy.update(delta);
                 if (enemy.health < 1) {
                     spawnExplosion(enemy.position);
+                    explosionSound.play();
                     enemies.removeIndex(i);
                     score += Constants.ENEMY_KILL_SCORE;
                 }

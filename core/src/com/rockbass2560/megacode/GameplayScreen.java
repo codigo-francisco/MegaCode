@@ -69,7 +69,7 @@ public class GameplayScreen extends ScreenAdapter {
         victoryOverlay.viewport.update(width, height, true);
         gameOverOverlay.viewport.update(width, height, true);
         level.viewport.update(width, height, true);
-        chaseCam.camera = (OrthographicCamera)level.viewport.getCamera();
+        chaseCam.setCamera((OrthographicCamera)level.viewport.getCamera());
         /*onscreenControls.viewport.update(width, height, true);
         onscreenControls.recalculateButtonPositions();*/
     }
@@ -145,16 +145,14 @@ public class GameplayScreen extends ScreenAdapter {
         level = LevelLoader.load(infoNivel.rutaNivel);
 
         level.cam = chaseCam;
-        chaseCam.camera = (OrthographicCamera)level.viewport.getCamera();
+        chaseCam.setCamera((OrthographicCamera)level.viewport.getCamera());
 
         MegaCode megaCode = level.getMegaCode();
         megaCode.justDied = false;
 
         chaseCam.target = megaCode;
         chaseCam.zoom = infoNivel.zoomInicial;
-        chaseCam.resetCameraPosition(true);
-
-        //Gdx.input.setInputProcessor(new GestureDetector(chaseCam));
+        chaseCam.resetCameraPosition(false);
 
         //onscreenControls.megaCode = level.getMegaCode();
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

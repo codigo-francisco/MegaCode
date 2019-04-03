@@ -40,7 +40,9 @@ public class ScoreViewModel extends AndroidViewModel {
                             score.id = d.getId();
                             score.score = u.getPuntajeTotal();
                             return score;
-                        }).collect(Collectors.toList());
+                        })
+                        .sorted()
+                        .collect(Collectors.toList());
                 scoreResponseLiveData.setValue(scores);
             }
         });

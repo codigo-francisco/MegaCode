@@ -14,6 +14,8 @@ public class MediaPlayerManager {
     public final static int MUSICA_MIENTRAS = R.raw.ipsi;
     public final static int ENTRADA = R.raw.highlander;
 
+    private final static float MAX_VOLUME = 0.7f;
+    private final static float MIN_VOLUME = 0;
 
     public static MediaPlayerManager getInstance(Context context){
         if (INSTANCE==null){
@@ -25,7 +27,7 @@ public class MediaPlayerManager {
 
     private boolean isReleased = true;
     private boolean isSilent;
-    private int volume = 1;
+    private float volume = MAX_VOLUME;
     private MediaPlayer mediaPlayer;
     private Context context;
     private int lastPosition = 0;
@@ -56,7 +58,7 @@ public class MediaPlayerManager {
     public void iniciarMediaPlayer(boolean isSilent){
         if (isReleased){
             this.isSilent = isSilent;
-            volume = (isSilent) ? 0 : 1;
+            volume = (isSilent) ? MIN_VOLUME : MAX_VOLUME;
             crearMediaPlayer();
             isReleased = false;
         }
@@ -64,15 +66,15 @@ public class MediaPlayerManager {
     }
 
     public void toogleVolume(){
-        volume = (volume==1) ? 0 : 1;
+        volume = (volume==MAX_VOLUME) ? MIN_VOLUME : MAX_VOLUME;
         mediaPlayer.setVolume(volume, volume);
     }
 
     public boolean isSilent(){
-        return volume == 0;
+        return volume == MIN_VOLUME;
     }
 
-    public void silentMediaPlayer(){
+    /*public void silentMediaPlayer(){
         volume = 0;
         mediaPlayer.setVolume(volume, volume);
     }
@@ -80,7 +82,7 @@ public class MediaPlayerManager {
     public void turnOnVolumeMediaPlayer(){
         volume = 1;
         mediaPlayer.setVolume(volume, volume);
-    }
+    }*/
 
     private void crearMediaPlayer(){
         mediaPlayer = MediaPlayer.create(context, musica);

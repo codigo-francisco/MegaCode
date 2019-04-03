@@ -66,16 +66,22 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     private void colocarError(Exception failure){
-        FirebaseAuthException exception = (FirebaseAuthException)failure;
-        String errorCode = exception.getErrorCode();
+        if (failure instanceof FirebaseAuthException) {
+            FirebaseAuthException exception = (FirebaseAuthException) failure;
+            String errorCode = exception.getErrorCode();
 
-        if ( errorCode.equals("ERROR_WRONG_PASSWORD") ||
-                errorCode.equals("ERROR_INVALID_EMAIL") ||
-                errorCode.equals("ERROR_USER_NOT_FOUND")){
-
-            errorLiveData.setValue("Usuario o contraseña incorrectos");
-        }
-        else {
+            if (errorCode.equals("ERROR_WRONG_PASSWORD") ||
+                    errorCode.equals("ERROR_INVALID_EMAIL") ||
+                    errorCode.equals("ERROR_USER_NOT_FOUND")) {
+                errorLiveData.setValue("Usuario o contraseña incorrectos");
+            } else if (errorCode.equals("ERROR_EMAIL_TAKEN")) {
+                errorLiveData.setValue("El correo electronico ya está en uso");
+            } else if (errorCode.equals("ERROR_NETWORK_ERROR")) {
+                errorLiveData.setValue("Hay un error en la red, por favor verifique la conexión");
+            } else {
+                errorLiveData.setValue("Ha ocurrido un error en el proceso");
+            }
+        }else{
             errorLiveData.setValue("Ha ocurrido un error en el proceso");
         }
     }

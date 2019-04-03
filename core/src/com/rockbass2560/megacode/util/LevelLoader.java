@@ -109,8 +109,9 @@ public class LevelLoader {
 
             if (identifier != null && identifier.equals(Constants.LEVEL_ENEMY_TAG)) {
                 final Enemy enemy = new Enemy(platform);
+                final Enemy originalEnemy = new Enemy(platform);
                 level.getEnemies().add(enemy);
-                level.originalEnemies.add(enemy);
+                level.originalEnemies.add(originalEnemy);
             }
         }
 

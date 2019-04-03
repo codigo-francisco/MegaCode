@@ -30,7 +30,7 @@ public class PerfilViewModel extends AndroidViewModel {
                     (documentSnapshot, e) -> {
                         if (e == null) {
                             Usuario usuario = documentSnapshot.toObject(Usuario.class);
-                            if (user.getUid() != null) {
+                            if (user.getUid() != null && usuario != null) {
                                 usuario.id = user.getUid();
                                 usuario.email = user.getEmail();
                                 usuarioLiveData.setValue(usuario);

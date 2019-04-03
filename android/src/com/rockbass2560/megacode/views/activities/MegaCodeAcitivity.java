@@ -6,6 +6,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteCursorDriver;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQuery;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -120,6 +124,8 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     private CameraManagerIA cameraManagerIA;
     private Handler.Callback handler;
     private int etapa;
+    private boolean reboot=false;
+    private FloatingActionButton megacodePlay;
 
     public MegaCodeAcitivity(){
     	super(R.layout.activity_main);
@@ -224,6 +230,8 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+
 		//setContentView(R.layout.activity_main);
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
 				|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -280,11 +288,19 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 		webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
 
-        findViewById(R.id.megacode_play).setOnClickListener(view -> {
-            etapa = 2;
-        	sesionActual.intentos++;
+        megacodePlay = findViewById(R.id.megacode_play);
 
-			webView.loadUrl("javascript:runBlockly()");
+		megacodePlay.setOnClickListener(view -> {
+			if (reboot){
+				megacodePlay.setImageResource(R.drawable.ic_outline_play);
+				libgdxFragment.getGamePlayScreen().level.reposicionarPersonaje();
+				reboot = false;
+			}else{
+				etapa = 2;
+				sesionActual.intentos++;
+				megacodePlay.setEnabled(false);
+				webView.loadUrl("javascript:runBlockly()");
+			}
         });
 
         InfoNivel infoNivel = new InfoNivel();
@@ -322,6 +338,12 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 			libgdxFragment.getGamePlayScreen().addEjecucionNivelCompletado(()->{
 				etapa = 1;
+				reboot = true;
+				//Cambiar icono
+				runOnUiThread(()->{
+					megacodePlay.setEnabled(true);
+					megacodePlay.setImageResource(R.drawable.ic_reload);
+				});
 			});
 
 			libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(screen -> {
@@ -330,20 +352,27 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 				String cadenaOptima = nivelActual.cadenaOptima;
 				String cadenaGenerada = javaScriptInterface.getUltimoCodigoGenerado();
 				int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
-				int puntaje = (int) Math.round((double) distance / Math.max(cadenaOptima.length(), cadenaGenerada.length()) * 100);
+				int puntaje;
+				if (distance==0){
+					puntaje = 100;
+				}else{
+					puntaje = (cadenaOptima.length() / (cadenaOptima.length() + distance))*100;
+				}
 				NivelTerminado nivelTerminado = new NivelTerminado();
 				nivelTerminado.nivelId = nivelActual.id;
 				nivelTerminado.puntaje = puntaje;
 				nivelTerminado.terminado  = true;
 				megaCodeViewModel.agregarNivelTerminado(nivelTerminado);
 
-				Map<String, Integer> puntajes = new HashMap<>();
-				puntajes.put("comandos", nivelActual.comandos);
-				puntajes.put("si", nivelActual.si);
-				puntajes.put("para", nivelActual.para);
-				puntajes.put("mientras", nivelActual.mientras);
+				if (!nivelTerminado.terminado) {
+					Map<String, Integer> puntajes = new HashMap<>();
+					puntajes.put("comandos", nivelActual.comandos);
+					puntajes.put("si", nivelActual.si);
+					puntajes.put("para", nivelActual.para);
+					puntajes.put("mientras", nivelActual.mientras);
 
-				megaCodeViewModel.actualizarPuntajes(puntajes);
+					megaCodeViewModel.actualizarPuntajes(puntajes);
+				}
 
 				//Guardar sesión nueva
 				sesionActual.nivelId = nivelActual.id;

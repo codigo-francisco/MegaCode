@@ -49,11 +49,13 @@ public class FeedViewModel extends AndroidViewModel {
         FirebaseFirestore.getInstance().document("Usuarios/"+user.getUid())
             .get()
             .addOnSuccessListener(docSnapshot -> {
-                usuario = docSnapshot.toObject(Usuario.class);
-                usuario.id = user.getUid();
-                usuario.email = user.getEmail();
+                if (usuario!=null && user != null) {
+                    usuario = docSnapshot.toObject(Usuario.class);
+                    usuario.id = user.getUid();
+                    usuario.email = user.getEmail();
 
-                usuarioLiveData.setValue(usuario);
+                    usuarioLiveData.setValue(usuario);
+                }
             });
     }
 
@@ -68,18 +70,27 @@ public class FeedViewModel extends AndroidViewModel {
 
     private void feedbacks(){
         try {
-            List<FeedBack> feedBacks = RuleInstance.getRuleInstance(usuario).getFeedbacks();
-            for (FeedBack feedBack: feedBacks){
-                DataModel dataModel = new DataModel();
-                dataModel.setTypeFeed(TypeFeed.CONSEJO);
-                dataModel.setTitle(feedBack.getTitulo());
-                dataModel.setContent(feedBack.getContenido());
-                dataModel.setImagen(R.drawable.ic_baseline_info_24px);
+            String idUsuario = FirebaseAuth.getInstance().getUid();
+            FirebaseFirestore.getInstance().document("Usuarios/"+idUsuario)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.getData()!=null) {
+                            Usuario usuario = documentSnapshot.toObject(Usuario.class);
+                            List<FeedBack> feedBacks = RuleInstance.getRuleInstance(usuario).getFeedbacks();
+                            for (FeedBack feedBack : feedBacks) {
+                                DataModel dataModel = new DataModel();
+                                dataModel.setTypeFeed(TypeFeed.CONSEJO);
+                                dataModel.setTitle(feedBack.getTitulo());
+                                dataModel.setContent(feedBack.getContenido());
+                                dataModel.setImagen(R.drawable.ic_baseline_info_24px);
 
-                feeds.add(dataModel);
-            }
+                                feeds.add(dataModel);
+                            }
 
-            feedsLiveData.setValue(feeds);
+                            feedsLiveData.setValue(feeds);
+                        }
+                    });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

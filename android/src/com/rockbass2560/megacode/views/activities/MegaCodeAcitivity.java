@@ -230,9 +230,8 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-
 		//setContentView(R.layout.activity_main);
+
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
 				|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, REQUEST_CAMERA);
@@ -296,10 +295,12 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 				libgdxFragment.getGamePlayScreen().level.reposicionarPersonaje();
 				reboot = false;
 			}else{
-				etapa = 2;
-				sesionActual.intentos++;
-				megacodePlay.setEnabled(false);
-				webView.loadUrl("javascript:runBlockly()");
+				if (!reboot) { //En caso de doble click
+					etapa = 2;
+					sesionActual.intentos++;
+					megacodePlay.setEnabled(false);
+					webView.loadUrl("javascript:runBlockly()");
+				}
 			}
         });
 
@@ -352,27 +353,20 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 				String cadenaOptima = nivelActual.cadenaOptima;
 				String cadenaGenerada = javaScriptInterface.getUltimoCodigoGenerado();
 				int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
-				int puntaje;
-				if (distance==0){
-					puntaje = 100;
-				}else{
-					puntaje = (cadenaOptima.length() / (cadenaOptima.length() + distance))*100;
-				}
+				int puntaje = Math.round(cadenaOptima.length() / (float)(cadenaOptima.length() + distance)*100);
 				NivelTerminado nivelTerminado = new NivelTerminado();
 				nivelTerminado.nivelId = nivelActual.id;
 				nivelTerminado.puntaje = puntaje;
 				nivelTerminado.terminado  = true;
-				megaCodeViewModel.agregarNivelTerminado(nivelTerminado);
 
-				if (!nivelTerminado.terminado) {
-					Map<String, Integer> puntajes = new HashMap<>();
-					puntajes.put("comandos", nivelActual.comandos);
-					puntajes.put("si", nivelActual.si);
-					puntajes.put("para", nivelActual.para);
-					puntajes.put("mientras", nivelActual.mientras);
+				//Se registran los nuevos puntajes
+				Map<String, Integer> puntajes = new HashMap<>();
+				puntajes.put("comandos", nivelActual.comandos);
+				puntajes.put("si", nivelActual.si);
+				puntajes.put("para", nivelActual.para);
+				puntajes.put("mientras", nivelActual.mientras);
 
-					megaCodeViewModel.actualizarPuntajes(puntajes);
-				}
+				megaCodeViewModel.agregarNivelTerminado(nivelTerminado, puntajes);
 
 				//Guardar sesión nueva
 				sesionActual.nivelId = nivelActual.id;

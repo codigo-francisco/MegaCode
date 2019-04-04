@@ -29,7 +29,7 @@ public class MegaCodeViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public void agregarNivelTerminado(NivelTerminado nivelTerminado){
+    public void agregarNivelTerminado(NivelTerminado nivelTerminado, Map<String, Integer> puntajes){
         CollectionReference nivelesTerminados = db.collection("Usuarios/"+user.getUid()+"/NivelesTerminados");
         //Buscar si existe el nivelTerminado
         nivelesTerminados.get()
@@ -51,12 +51,15 @@ public class MegaCodeViewModel extends AndroidViewModel {
                         nivelesTerminados.document(nivelTerminadoRemote.id)
                                 .set(nivelTerminadoRemote);
                     }else{
-                        nivelesTerminados.add(nivelTerminado);
+                        nivelesTerminados.add(nivelTerminado)
+                            .addOnSuccessListener(docReference -> {
+                                actualizarPuntajes(puntajes);
+                            });
                     }
                 });
     }
 
-    public void actualizarPuntajes(Map<String, Integer> puntajes){
+    private void actualizarPuntajes(Map<String, Integer> puntajes){
         //Obtenemos los puntajes actuales
         DocumentReference usuariosReference = db.document("/Usuarios/"+user.getUid());
 
@@ -64,11 +67,20 @@ public class MegaCodeViewModel extends AndroidViewModel {
                 .addOnSuccessListener(documentSnapshot -> {
                     Map<String, Object> documentData = documentSnapshot.getData();
 
-                    for(Map.Entry<String, Integer> puntaje : puntajes.entrySet()){
-                        final long puntajeSumado = puntaje.getValue() + (long)documentData.get(puntaje.getKey());
-                        documentData.put(puntaje.getKey(), puntajeSumado);
+                    if (documentData!=null) {
+
+                        for (Map.Entry<String, Integer> puntaje : puntajes.entrySet()) {
+                            long puntajeSumado = puntaje.getValue();
+
+                            puntajeSumado += (long) documentData.getOrDefault(puntaje.getKey(), 0);
+
+                            documentData.put(puntaje.getKey(), puntajeSumado);
+                        }
+
+                        usuariosReference.set(documentData);
+                    }else{
+                        usuariosReference.set(puntajes);
                     }
-                    usuariosReference.set(documentData);
                 });
     }
 

@@ -52,10 +52,35 @@ public class RuleInstance {
 
         Rule siCompleto = new RuleBuilder()
                 .name("Si completo")
-                .when(facts -> ((Usuario)facts.get("usuario")).si==5)
-                .then(facts -> feedBacks.add(new FeedBack("Consejo","Terminaste los ejercicios con si, prueba ejercicios con otro tipo de temas")))
+                .when(facts -> ((Usuario)facts.get("usuario")).si > 3)
+                .then(facts -> feedBacks.add(new FeedBack("Consejo","Parece que ya probaste los ejercicios si, prueba ejercicios con otro tipo de temas")))
                 .build();
         rules.register(siCompleto);
+
+        Rule paraCompleto = new RuleBuilder()
+                .name("Para Completo")
+                .when(facts ->
+                    ((Usuario)facts.get("usuario")).para > 3
+                ).then(facts -> {
+                    feedBacks.add(new FeedBack(
+                            "Consejo",
+                            "Parece que ya probaste los ejercicios con Para, estás avanzando"
+                    ));
+                })
+                .build();
+        rules.register(paraCompleto);
+
+        Rule buenAvance = new RuleBuilder()
+                .name("Buen Avance")
+                .when(facts ->((Usuario)facts.get("usuario")).getPuntajeTotal() > 19)
+                .then(facts -> {
+                    feedBacks.add(new FeedBack(
+                            "Felicitación",
+                            "Has sumado más de 20 puntos, notable avance. Felicidades"
+                    ));
+                })
+                .build();
+        rules.register(buenAvance);
     }
 
     public void setUsuario(Usuario usuario){

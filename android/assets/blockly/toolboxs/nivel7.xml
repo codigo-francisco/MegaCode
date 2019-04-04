@@ -2,6 +2,7 @@
     <category name="Comandos">
         <block type="caminarderecha"></block>
         <block type="disparar"></block>
+		<block type="saltar"></block>
     </category>
     <category name="Ciclos">
         <block type="controls_whileUntil">
@@ -9,11 +10,6 @@
         </block>
     </category>
     <category name="Logico">
-        <block type="fin_deljuego"></block>
         <block type="enemigo_defrente"></block>
-        <block type="controls_if">
-            <mutation else="1"></mutation>
-        </block>
-        <block type="logic_negate"></block>
     </category>
 </xml>

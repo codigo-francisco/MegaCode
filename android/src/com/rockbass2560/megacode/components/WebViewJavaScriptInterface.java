@@ -109,16 +109,16 @@ public class WebViewJavaScriptInterface {
     private void agregarCodigo(Comando comando){
         switch (comando.getValue()){
             case "izquierda":
-                ultimoCodigoGenerado.add('A');
+                ultimoCodigoGenerado.add('L');
                 break;
             case "derecha":
-                ultimoCodigoGenerado.add('B');
+                ultimoCodigoGenerado.add('R');
                 break;
             case "saltar":
-                ultimoCodigoGenerado.add('C');
+                ultimoCodigoGenerado.add('J');
                 break;
             case "disparar":
-                ultimoCodigoGenerado.add('D');
+                ultimoCodigoGenerado.add('S');
                 break;
         }
     }

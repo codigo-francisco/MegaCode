@@ -77,6 +77,8 @@ public class FeedFragment extends Fragment {
 
         feedViewModel.configurarUsuario();
 
+        feedViewModel.actualizarFeed(true);
+
         return view;
     }
 

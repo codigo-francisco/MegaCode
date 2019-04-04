@@ -75,8 +75,6 @@ public class FeedFragment extends Fragment {
 
         recyclerView.setAdapter(customAdapter);
 
-        feedViewModel.configurarUsuario();
-
         feedViewModel.actualizarFeed(true);
 
         return view;

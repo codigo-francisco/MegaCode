@@ -1,0 +1,7 @@
+soluciones
+tutorial - Derecha, Saltar, Disparar, Derecha / RJSR
+nivel1 - Derecha, Saltar, Derecha, Izquierda, Saltar / RJRLJ
+nivel2 - Derecha, Saltar, Derecha, Saltar / RJRJ
+nivel3 - Derecha, Disparar, Derecha, Derecha / RSRR
+nivel4 - Derecha, Saltar, Derecha, Saltar, Derecha, Saltar, Derecha, Saltar / RJRJRJRJ
+nivel7 - Disparar, Derecha, Saltar, Disparar, Derecha, Saltar, Disparar, Derecha, Saltar / SRJSRJSRJ

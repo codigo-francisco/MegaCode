@@ -2,6 +2,7 @@ package com.rockbass2560.megacode.viewmodels;
 
 import android.app.Application;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,10 +29,11 @@ import androidx.lifecycle.MutableLiveData;
 
 public class FeedViewModel extends AndroidViewModel {
 
+    private static final String TAG = FeedViewModel.class.getName();
+
     private List<DataModel> feeds;
     private MutableLiveData<List<DataModel>> feedsLiveData;
     private MutableLiveData<Usuario> usuarioLiveData = new MutableLiveData<>();
-    private Usuario usuario;
 
     public FeedViewModel(@NonNull Application application) {
         super(application);
@@ -42,21 +44,6 @@ public class FeedViewModel extends AndroidViewModel {
 
     public LiveData<Usuario> observadorUsuario(){
         return usuarioLiveData;
-    }
-
-    public void configurarUsuario(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseFirestore.getInstance().document("Usuarios/"+user.getUid())
-            .get()
-            .addOnSuccessListener(docSnapshot -> {
-                if (usuario!=null && user != null) {
-                    usuario = docSnapshot.toObject(Usuario.class);
-                    usuario.id = user.getUid();
-                    usuario.email = user.getEmail();
-
-                    usuarioLiveData.setValue(usuario);
-                }
-            });
     }
 
     public void actualizarFeed(boolean borrarFeed){
@@ -149,33 +136,44 @@ public class FeedViewModel extends AndroidViewModel {
 
     private void posicionContraOtros(){
         try {
-            int puntaje = usuario.getPuntajeTotal();
-
-            FirebaseFirestore.getInstance().collection("Usuarios")
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Usuarios")
                     .get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
-                        List<Usuario> usuarios = queryDocumentSnapshots.toObjects(Usuario.class);
-                        usuarios = usuarios.stream().filter(u ->
-                                u.getPuntajeTotal() > puntaje).limit(4)
-                                .collect(Collectors.toList());
-                        if (!usuarios.isEmpty()){
-                            StringBuilder mensaje = new StringBuilder("Has sido superado por:");
+                        try {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                String id = FirebaseAuth.getInstance().getUid();
 
-                            for (Usuario usuarioItem : usuarios){
-                                int puntajeUsuarioItem = usuarioItem.getPuntajeTotal();
-                                mensaje.append(String.format("\n\t%s con %s puntos", usuarioItem.nombre, puntajeUsuarioItem));
+                                int puntaje = queryDocumentSnapshots.getDocuments().stream()
+                                        .filter(d -> d.getId().equals(id))
+                                        .findFirst().get().toObject(Usuario.class)
+                                        .getPuntajeTotal();
+
+                                List<Usuario> usuarios = queryDocumentSnapshots.toObjects(Usuario.class);
+                                usuarios = usuarios.stream().filter(u ->
+                                        u.getPuntajeTotal() > puntaje).limit(4)
+                                        .collect(Collectors.toList());
+                                if (!usuarios.isEmpty()) {
+                                    StringBuilder mensaje = new StringBuilder("Has sido superado por:");
+
+                                    for (Usuario usuarioItem : usuarios) {
+                                        int puntajeUsuarioItem = usuarioItem.getPuntajeTotal();
+                                        mensaje.append(String.format("\n\t%s con %s puntos", usuarioItem.nombre, puntajeUsuarioItem));
+                                    }
+
+                                    DataModel dataModel = new DataModel();
+                                    dataModel.setTypeFeed(TypeFeed.PUNTAJE);
+                                    dataModel.setImagen(R.drawable.ic_podium);
+                                    dataModel.setTitle("Sigue compitiendo");
+                                    dataModel.setContent(mensaje.toString());
+
+                                    feeds.add(dataModel);
+                                    feedsLiveData.setValue(feeds);
+                                }
                             }
-
-                            DataModel dataModel = new DataModel();
-                            dataModel.setTypeFeed(TypeFeed.PUNTAJE);
-                            dataModel.setImagen(R.drawable.ic_podium);
-                            dataModel.setTitle("Sigue compitiendo");
-                            dataModel.setContent(mensaje.toString());
-
-                            feeds.add(dataModel);
-                            feedsLiveData.setValue(feeds);
+                        }catch(NullPointerException ex){
+                            Log.d(TAG, ex.getMessage(), ex);
                         }
-
                     });
         } catch (Exception e) {
             e.printStackTrace();

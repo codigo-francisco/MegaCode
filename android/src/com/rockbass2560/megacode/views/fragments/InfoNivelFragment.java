@@ -83,11 +83,11 @@ public class InfoNivelFragment extends DialogFragment {
             }
 
             if (nivel.para > 0){
-                mensaje.append(convertTemplateToString(nivel.comandos, "Para"));
+                mensaje.append(convertTemplateToString(nivel.para, "Para"));
             }
 
             if (nivel.mientras > 0){
-                mensaje.append(convertTemplateToString(nivel.comandos, "Mientras"));
+                mensaje.append(convertTemplateToString(nivel.mientras, "Mientras"));
             }
 
             TextView mensajeInformacion = view.findViewById(R.id.popup_nivel_informacion);

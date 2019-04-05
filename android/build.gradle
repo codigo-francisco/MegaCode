@@ -1,3 +1,5 @@
+import com.android.build.OutputFile
+
 android {
     buildToolsVersion '28.0.3'
     compileSdkVersion 28
@@ -20,11 +22,11 @@ android {
         minSdkVersion 24
         targetSdkVersion 28
         applicationId "com.rockbass2560.megacode"
-        versionCode="1"
-        versionName="1.0"
+        versionCode 2
+        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    buildTypes{
+    /*buildTypes{
         release{
             debuggable false
             minifyEnabled true
@@ -37,7 +39,7 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
         }
-    }
+    }*/
     productFlavors {
     }
     compileOptions {
@@ -48,8 +50,19 @@ android {
         abi {
             enable true
             reset()
-            include 'armeabi-v7a', 'x86', 'x86_64', 'arm64-v8a', 'armeabi'
+            include 'armeabi-v7a', 'x86', 'x86_64', 'arm64-v8a'
             universalApk false
+        }
+    }
+    // Map for the version code that gives each ABI a value.
+    def abiCodes = ['x86': 1, 'x86_64': 2, 'armeabi-v7a': 3, 'arm64-v8a': 4]
+    // APKs for the same app that all have the same version information.
+    android.applicationVariants.all { variant ->
+        // Assigns a different version code for each output APK.
+        variant.outputs.each {
+            output ->
+                def abiName = output.getFilter(OutputFile.ABI)
+                output.versionCodeOverride = abiCodes.get(abiName, 0) * 1000000 + variant.versionCode
         }
     }
     aaptOptions{

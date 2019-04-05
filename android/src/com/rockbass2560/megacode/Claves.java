@@ -16,6 +16,7 @@ public final class Claves {
     //Contador
     public final static int RETRASO_CONTADOR_TIEMPO_SESION = 1000;
     public final static int INTERMITENCIA_CONTADOR_TIEMPO_SESION = 1000;
+    public final static int REPETICION_INTERACCION_USUARIO = 10*1000;
 
     //Clasificador
     public final static int TAMAÑO_BUFFER_FOTO = 691200;

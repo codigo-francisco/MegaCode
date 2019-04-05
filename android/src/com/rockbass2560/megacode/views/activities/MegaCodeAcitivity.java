@@ -223,7 +223,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 	private void delayedIdle(){
 		_idleHandler.removeCallbacks(_idleRunnable);
-		_idleHandler.postDelayed(_idleRunnable, 10*1000);
+		_idleHandler.postDelayed(_idleRunnable, Claves.REPETICION_INTERACCION_USUARIO);
 	}
 
 	@SuppressLint({"SetJavaScriptEnabled"})

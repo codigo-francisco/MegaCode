@@ -17,14 +17,27 @@ import com.x5.template.providers.AndroidTemplates;
 import org.opencv.android.OpenCVLoader;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ApplicationBase extends Application {
 
     private final static String TAG = ApplicationBase.class.getName();
 
+    private Timer duracionApp;
+    private long duracion;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        duracionApp = new Timer("duracionApp");
+        duracionApp.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                duracion++;
+            }
+        }, 0, 1000);
 
         /*if (LeakCanary.isInAnalyzerProcess(this)){
             return;

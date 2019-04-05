@@ -22,6 +22,7 @@ public class Nivel implements Parcelable {
     public float zoomInicial;
     public int coordenadaX;
     public int coordenadaY;
+    public int orden;
 
     public Nivel() {
 
@@ -92,6 +93,7 @@ public class Nivel implements Parcelable {
         dest.writeInt(this.tipoNivel);
         dest.writeString(this.cadenaOptima);
         dest.writeFloat(this.zoomInicial);
+        dest.writeInt(this.orden);
     }
 
     protected Nivel(Parcel in) {
@@ -107,6 +109,7 @@ public class Nivel implements Parcelable {
         this.tipoNivel = in.readInt();
         this.cadenaOptima = in.readString();
         this.zoomInicial = in.readFloat();
+        this.orden = in.readInt();
     }
 
     public static final Parcelable.Creator<Nivel> CREATOR = new Parcelable.Creator<Nivel>() {

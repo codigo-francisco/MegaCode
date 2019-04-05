@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,6 +84,9 @@ public class SkillTreeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_skill_tree, container, false);
         nivelViewModel = ViewModelProviders.of(this).get(NivelViewModel.class);
 
+        SwipeRefreshLayout refreshLayout = view.findViewById(R.id.skill_tree_refresh_layout);
+        refreshLayout.setOnRefreshListener(() -> nivelViewModel.listarNiveles());
+
         RecyclerView recyclerView = view.findViewById(R.id.skill_tree_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -90,7 +94,10 @@ public class SkillTreeFragment extends Fragment {
         adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager());
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
-        nivelViewModel.getNiveles().observe(this, lists -> adapterRecyclerSkillTree.setData(lists));
+        nivelViewModel.getNiveles().observe(this, lists -> {
+            adapterRecyclerSkillTree.setData(lists);
+            refreshLayout.setRefreshing(false);
+        });
 
         nivelViewModel.listarNiveles();
 

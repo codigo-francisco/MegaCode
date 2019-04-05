@@ -6,12 +6,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_skilltree">
 
-
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/skill_tree_recyclerview"
-        android:scrollbars="vertical"
-        />
+        android:id="@+id/skill_tree_refresh_layout">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/skill_tree_recyclerview"
+            android:scrollbars="vertical"
+            />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </FrameLayout>

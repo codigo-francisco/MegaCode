@@ -51,7 +51,7 @@ Blockly.Blocks['enemigo_defrente'] = {
     this.appendDummyInput()
         .appendField("enemigo de frente");
     this.setOutput(true, "Boolean");
-    this.setColour(230);
+    this.setColour(105);
  this.setTooltip("");
  this.setHelpUrl("");
   }
@@ -62,7 +62,7 @@ Blockly.Blocks['fin_deljuego'] = {
     this.appendDummyInput()
         .appendField("juego terminado");
     this.setOutput(true, "Boolean");
-    this.setColour(230);
+    this.setColour(105);
  this.setTooltip("");
  this.setHelpUrl("");
   }
@@ -73,7 +73,7 @@ Blockly.Blocks['nofin_deljuego'] = {
     this.appendDummyInput()
         .appendField("juego no terminado");
     this.setOutput(true, "Boolean");
-    this.setColour(230);
+    this.setColour(105);
  this.setTooltip("");
  this.setHelpUrl("");
   }

@@ -95,6 +95,8 @@ function initApi(interpreter, scope) {
 }
 
 var myInterpreter;
+var lastId;
+var cerrarWebView = false;
 
 function doStep(){
     do {
@@ -102,15 +104,18 @@ function doStep(){
           var hasMoreCode = myInterpreter.step();
           if (megacode.respawn()){
             break;
+          }else if (megacode.reachGoal()){
+            clearTimeout(lastId);
+            break;
           }
-          if (hasMoreCode && highlightPause){
-            window.setTimeout(doStep, 1);
+          if (hasMoreCode && highlightPause && !cerrarWebView){
+            lastId = window.setTimeout(doStep, 10);
           } else if (!hasMoreCode){
              megacode.finalizarNivel();
           }
         } finally {
         }
-     } while (hasMoreCode && !highlightPause);
+     } while (hasMoreCode && !highlightPause && !cerrarWebView);
 }
 
 function getCodeBlockly(){
@@ -124,4 +129,12 @@ function runBlockly(){
     myInterpreter = new Interpreter(code, initApi);
 
     doStep();
+}
+
+function detenerEjecucion(){
+    cerrarWebView = true;
+    if (lastId){
+        clearTimeout(lastId);
+        megacode.timerStoped();
+    }
 }

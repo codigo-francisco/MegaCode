@@ -1,0 +1,20 @@
+<xml id="toolbox" style="display: none;">
+    <category name="Comandos" colour="#843c0f">
+        <block type="caminarderecha"></block>
+        <block type="caminarizquierda"></block>
+        <block type="saltar"></block>
+        <block type="disparar"></block>
+    </category>
+    <category name="Logico" colour="#013d9e">
+        <block type="controls_if"></block>
+        <block type="enemigo_defrente"></block>
+    </category>
+    <category name="Ciclos" colour="#5CA65C">
+        <block type="controls_repeat_ext"></block>
+    </category>
+    <category name="Numeros" colour="#013d9e">
+        <block type="math_number">
+            <field name="NUM">1</field>
+        </block>
+    </category>
+</xml>

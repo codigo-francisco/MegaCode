@@ -18,6 +18,7 @@ public class WebViewJavaScriptInterface {
     private GameFragment libgdxFragment;
     private List<Character> ultimoCodigoGenerado;
     private CustomCallback<String> callback;
+    private CustomCallback<Void> callbackTimerStoped;
 
     public WebViewJavaScriptInterface(){
         ultimoCodigoGenerado = new ArrayList<>();
@@ -97,6 +98,18 @@ public class WebViewJavaScriptInterface {
         libgdxFragment.getGamePlayScreen().ejecucionCompletada();
     }
 
+    @JavascriptInterface
+    public void timerStoped(){
+        if (callbackTimerStoped!=null){
+            callbackTimerStoped.processResponse(null);
+        }
+    }
+
+    @JavascriptInterface
+    public boolean reachGoal(){
+        return libgdxFragment.getGamePlayScreen().level.victory;
+    }
+
     private boolean ejecutarComando(Comando comando){
         agregarCodigo(comando);
 
@@ -128,6 +141,10 @@ public class WebViewJavaScriptInterface {
 
     public String getUltimoCodigoGenerado(){
         return TextUtils.join("", ultimoCodigoGenerado);
+    }
+
+    public void addTimerStoped(CustomCallback<Void> callback){
+        callbackTimerStoped = callback;
     }
 
 }

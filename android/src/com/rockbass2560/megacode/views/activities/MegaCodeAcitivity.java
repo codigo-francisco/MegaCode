@@ -42,6 +42,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Range;
 import android.util.Size;
@@ -51,8 +52,11 @@ import android.view.MenuItem;
 import android.view.Surface;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewStub;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -127,6 +131,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     private boolean reboot=false;
     private FloatingActionButton megacodePlay;
     private boolean canBack = true;
+    private LinearLayout linearLayout;
 
     public MegaCodeAcitivity(){
     	super(R.layout.activity_main);
@@ -143,8 +148,9 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 	@Override
 	public void onBackPressed() {
-    	if (canBack)
-    		super.onBackPressed();
+    	if (canBack) {
+			super.onBackPressed();
+		}
 	}
 
 	@Override
@@ -253,6 +259,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 		mediaPlayerManager.setBackActivity(true);
 
+
 		Intent intent = getIntent();
 		if (intent!=null){
 			nivelActual = intent.getParcelableExtra("nivel");
@@ -286,7 +293,9 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
             }
         };
 
-		webView = findViewById(R.id.megacode_activity_webview);
+		//webView = findViewById(R.id.megacode_activity_webview);
+        webView = findViewById(R.id.megacode_activity_webview);
+
 		webView.setWebChromeClient(new CustomWebChromeClient());
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
@@ -323,12 +332,12 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 	private void reiniciarControles(){
 		etapa = 1;
 		reboot = true;
-		canBack = true;
 		//Cambiar icono
 		runOnUiThread(()->{
 			//megacodePlay.setVisibility(View.VISIBLE);
 			megacodePlay.setEnabled(true);
 			megacodePlay.setImageResource(R.drawable.ic_reload);
+			canBack = true;
 		});
 	}
 
@@ -435,10 +444,16 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
         if (cameraManagerIA != null)
             cameraManagerIA.cerrarTodo();
+
+        //Detener ejecución del webview
     }
 
 	@Override
 	protected void onDestroy() {
+		/*linearLayout.removeView(webView);
+		webView.removeAllViews();
+		webView.destroy();*/
+
 		super.onDestroy();
 	}
 

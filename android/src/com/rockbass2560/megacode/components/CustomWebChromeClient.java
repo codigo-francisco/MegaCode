@@ -6,6 +6,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 public class CustomWebChromeClient extends WebChromeClient {
+
     @Override
     public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
         new JsDialogHelper(result, JsDialogHelper.ALERT, null, message, url)

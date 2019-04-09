@@ -1,8 +1,7 @@
 <xml id="toolbox" style="display:none;">
-    <category name="Acciones">
+    <category name="Comandos" colour="#843c0f">
         <block type="caminarderecha"></block>
         <block type="caminarizquierda"></block>
         <block type="saltar"></block>
-        <block type="disparar"></block>
     </category>
 </xml>

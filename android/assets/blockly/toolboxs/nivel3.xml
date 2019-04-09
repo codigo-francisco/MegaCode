@@ -1,9 +1,9 @@
 <xml id="toolbox" style="display: none;">
-    <category name="Comandos">
+    <category name="Comandos" colour="#843c0f">
         <block type="caminarderecha"></block>
         <block type="disparar"></block>
     </category>
-    <category name="Logico">
+    <category name="Logico" colour="#0e6aa3">
         <block type="controls_if"></block>
         <block type="enemigo_defrente"></block>
     </category>

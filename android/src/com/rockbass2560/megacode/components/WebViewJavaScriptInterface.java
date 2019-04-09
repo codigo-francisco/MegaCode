@@ -19,9 +19,12 @@ public class WebViewJavaScriptInterface {
     private List<Character> ultimoCodigoGenerado;
     private CustomCallback<String> callback;
 
-    public WebViewJavaScriptInterface(GameFragment libgdxFragment){
-        this.libgdxFragment = libgdxFragment;
+    public WebViewJavaScriptInterface(){
         ultimoCodigoGenerado = new ArrayList<>();
+    }
+
+    public void changeLibgdxFragment(GameFragment libgdxFragment){
+        this.libgdxFragment = libgdxFragment;
     }
 
     public void generarCodigoBlockly(CustomCallback<String> callback){

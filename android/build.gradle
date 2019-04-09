@@ -22,8 +22,8 @@ android {
         minSdkVersion 24
         targetSdkVersion 28
         applicationId "com.rockbass2560.megacode"
-        versionCode 2
-        versionName "1.0"
+        versionCode 4
+        versionName "0.0.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     /*buildTypes{

@@ -4,8 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.rockbass2560.megacode.R;
+import com.rockbass2560.megacode.models.InfoNivel;
 
-public class Nivel implements Parcelable {
+public class Nivel implements Parcelable, Comparable<Nivel> {
     public final static int TIPO_COMANDOS = 1, TIPO_SI = 2, TIPO_PARA = 3, TIPO_MIENTRAS = 4;
 
     public int id;
@@ -61,7 +62,7 @@ public class Nivel implements Parcelable {
                 color = R.color.md_blue_700;
                 break;
             case 3:
-                color = R.color.md_yellow_700;
+                color = R.color.md_green_500;
                 break;
             case 4:
                 color = R.color.md_purple_600;
@@ -72,6 +73,14 @@ public class Nivel implements Parcelable {
         }
 
         return color;
+    }
+
+    public InfoNivel buildInfoNivel(){
+        InfoNivel infoNivel = new InfoNivel();
+        infoNivel.rutaNivel = ruta;
+        infoNivel.zoomInicial = zoomInicial;
+
+        return infoNivel;
     }
 
     @Override
@@ -123,4 +132,9 @@ public class Nivel implements Parcelable {
             return new Nivel[size];
         }
     };
+
+    @Override
+    public int compareTo(Nivel o) {
+        return this.orden - o.orden;
+    }
 }

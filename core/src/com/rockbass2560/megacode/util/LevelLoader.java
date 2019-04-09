@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.rockbass2560.megacode.GameplayScreen;
 import com.rockbass2560.megacode.Level;
 import com.rockbass2560.megacode.entities.Enemy;
 import com.rockbass2560.megacode.entities.ExitPortal;
@@ -75,7 +76,8 @@ public class LevelLoader {
             } else if (item.get(Constants.LEVEL_IMAGENAME_KEY).equals(Constants.STANDING_RIGHT)) {
                 final Vector2 gigaGalPosition = imagePosition.add(Constants.GIGAGAL_EYE_POSITION);
                 Gdx.app.log(TAG, "Loaded MegaCode at " + gigaGalPosition);
-                level.setMegaCode(new MegaCode(gigaGalPosition, level));
+                MegaCode megaCode = new MegaCode(gigaGalPosition, level);
+                level.setMegaCode(megaCode);
             } else if (item.get(Constants.LEVEL_IMAGENAME_KEY).equals(Constants.EXIT_PORTAL_SPRITE_1)) {
                 final Vector2 exitPortalPosition = imagePosition.add(Constants.EXIT_PORTAL_CENTER);
                 Gdx.app.log(TAG, "Loaded the exit portal at " + exitPortalPosition);

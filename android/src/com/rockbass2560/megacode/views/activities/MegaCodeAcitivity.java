@@ -126,6 +126,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     private int etapa;
     private boolean reboot=false;
     private FloatingActionButton megacodePlay;
+    private boolean canBack = true;
 
     public MegaCodeAcitivity(){
     	super(R.layout.activity_main);
@@ -140,7 +141,13 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 		}
 	}
 
-    @Override
+	@Override
+	public void onBackPressed() {
+    	if (canBack)
+    		super.onBackPressed();
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
         //menu.add(Menu.NONE, idRecargarBlockly, Menu.NONE, "Recargar Blockly");
@@ -160,6 +167,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
         	//webView.reload();
 			webView.loadUrl("about:blank");
             webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
+			libgdxFragment.getGamePlayScreen().level.reposicionarPersonaje();
 		}else if (idItem == idMostrarCodigo){
 			javaScriptInterface.generarCodigoBlockly(new CustomCallback<String>() {
 				@Override
@@ -296,23 +304,32 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 				reboot = false;
 			}else{
 				if (!reboot) { //En caso de doble click
+					canBack = false;
 					etapa = 2;
 					sesionActual.intentos++;
 					megacodePlay.setEnabled(false);
+					//megacodePlay.setVisibility(View.GONE);
 					webView.loadUrl("javascript:runBlockly()");
 				}
 			}
         });
 
-        InfoNivel infoNivel = new InfoNivel();
-        infoNivel.rutaNivel = nivelActual.ruta;
-        infoNivel.zoomInicial = nivelActual.zoomInicial;
+        InfoNivel infoNivel = nivelActual.buildInfoNivel();
 
         cargarJuego(infoNivel);
         configurarMusica(nivelActual);
+	}
 
-		javaScriptInterface = new WebViewJavaScriptInterface(libgdxFragment);
-		webView.addJavascriptInterface(javaScriptInterface, "megacode");
+	private void reiniciarControles(){
+		etapa = 1;
+		reboot = true;
+		canBack = true;
+		//Cambiar icono
+		runOnUiThread(()->{
+			//megacodePlay.setVisibility(View.VISIBLE);
+			megacodePlay.setEnabled(true);
+			megacodePlay.setImageResource(R.drawable.ic_reload);
+		});
 	}
 
 	private void configurarMusica(Nivel nivel){
@@ -323,28 +340,35 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 		}else if (nivel.tipoNivel == Nivel.TIPO_PARA){
 			mediaPlayerManager.cambiarCancion(MediaPlayerManager.MUSICA_PARA);
 		}else if (nivel.tipoNivel == Nivel.TIPO_MIENTRAS){
-			mediaPlayerManager.cambiarCancion(MediaPlayerManager.MUSICA_SI);
+			mediaPlayerManager.cambiarCancion(MediaPlayerManager.MUSICA_MIENTRAS);
 		}
 	}
 
 	private void cargarJuego(InfoNivel infoNivel){
 		// Create libgdx fragment
 		libgdxFragment = new GameFragment(infoNivel);
+		if (javaScriptInterface==null) {
+			javaScriptInterface = new WebViewJavaScriptInterface();
+			webView.addJavascriptInterface(javaScriptInterface, Claves.JAVASCRIPT_INTERFACE);
+		}
+		javaScriptInterface.changeLibgdxFragment(libgdxFragment);
 
 		libgdxFragment.getGame().addLoadGameListener(() -> {
 			//Se crea una sesión nueva
-			sesionActual = new Sesion();
+			if (sesionActual == null)
+				sesionActual = new Sesion();
+			else{
+				sesionActual.intentos++;
+			}
 			//Se inicializa el contador de tiempo
 			inicializarTiempo();
 
 			libgdxFragment.getGamePlayScreen().addEjecucionNivelCompletado(()->{
-				etapa = 1;
-				reboot = true;
-				//Cambiar icono
-				runOnUiThread(()->{
-					megacodePlay.setEnabled(true);
-					megacodePlay.setImageResource(R.drawable.ic_reload);
-				});
+				reiniciarControles();
+			});
+
+			libgdxFragment.getGamePlayScreen().addPersonajeMurio(()->{
+				reiniciarControles();
 			});
 
 			libgdxFragment.getGamePlayScreen().addNivelCompletadoListener(screen -> {
@@ -354,6 +378,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 				String cadenaGenerada = javaScriptInterface.getUltimoCodigoGenerado();
 				int distance = StringHelper.levenshteinDistance(cadenaOptima, cadenaGenerada);
 				int puntaje = Math.round(cadenaOptima.length() / (float)(cadenaOptima.length() + distance)*100);
+
 				NivelTerminado nivelTerminado = new NivelTerminado();
 				nivelTerminado.nivelId = nivelActual.id;
 				nivelTerminado.puntaje = puntaje;
@@ -412,7 +437,12 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
             cameraManagerIA.cerrarTodo();
     }
 
-    @Override
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+	@Override
 	public void exit() {
 		Log.d(TAG, "exit");
 	}

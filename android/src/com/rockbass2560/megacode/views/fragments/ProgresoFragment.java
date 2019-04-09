@@ -33,10 +33,10 @@ public class ProgresoFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Claves.ABRIR_NIVEL_MEGACODE){
+        /*if (requestCode == Claves.ABRIR_NIVEL_MEGACODE){
             if (resultCode == Activity.RESULT_OK)
                 tabAdapter.getFragment(0).onActivityResult(requestCode, resultCode, data);
-        }
+        }*/
     }
 
     public ProgresoFragment() {

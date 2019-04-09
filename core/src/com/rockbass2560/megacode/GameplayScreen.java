@@ -184,11 +184,17 @@ public class GameplayScreen extends ScreenAdapter {
         nivelCompletadoListener = listener;
     }
 
+    public void addPersonajeMurio(MegaCode.PersonajeMurioListener personajeMurioListener) {
+        if (level != null && level.megaCode !=null) {
+            level.megaCode.addPersonajeMurioListener(personajeMurioListener);
+        }
+    }
+
     public interface EjecucionNivelCompletaListener{
         void ejecucionTerminada();
     }
 
-    public interface NivelCompletadoListener{
+    public interface NivelCompletadoListener {
         void nivelTerminado(GameplayScreen screen);
     }
 }

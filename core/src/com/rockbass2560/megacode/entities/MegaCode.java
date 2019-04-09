@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.rockbass2560.megacode.GameplayScreen;
 import com.rockbass2560.megacode.Level;
 import com.rockbass2560.megacode.util.Assets;
 import com.rockbass2560.megacode.util.Constants;
@@ -40,6 +41,15 @@ public class MegaCode {
     private Sound jumpSound;
     private long soundId;
     private Sound shootSound;
+    private PersonajeMurioListener personajeMurioListener;
+
+    public interface PersonajeMurioListener {
+        void personajeMurio();
+    }
+
+    public void addPersonajeMurioListener(PersonajeMurioListener personajeMurioListener){
+        this.personajeMurioListener = personajeMurioListener;
+    }
 
     public MegaCode(Vector2 spawnLocation, Level level) {
         if (jumpSound == null){
@@ -90,6 +100,8 @@ public class MegaCode {
         position.mulAdd(velocity, delta);
 
         if (position.y < Constants.KILL_PLANE) {
+            if (personajeMurioListener!=null)
+                personajeMurioListener.personajeMurio();
             justDied = true;
             resetButtons();
             respawn();
@@ -310,7 +322,5 @@ public class MegaCode {
         }
 
         Utils.drawTextureRegion(batch, region, position, Constants.GIGAGAL_EYE_POSITION);
-
     }
-
 }

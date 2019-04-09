@@ -10,6 +10,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.rockbass2560.megacode.R;
 import com.rockbass2560.megacode.components.MediaPlayerManager;
@@ -70,9 +71,6 @@ public class LoginActivity extends FragmentActivity {
         });
 
         loginButton.setOnClickListener(view -> {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
-            loginButton.setEnabled(false);
-
             TextInputEditText emailEditText = findViewById(R.id.activity_login_text_email);
             TextInputEditText contrasenaEditText = findViewById(R.id.activity_login_text_contrasena);
 
@@ -81,7 +79,13 @@ public class LoginActivity extends FragmentActivity {
 
             ViewHelper.closeKeyboard(this, view.getWindowToken());
 
-            loginViewModel.loginUsuario(email, contrasena);
+            if (!email.isEmpty() && !contrasena.isEmpty()) {
+                progressBar.setVisibility(ProgressBar.VISIBLE);
+                loginButton.setEnabled(false);
+                loginViewModel.loginUsuario(email, contrasena);
+            }else{
+                Toast.makeText(this, "Necesita ingresa un usuario y contraseña", Toast.LENGTH_LONG).show();
+            }
         });
     }
 }

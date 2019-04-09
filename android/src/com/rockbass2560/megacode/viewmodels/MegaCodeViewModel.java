@@ -1,12 +1,14 @@
 package com.rockbass2560.megacode.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.rockbass2560.megacode.entities.MegaCode;
 import com.rockbass2560.megacode.models.database.Emocion;
 import com.rockbass2560.megacode.models.database.Nivel;
 import com.rockbass2560.megacode.models.database.NivelTerminado;
@@ -22,6 +24,8 @@ import androidx.lifecycle.AndroidViewModel;
 
 public class MegaCodeViewModel extends AndroidViewModel {
 
+    private final static String TAG = MegaCodeViewModel.class.getName();
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -34,27 +38,33 @@ public class MegaCodeViewModel extends AndroidViewModel {
         //Buscar si existe el nivelTerminado
         nivelesTerminados.get()
                 .addOnSuccessListener(nivelesTerminadosQuery -> {
-                    List<NivelTerminado> nivelTerminadoList = nivelesTerminadosQuery
-                            .getDocuments()
-                            .stream()
-                            .map(doc -> {
-                                NivelTerminado nivelTerminadoLocal = doc.toObject(NivelTerminado.class);
-                                nivelTerminadoLocal.id = doc.getId();
-                                return nivelTerminadoLocal;
-                            })
-                            .filter(nt -> nt.nivelId == nivelTerminado.nivelId).collect(Collectors.toList());
+                    try {
+                        List<NivelTerminado> nivelTerminadoList = nivelesTerminadosQuery
+                                .getDocuments()
+                                .stream()
+                                .map(doc -> {
+                                    NivelTerminado nivelTerminadoLocal = doc.toObject(NivelTerminado.class);
+                                    nivelTerminadoLocal.id = doc.getId();
+                                    return nivelTerminadoLocal;
+                                })
+                                .filter(nt -> nt.nivelId == nivelTerminado.nivelId).collect(Collectors.toList());
 
-                    if (nivelTerminadoList.size() > 0){
-                        NivelTerminado nivelTerminadoRemote = nivelTerminadoList.get(0);
-                        nivelTerminadoRemote.terminado = nivelTerminado.terminado;
-                        nivelTerminadoRemote.puntaje = nivelTerminado.puntaje;
-                        nivelesTerminados.document(nivelTerminadoRemote.id)
-                                .set(nivelTerminadoRemote);
-                    }else{
-                        nivelesTerminados.add(nivelTerminado)
-                            .addOnSuccessListener(docReference -> {
-                                actualizarPuntajes(puntajes);
-                            });
+                        if (nivelTerminadoList.size() > 0) {
+                            NivelTerminado nivelTerminadoRemote = nivelTerminadoList.get(0);
+                            if (nivelTerminado.puntaje > nivelTerminadoRemote.puntaje) {
+                                nivelTerminadoRemote.terminado = nivelTerminado.terminado;
+                                nivelTerminadoRemote.puntaje = nivelTerminado.puntaje;
+                                nivelesTerminados.document(nivelTerminadoRemote.id)
+                                        .set(nivelTerminadoRemote);
+                            }
+                        } else {
+                            nivelesTerminados.add(nivelTerminado)
+                                    .addOnSuccessListener(docReference -> {
+                                        actualizarPuntajes(puntajes);
+                                    });
+                        }
+                    }catch (Exception ex){
+                        Log.d(TAG, ex.getMessage(), ex);
                     }
                 });
     }

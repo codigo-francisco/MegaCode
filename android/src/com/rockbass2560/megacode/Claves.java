@@ -27,4 +27,6 @@ public final class Claves {
 
     public final static String EMOTION = "EMOTION";
     public static final String MUSIC_VOLUME = "MUSIC_VOLUME";
+
+    public final static String JAVASCRIPT_INTERFACE = "megacode";
 }

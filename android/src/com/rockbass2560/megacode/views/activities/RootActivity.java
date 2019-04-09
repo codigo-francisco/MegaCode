@@ -207,7 +207,7 @@ public class RootActivity extends ActivityToolbarBase implements NavigationView.
             }
         } else if (requestCode==Claves.ABRIR_NIVEL_MEGACODE) {
             if (resultCode == Activity.RESULT_OK){
-                getSupportFragmentManager().findFragmentByTag(tags.get(R.id.progreso)).onActivityResult(requestCode, resultCode, data);
+                selectFragment(R.id.progreso);
             }
         }
     }

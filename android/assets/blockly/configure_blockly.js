@@ -5,14 +5,11 @@ var workspace = Blockly.inject(blocklyDiv,
     {
         toolbox: document.getElementById('toolbox'),
         zoom: {
-                controls: true,
+                controls: false,
                 wheel: true,
-                startScale: 1.0,
-                maxScale: 2,
-                minScale: .2,
-                scaleSpeed: .1
+                startScale: 1.0
         },
-        horizontalLayout: true
+        horizontalLayout: false
     }
 );
 var onresize = function(e) {

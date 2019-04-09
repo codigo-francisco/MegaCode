@@ -1,6 +1,8 @@
 package com.rockbass2560.megacode;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.rockbass2560.megacode.models.InfoNivel;
 
 public class MegaCodeGame extends Game {
@@ -27,5 +29,11 @@ public class MegaCodeGame extends Game {
 
     public interface LoadGameListener{
         void loadedGame();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        screen.dispose();
     }
 }

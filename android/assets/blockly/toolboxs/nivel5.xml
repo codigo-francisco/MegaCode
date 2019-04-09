@@ -1,15 +1,11 @@
 <xml id="toolbox" style="display: none;">
     <category name="Comandos" colour="#843c0f">
         <block type="caminarderecha"></block>
+		<block type="caminarizquierda"></block>
         <block type="disparar"></block>
-		<block type="saltar"></block>
     </category>
-    <category name="Ciclos" colour="#a50993">
-        <block type="controls_whileUntil">
-            <field name="MODE">WHILE</field>
-        </block>
-    </category>
-    <category name="Logico" colour="#0e6aa3">
+    <category name="Logico" colour="#013d9e">
+        <block type="controls_if"></block>
         <block type="enemigo_defrente"></block>
     </category>
 </xml>

@@ -4,7 +4,7 @@ Blockly.Blocks['caminarderecha'] = {
         .appendField("Caminar Derecha");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(5);
  this.setTooltip("Hace que el personaje avance hacia la derecha");
  this.setHelpUrl("");
   }
@@ -16,7 +16,7 @@ Blockly.Blocks['caminarizquierda'] = {
         .appendField("Caminar Izquierda");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(5);
  this.setTooltip("Comando que hace que el personaje camine hacia la izquierda");
  this.setHelpUrl("");
   }
@@ -28,7 +28,7 @@ Blockly.Blocks['saltar'] = {
         .appendField("Saltar");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(5);
  this.setTooltip("Comando que hace que el personaje realice un salto");
  this.setHelpUrl("");
   }
@@ -40,7 +40,7 @@ Blockly.Blocks['disparar'] = {
         .appendField("Disparar");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(5);
  this.setTooltip("");
  this.setHelpUrl("");
   }
@@ -51,7 +51,7 @@ Blockly.Blocks['enemigo_defrente'] = {
     this.appendDummyInput()
         .appendField("enemigo de frente");
     this.setOutput(true, "Boolean");
-    this.setColour(105);
+    this.setColour(210);
  this.setTooltip("");
  this.setHelpUrl("");
   }
@@ -62,7 +62,7 @@ Blockly.Blocks['fin_deljuego'] = {
     this.appendDummyInput()
         .appendField("juego terminado");
     this.setOutput(true, "Boolean");
-    this.setColour(105);
+    this.setColour(210);
  this.setTooltip("");
  this.setHelpUrl("");
   }
@@ -73,7 +73,7 @@ Blockly.Blocks['nofin_deljuego'] = {
     this.appendDummyInput()
         .appendField("juego no terminado");
     this.setOutput(true, "Boolean");
-    this.setColour(105);
+    this.setColour(225);
  this.setTooltip("");
  this.setHelpUrl("");
   }

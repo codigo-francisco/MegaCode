@@ -6,10 +6,14 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.FirebaseException;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.model.DatabaseId;
+import com.google.firebase.firestore.model.DocumentKey;
+import com.google.firebase.firestore.model.value.ReferenceValue;
 import com.rockbass2560.megacode.Claves;
 import com.rockbass2560.megacode.models.Usuario;
 import com.rockbass2560.megacode.models.database.Conexion;
@@ -47,6 +51,7 @@ public class LoginViewModel extends AndroidViewModel {
             .addOnSuccessListener(authResult -> {
                 FirebaseUser user = authResult.getUser();
                 usuarioMutableLiveData.setValue(user);
+                registrarNuevaConexion();
             }).addOnFailureListener(failure -> {
                 Log.e(TAG, failure.getMessage(), failure);
                 colocarError(failure);
@@ -54,9 +59,12 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void registrarNuevaConexion(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String appId = db.getApp().getOptions().getProjectId();
+        String uid = FirebaseAuth.getInstance().getUid();
         Conexion conexion = new Conexion();
-        conexion.entrada = Calendar.getInstance().getTime().getTime();
-        conexion.usuarioId = FirebaseAuth.getInstance().getUid();
+        conexion.entrada = Timestamp.now();
+        conexion.usuarioId = db.document("usuarios/"+uid);
         FirebaseFirestore.getInstance().collection("Conexiones")
                 .add(conexion)
                 .addOnSuccessListener(documentReference -> {

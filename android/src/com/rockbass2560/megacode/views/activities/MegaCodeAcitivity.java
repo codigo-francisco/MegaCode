@@ -200,8 +200,29 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 	private void inicializarCamara(){
     	if (checkSelfPermission(Manifest.permission.CAMERA)==PackageManager.PERMISSION_GRANTED) {
-			if (cameraManagerIA == null)
+			if (cameraManagerIA == null) {
+				handler = new Handler.Callback(){
+					@Override
+					public boolean handleMessage(Message msg) {
+						boolean result = false;
+
+						if (msg.what == Claves.EMOTION_FOUND){
+							Bundle bundle = msg.getData();
+							String emotion = bundle.getString(Claves.EMOTION);
+							Emocion emocion = new Emocion();
+							emocion.etapa = etapa;
+							emocion.label = emotion;
+							emocion.momento = Timestamp.now();
+							sesionActual.emociones.add(emocion);
+
+							result = true;
+						}
+
+						return result;
+					}
+				};
 				cameraManagerIA = new CameraManagerIA(this, handler);
+			}
 			if (!cameraManagerIA.isRunning)
 				cameraManagerIA.iniciarCamara();
 		}
@@ -271,27 +292,6 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 		}
 
 		megaCodeViewModel = ViewModelProviders.of(this).get(MegaCodeViewModel.class);
-
-		handler = new Handler.Callback(){
-            @Override
-            public boolean handleMessage(Message msg) {
-            	boolean result = false;
-
-                if (msg.what == Claves.EMOTION_FOUND){
-                    Bundle bundle = msg.getData();
-                    String emotion = bundle.getString(Claves.EMOTION);
-                    Emocion emocion = new Emocion();
-                    emocion.etapa = etapa;
-                    emocion.label = emotion;
-                    emocion.momento = Timestamp.now();
-                    sesionActual.emociones.add(emocion);
-
-                    result = true;
-                }
-
-                return result;
-            }
-        };
 
 		//webView = findViewById(R.id.megacode_activity_webview);
         webView = findViewById(R.id.megacode_activity_webview);

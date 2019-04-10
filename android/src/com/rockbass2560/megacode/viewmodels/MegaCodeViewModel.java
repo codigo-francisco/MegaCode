@@ -98,12 +98,12 @@ public class MegaCodeViewModel extends AndroidViewModel {
         //Conseguir ultima conexión, para agregarsela a la sesion
 
         CollectionReference sesionesReference = db.collection("Usuarios/"+user.getUid()+"/Sesiones");
-        sesionesReference.add(sesionActual)
-                .addOnSuccessListener(documentReference -> {
+        sesionesReference.add(sesionActual);
+                /*.addOnSuccessListener(documentReference -> {
                     CollectionReference emocionesCollection = db.collection(documentReference.getPath()+"/emociones");
                     for (Emocion emocion : sesionActual.emociones){
                         emocionesCollection.add(emocion);
                     }
-                });
+                });*/
     }
 }

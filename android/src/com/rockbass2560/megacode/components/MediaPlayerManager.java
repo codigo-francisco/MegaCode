@@ -14,7 +14,7 @@ public class MediaPlayerManager {
     public final static int MUSICA_MIENTRAS = R.raw.ipsi;
     public final static int ENTRADA = R.raw.highlander;
 
-    private final static float MAX_VOLUME = 0.7f;
+    private final static float MAX_VOLUME = 0.4f;
     private final static float MIN_VOLUME = 0;
 
     public static MediaPlayerManager getInstance(Context context){

@@ -3,6 +3,7 @@ package com.rockbass2560.megacode.views.activities;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -132,6 +133,8 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     private FloatingActionButton megacodePlay;
     private boolean canBack = true;
     private LinearLayout linearLayout;
+    private AlertDialog alertDialogErrorCamera;
+    private short contadorPeticiones;
 
     public MegaCodeAcitivity(){
     	super(R.layout.activity_main);
@@ -140,9 +143,16 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		if (requestCode==REQUEST_CAMERA){
-            if (grantResults.length>0){
-                inicializarCamara();
-            }
+            if (Arrays.stream(grantResults).anyMatch(grant -> grant == PackageManager.PERMISSION_GRANTED)){
+				crearCameraManager();
+            }else{
+            	contadorPeticiones++;
+            	if (contadorPeticiones > 5){
+            		alertDialogErrorCamera.show();
+				}else {
+					inicializarCamara();
+				}
+			}
 		}
 	}
 
@@ -199,32 +209,52 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     }
 
 	private void inicializarCamara(){
-    	if (checkSelfPermission(Manifest.permission.CAMERA)==PackageManager.PERMISSION_GRANTED) {
-			if (cameraManagerIA == null) {
-				handler = new Handler.Callback(){
-					@Override
-					public boolean handleMessage(Message msg) {
-						boolean result = false;
-
-						if (msg.what == Claves.EMOTION_FOUND){
-							Bundle bundle = msg.getData();
-							String emotion = bundle.getString(Claves.EMOTION);
-							Emocion emocion = new Emocion();
-							emocion.etapa = etapa;
-							emocion.label = emotion;
-							emocion.momento = Timestamp.now();
-							sesionActual.emociones.add(emocion);
-
-							result = true;
-						}
-
-						return result;
-					}
-				};
-				cameraManagerIA = new CameraManagerIA(this, handler);
+    	if (checkSelfPermission(Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED) {
+    		if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
+    			final String explicacion = "MegaCode toma fotografía de tu rostro mientras trabajas con el sistema por lo que es necesario utilizar la camara del dispositivo.\n\n" +
+						"Estas fotografías se utilizan nada más con fines cientificos y no se publicaran en ningún sitio.";
+    			new AlertDialog.Builder(this)
+						.setCancelable(false)
+						.setMessage(explicacion)
+						.setPositiveButton("Solicitar permisos de nuevo", ((dialog, which) -> {
+							requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
+						}))
+				.show();
+			}else{
+    			requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
 			}
-			if (!cameraManagerIA.isRunning)
-				cameraManagerIA.iniciarCamara();
+		}else{
+    		crearCameraManager();
+		}
+	}
+
+	private void crearCameraManager(){
+		if (cameraManagerIA == null) {
+			handler = new Handler.Callback(){
+				@Override
+				public boolean handleMessage(Message msg) {
+					boolean result = false;
+
+					if (msg.what == Claves.EMOTION_FOUND){
+						Bundle bundle = msg.getData();
+						String emotion = bundle.getString(Claves.EMOTION);
+						Emocion emocion = new Emocion();
+						emocion.etapa = etapa;
+						emocion.label = emotion;
+						emocion.momento = Timestamp.now();
+						sesionActual.emociones.add(emocion);
+
+						result = true;
+					}
+
+					return result;
+				}
+			};
+			try {
+				cameraManagerIA = new CameraManagerIA(this, handler);
+			}catch(Exception ex){
+				alertDialogErrorCamera.show();
+			}
 		}
 	}
 
@@ -265,21 +295,24 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_main);
-
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-				|| ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{ Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, REQUEST_CAMERA);
-		}else{
-			inicializarCamara();
-		}
 
 		etapa = 1;
+
+		alertDialogErrorCamera = new AlertDialog.Builder(this)
+				.setCancelable(false)
+				.setMessage("El permiso de la camara está deshabilitado, habilita este permiso para poder utilizar megacode")
+				.setPositiveButton("Está bien", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				}).create();
 
 		sharedPreferences = getSharedPreferences(Claves.SHARED_MEGACODE_PREFERENCES, 0);
 
 		mediaPlayerManager.setBackActivity(true);
 
+		inicializarCamara();
 
 		Intent intent = getIntent();
 		if (intent!=null){
@@ -426,7 +459,8 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     protected void onResume() {
 		super.onResume();
 
-		inicializarCamara();
+		if (cameraManagerIA != null && !cameraManagerIA.isRunning)
+			cameraManagerIA.iniciarCamara();
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.internal.Storage;
@@ -101,9 +103,11 @@ public class PerfilFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == REQUEST_CAMERA){
+        if (requestCode == REQUEST_CAMERA_PERMISSION){
             if (Arrays.stream(grantResults).anyMatch( p -> p == PackageManager.PERMISSION_GRANTED )){
                 solicitarFotografiaCamara();
+            }else{
+                Toast.makeText(getContext(), "Permiso de camara no otorgado", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -140,7 +144,20 @@ public class PerfilFragment extends Fragment {
 
     private void solicitarFotografiaCamara(){
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{ Manifest.permission.CAMERA }, REQUEST_CAMERA_PERMISSION);
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)){
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("Es necesario dar permisos de camara para poder tomar una fotografía de tu perfil")
+                        .setCancelable(false)
+                        .setPositiveButton("Solicitar permisos de nuevo", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                            }
+                        })
+                        .show();
+            }else {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+            }
         }else{
             Intent intentCamara = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(intentCamara, REQUEST_CAMERA);

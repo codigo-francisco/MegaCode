@@ -93,22 +93,25 @@ public class ApplicationBase extends Application implements LifecycleObserver {
         //Guardar duración de la conexión
         runnableTask.cancel();
         desconexiones++;
-        SharedPreferences sharedPreferences = getSharedPreferences(Claves.SHARED_MEGACODE_PREFERENCES, MODE_PRIVATE);
-        String conexionId = sharedPreferences.getString(Claves.CONEXION_ID, Claves.EMPTY_STRING);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference conexionDocument = db.document("Conexiones/"+conexionId);
+        final SharedPreferences sharedPreferences = getSharedPreferences(Claves.SHARED_MEGACODE_PREFERENCES, MODE_PRIVATE);
+        final String conexionId = sharedPreferences.getString(Claves.CONEXION_ID, Claves.EMPTY_STRING);
 
-        conexionDocument.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Conexion conexion = documentSnapshot.toObject(Conexion.class);
-                        conexion.duracion = duracion;
-                        conexion.salida = Timestamp.now();
-                        conexion.desconexiones = desconexiones;
-                        conexion.conexiones = conexiones;
+        if (!conexionId.isEmpty()) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            DocumentReference conexionDocument = db.document("Conexiones/" + conexionId);
 
-                        conexionDocument.set(conexion);
-                    }
-                });
+            conexionDocument.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Conexion conexion = documentSnapshot.toObject(Conexion.class);
+                            conexion.duracion = duracion;
+                            conexion.salida = Timestamp.now();
+                            conexion.desconexiones = desconexiones;
+                            conexion.conexiones = conexiones;
+
+                            conexionDocument.set(conexion);
+                        }
+                    });
+        }
     }
 }

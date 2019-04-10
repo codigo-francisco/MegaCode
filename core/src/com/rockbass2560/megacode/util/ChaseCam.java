@@ -20,8 +20,6 @@ public class ChaseCam {
     public MegaCode target;
     public Boolean following;
     public float zoom;
-    private InputControl inputControl;
-    private GestureControl gestureControl;
 
     public ChaseCam() {
         following = false;
@@ -32,10 +30,8 @@ public class ChaseCam {
     }
 
     public void setCamera(OrthographicCamera camera){
-        inputControl = null;
-        inputControl = new InputControl(camera);
-        gestureControl = null;
-        gestureControl = new GestureControl(camera);
+        InputControl inputControl = new InputControl(camera);
+        GestureControl gestureControl = new GestureControl(camera);
         InputMultiplexer inputMultiplexer = new InputMultiplexer(gestureControl, inputControl);
         Gdx.input.setInputProcessor(inputMultiplexer);
         this.camera = camera;

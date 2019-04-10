@@ -86,6 +86,8 @@ public class LoginViewModel extends AndroidViewModel {
                 errorLiveData.setValue("El correo electronico ya está en uso");
             } else if (errorCode.equals("ERROR_NETWORK_ERROR")) {
                 errorLiveData.setValue("Hay un error en la red, por favor verifique la conexión");
+            } else if (errorCode.equals("ERROR_WEAK_PASSWORD")){
+                errorLiveData.setValue("La contraseña es muy debil, debe tener al menos 6 caracteres");
             } else {
                 errorLiveData.setValue("Ha ocurrido un error en el proceso");
             }

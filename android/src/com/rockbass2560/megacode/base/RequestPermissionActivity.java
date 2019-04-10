@@ -19,7 +19,7 @@ public abstract class RequestPermissionActivity extends AppCompatActivity {
 
     private static int CAMERA_REQUEST_PERMISSION = 101, WRITE_STORAGE_PERMISSION = 100;
 
-    public static interface CallbackGranted{
+    public interface CallbackGranted{
         void granted();
         void denied();
     }

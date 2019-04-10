@@ -39,7 +39,7 @@ public class FeedViewModel extends AndroidViewModel {
         super(application);
 
         feeds = new ArrayList<>();
-        feedsLiveData = new MutableLiveData<>();;
+        feedsLiveData = new MutableLiveData<>();
     }
 
     public LiveData<Usuario> observadorUsuario(){

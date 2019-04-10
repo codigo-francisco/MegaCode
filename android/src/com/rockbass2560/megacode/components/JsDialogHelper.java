@@ -102,11 +102,8 @@ public class JsDialogHelper {
             edit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        // TODO: Accept input, close keyboard, close dialog
-                        return true;
-                    }
-                    return false;
+                    // TODO: Accept input, close keyboard, close dialog
+                    return actionId == EditorInfo.IME_ACTION_DONE;
                 }
             });
         }

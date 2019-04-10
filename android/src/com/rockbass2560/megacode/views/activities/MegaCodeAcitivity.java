@@ -184,6 +184,8 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 			webView.loadUrl("about:blank");
             webView.loadDataWithBaseURL("file:///android_asset/blockly/",paginaHtml, HtmlHelper.MIME, HtmlHelper.ENCODING, null);
 			libgdxFragment.getGamePlayScreen().level.reposicionarPersonaje();
+			canBack = true;
+			megacodePlay.setEnabled(true);
 		}else if (idItem == idMostrarCodigo){
 			javaScriptInterface.generarCodigoBlockly(new CustomCallback<String>() {
 				@Override

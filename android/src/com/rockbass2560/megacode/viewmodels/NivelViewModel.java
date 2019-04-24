@@ -1,6 +1,7 @@
 package com.rockbass2560.megacode.viewmodels;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,7 +27,8 @@ import androidx.lifecycle.MutableLiveData;
 
 public class NivelViewModel extends AndroidViewModel {
 
-    private MutableLiveData<LinkedList<List<NivelConTerminado>>> nivelesConTerminadoLiveData;
+    private final MutableLiveData<LinkedList<List<NivelConTerminado>>> nivelesConTerminadoLiveData;
+    private final static String TAG = NivelViewModel.class.getName();
 
     public NivelViewModel(@NonNull Application application) {
         super(application);
@@ -46,38 +48,44 @@ public class NivelViewModel extends AndroidViewModel {
                                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                     @Override
                                     public void onEvent(@Nullable QuerySnapshot nivelTerminadoDocSnap, @Nullable FirebaseFirestoreException e) {
-                                        List<Nivel> niveles = nivelDocSnap
-                                                .getDocuments().stream()
-                                                .map(docSnap -> {
-                                                    Nivel nivel = docSnap.toObject(Nivel.class);
-                                                    nivel.id = Integer.parseInt(docSnap.getId());
-                                                    return nivel;
-                                                })
-                                                .sorted()
-                                                .collect(Collectors.toList());
+                                        if (e == null) {
+                                            try {
+                                                List<Nivel> niveles = nivelDocSnap
+                                                        .getDocuments().stream()
+                                                        .map(docSnap -> {
+                                                            Nivel nivel = docSnap.toObject(Nivel.class);
+                                                            nivel.id = Integer.parseInt(docSnap.getId());
+                                                            return nivel;
+                                                        })
+                                                        .sorted()
+                                                        .collect(Collectors.toList());
 
-                                        List<NivelTerminado> nivelesTerminados = nivelTerminadoDocSnap
-                                                .getDocuments().stream()
-                                                .map(documentSnapshot -> {
-                                                    NivelTerminado nivelTerminado = documentSnapshot.toObject(NivelTerminado.class);
-                                                    nivelTerminado.id = documentSnapshot.getId();
+                                                List<NivelTerminado> nivelesTerminados = nivelTerminadoDocSnap
+                                                        .getDocuments().stream()
+                                                        .map(documentSnapshot -> {
+                                                            NivelTerminado nivelTerminado = documentSnapshot.toObject(NivelTerminado.class);
+                                                            nivelTerminado.id = documentSnapshot.getId();
 
-                                                    return nivelTerminado;
-                                                }).collect(Collectors.toList());
+                                                            return nivelTerminado;
+                                                        }).collect(Collectors.toList());
 
-                                        List<NivelConTerminado> nivelesConTerminados = new ArrayList<>();
+                                                List<NivelConTerminado> nivelesConTerminados = new ArrayList<>();
 
-                                        for (Nivel nivel : niveles) {
-                                            NivelConTerminado nivelConTerminado = new NivelConTerminado();
-                                            nivelConTerminado.nivel = nivel;
-                                            nivelConTerminado.nivelesTerminados = nivelesTerminados.stream().filter(nt -> nt.nivelId == nivel.id).collect(Collectors.toList());
+                                                for (Nivel nivel : niveles) {
+                                                    NivelConTerminado nivelConTerminado = new NivelConTerminado();
+                                                    nivelConTerminado.nivel = nivel;
+                                                    nivelConTerminado.nivelesTerminados = nivelesTerminados.stream().filter(nt -> nt.nivelId == nivel.id).collect(Collectors.toList());
 
-                                            nivelesConTerminados.add(nivelConTerminado);
+                                                    nivelesConTerminados.add(nivelConTerminado);
+                                                }
+
+                                                LinkedList<List<NivelConTerminado>> nivelesOrganizados = NivelConTerminado.organizarPorNiveles(nivelesConTerminados);
+
+                                                nivelesConTerminadoLiveData.setValue(nivelesOrganizados);
+                                            }catch (Exception ex){
+                                                Log.e(TAG, ex.getMessage(), ex);
+                                            }
                                         }
-
-                                        LinkedList<List<NivelConTerminado>> nivelesOrganizados = NivelConTerminado.organizarPorNiveles(nivelesConTerminados);
-
-                                        nivelesConTerminadoLiveData.setValue(nivelesOrganizados);
                                     }
                                 });
                     }

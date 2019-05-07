@@ -16,6 +16,7 @@ import com.rockbass2560.megacode.helpers.HtmlHelper;
 import com.rockbass2560.megacode.ia.EmotionClassification;
 import com.rockbass2560.megacode.ia.EmotionTest;
 import com.rockbass2560.megacode.ia.FaceRecognition;
+import com.rockbass2560.megacode.ia.FuzzyLogic;
 import com.rockbass2560.megacode.models.database.Conexion;
 import com.x5.template.Theme;
 import com.x5.template.providers.AndroidTemplates;
@@ -61,6 +62,8 @@ public class ApplicationBase extends Application implements LifecycleObserver {
         HtmlHelper.theme = new Theme(new AndroidTemplates(this));
 
         OpenCVLoader.initDebug();
+
+        FuzzyLogic.init();
 
         /*try {
 

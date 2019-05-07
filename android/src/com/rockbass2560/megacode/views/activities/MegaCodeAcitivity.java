@@ -78,6 +78,7 @@ import com.rockbass2560.megacode.helpers.HtmlHelper;
 import com.rockbass2560.megacode.helpers.StringHelper;
 import com.rockbass2560.megacode.ia.CameraManagerIA;
 import com.rockbass2560.megacode.ia.EmotionClassification;
+import com.rockbass2560.megacode.ia.FuzzyLogic;
 import com.rockbass2560.megacode.models.InfoNivel;
 import com.rockbass2560.megacode.models.database.Emocion;
 import com.rockbass2560.megacode.models.database.Nivel;
@@ -135,6 +136,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     private LinearLayout linearLayout;
     private AlertDialog alertDialogErrorCamera;
     private short contadorPeticiones;
+    private FuzzyLogic fuzzyLogic;
 
     public MegaCodeAcitivity(){
     	super(R.layout.activity_main);
@@ -300,6 +302,16 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 		etapa = 1;
 
+		Intent intent = getIntent();
+		if (intent!=null){
+			nivelActual = intent.getParcelableExtra("nivel");
+		}
+
+		if (nivelActual == null){
+			Toast.makeText(this, "No se ha cargado la ruta del nivel correctamente",Toast.LENGTH_LONG).show();
+			finish();
+		}
+
 		alertDialogErrorCamera = new AlertDialog.Builder(this)
 				.setCancelable(false)
 				.setMessage("El permiso de la camara está deshabilitado, habilita este permiso para poder utilizar megacode")
@@ -316,15 +328,8 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 		inicializarCamara();
 
-		Intent intent = getIntent();
-		if (intent!=null){
-			nivelActual = intent.getParcelableExtra("nivel");
-		}
+		//Configurar parametros del fuzzyLogic
 
-		if (nivelActual == null){
-			Toast.makeText(this, "No se ha cargado la ruta del nivel correctamente",Toast.LENGTH_LONG).show();
-			finish();
-		}
 
 		megaCodeViewModel = ViewModelProviders.of(this).get(MegaCodeViewModel.class);
 

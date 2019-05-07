@@ -131,6 +131,8 @@ dependencies {
 
     implementation 'com.x5dev:chunk-templates:3.5.0'
     implementation 'org.jetbrains:annotations:15.0'
+
+    implementation 'com.fuzzylite:jfuzzylite:6.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

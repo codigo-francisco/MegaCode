@@ -48,6 +48,8 @@ public class ApplicationBase extends Application implements LifecycleObserver {
 
         duracionApp = new Timer("duracionApp");
 
+        FuzzyLogic.init(this);
+
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         /*if (LeakCanary.isInAnalyzerProcess(this)){
@@ -63,7 +65,7 @@ public class ApplicationBase extends Application implements LifecycleObserver {
 
         OpenCVLoader.initDebug();
 
-        FuzzyLogic.init();
+        //FuzzyLogic.testDefaultEngine();
 
         /*try {
 

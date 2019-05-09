@@ -12,6 +12,7 @@ import net.sourceforge.jFuzzyLogic.FunctionBlock;
 import net.sourceforge.jFuzzyLogic.membership.MembershipFunction;
 import net.sourceforge.jFuzzyLogic.membership.MembershipFunctionFuncion;
 import net.sourceforge.jFuzzyLogic.membership.MembershipFunctionGenericSingleton;
+import net.sourceforge.jFuzzyLogic.membership.MembershipFunctionPieceWiseLinear;
 import net.sourceforge.jFuzzyLogic.membership.MembershipFunctionSingleton;
 import net.sourceforge.jFuzzyLogic.membership.MembershipFunctionTriangular;
 import net.sourceforge.jFuzzyLogic.membership.Value;
@@ -41,39 +42,87 @@ public class FuzzyLogic {
             boolean isDebuggable =  ( 0 != ( context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
             fuzzyLogic.fis = FIS.load(fuzzyFileStream, isDebuggable);
 
+            //Log.d(TAG,fuzzyLogic.fis.toStringFcl());
+
         } catch (IOException e) {
             Log.e(TAG, e.getMessage(), e);
         }
     }
 
     public static void testDefaultEngine(){
-        ConfigVariable tiempoConfig = new ConfigVariable();
-        tiempoConfig.firstRange = 0;
-        tiempoConfig.secondRange = 20;
-        tiempoConfig.valorMasAlto = Double.MAX_VALUE;
 
-        ConfigVariable erroresConfig = new ConfigVariable();
-        erroresConfig.firstRange = 0;
-        erroresConfig.secondRange = 10;
-        erroresConfig.valorMasAlto = 10;
-
-        ConfigVariable ayudasConfig = new ConfigVariable();
-        ayudasConfig.firstRange = 0;
-        ayudasConfig.secondRange = 20;
-        ayudasConfig.valorMasAlto = 20;
     }
 
-    public static FuzzyLogic configEngine(
-            ConfigVariable tiempoConfig,
-            ConfigVariable ayudaConfig,
-            ConfigVariable erroresConfig
+    public FuzzyLogic configEngine(
+            ConfigVariable configuracion
     ){
+
+        FIS fis = fuzzyLogic.fis;
+
+        //Configurando variables de tiempo
+        Variable tiempo = fis.getVariable(Claves.VARIABLE_TIEMPO);
+
+        tiempo.getLinguisticTerm(Claves.TERMINO_POCO).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.tiempoPocoX)},
+                        new Value[]{new Value(configuracion.tiempoPocoY)}));
+
+
+        tiempo.getLinguisticTerm(Claves.TERMINO_REGULAR).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.tiempoRegularX)},
+                        new Value[]{new Value(configuracion.tiempoRegularY)}));
+
+        tiempo.getLinguisticTerm(Claves.TERMINO_MUCHO).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.tiempoMuchoX)},
+                        new Value[]{new Value(configuracion.tiempoMuchoY)}));
+
+
+        //Configurando los terminos de ayudas
+        Variable ayudas = fis.getVariable(Claves.VARIABLE_AYUDAS);
+
+        ayudas.getLinguisticTerm(Claves.TERMINO_POCO).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.ayudasPocoX)},
+                        new Value[]{new Value(configuracion.ayudasPocoY)}));
+
+
+        ayudas.getLinguisticTerm(Claves.TERMINO_REGULAR).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.ayudasRegularX)},
+                        new Value[]{new Value(configuracion.ayudasRegularY)}));
+
+        ayudas.getLinguisticTerm(Claves.TERMINO_MUCHO).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.ayudasMuchoX)},
+                        new Value[]{new Value(configuracion.ayudasMuchoY)}));
+
+        //Configurando los terminos de errores
+        Variable errores = fis.getVariable(Claves.VARIABLE_ERRORES);
+
+        errores.getLinguisticTerm(Claves.TERMINO_POCO).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.erroresPocoX)},
+                        new Value[]{new Value(configuracion.erroresPocoY)}));
+
+
+        errores.getLinguisticTerm(Claves.TERMINO_REGULAR).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.erroresRegularX)},
+                        new Value[]{new Value(configuracion.erroresRegularY)}));
+
+        errores.getLinguisticTerm(Claves.TERMINO_MUCHO).setMembershipFunction(
+                new MembershipFunctionPieceWiseLinear(
+                        new Value[]{new Value(configuracion.erroresMuchoX)},
+                        new Value[]{new Value(configuracion.erroresMuchoX)}));
 
         return fuzzyLogic;
     }
 
     public static class ConfigVariable{
-        public double firstRange, secondRange;
-        public double valorMasAlto;
+        public double tiempoPocoX, tiempoPocoY, tiempoRegularX, tiempoRegularY, tiempoMuchoX, tiempoMuchoY;
+        public double ayudasPocoX, ayudasPocoY, ayudasRegularX, ayudasRegularY, ayudasMuchoX, ayudasMuchoY;
+        public double erroresPocoX, erroresPocoY, erroresRegularX, erroresRegularY, erroresMuchoX, erroresMuchoY;
     }
 }

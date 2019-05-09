@@ -365,8 +365,14 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
         InfoNivel infoNivel = nivelActual.buildInfoNivel();
 
-        cargarJuego(infoNivel);
-        configurarMusica(nivelActual);
+        megaCodeViewModel.obtenerConfiguracionFuzzy(nivelActual.id).observe(
+        		this,
+        		configuracion -> {
+        			fuzzyLogic.configEngine(configuracion);
+					cargarJuego(infoNivel);
+					configurarMusica(nivelActual);
+				}
+		);
 	}
 
 	private void reiniciarControles(){

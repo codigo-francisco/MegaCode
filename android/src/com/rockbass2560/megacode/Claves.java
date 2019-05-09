@@ -29,4 +29,14 @@ public final class Claves {
     public static final String MUSIC_VOLUME = "MUSIC_VOLUME";
 
     public final static String JAVASCRIPT_INTERFACE = "megacode";
+
+    //Claves de logica difusa
+    public final static String FUNCTION_BLOCK = "dificultad_block";
+    public final static String VARIABLE_TIEMPO = "tiempo";
+    public final static String VARIABLE_AYUDAS ="ayudas";
+
+    public final static String TERMINO_POCO = "poco";
+    public final static String TERMINO_REGULAR = "regular";
+    public final static String TERMINO_MUCHO = "mucho";
+    public static final String VARIABLE_ERRORES = "errores";
 }

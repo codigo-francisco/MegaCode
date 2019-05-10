@@ -109,6 +109,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import static com.rockbass2560.megacode.ia.FuzzyLogic.Dificultad;
 
 public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFragmentApplication.Callbacks {
 
@@ -137,6 +138,7 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
     private AlertDialog alertDialogErrorCamera;
     private short contadorPeticiones;
     private FuzzyLogic fuzzyLogic;
+    private Dificultad dificultad = Dificultad.FACIL;
 
     public MegaCodeAcitivity(){
     	super(R.layout.activity_main);
@@ -303,8 +305,11 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 		etapa = 1;
 
 		Intent intent = getIntent();
-		if (intent!=null){
+		if (intent != null){
 			nivelActual = intent.getParcelableExtra("nivel");
+			if (intent.getSerializableExtra(Claves.DIFICULTAD_DATA) != null){
+				dificultad = (Dificultad)intent.getSerializableExtra(Claves.DIFICULTAD_DATA);
+			}
 		}
 
 		if (nivelActual == null){
@@ -327,9 +332,6 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 		mediaPlayerManager.setBackActivity(true);
 
 		inicializarCamara();
-
-		//Configurar parametros del fuzzyLogic
-
 
 		megaCodeViewModel = ViewModelProviders.of(this).get(MegaCodeViewModel.class);
 
@@ -365,14 +367,23 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
         InfoNivel infoNivel = nivelActual.buildInfoNivel();
 
+        //Configurar FuzzyLogic
+        FuzzyLogic.isEngineReady = false;
         megaCodeViewModel.obtenerConfiguracionFuzzy(nivelActual.id).observe(
         		this,
         		configuracion -> {
-        			fuzzyLogic.configEngine(configuracion);
-					cargarJuego(infoNivel);
-					configurarMusica(nivelActual);
+					try {
+						fuzzyLogic = FuzzyLogic.configEngine(configuracion);
+					} catch (Exception e) {
+						Log.e(TAG, e.getMessage(), e);
+						Toast.makeText(this,"El sistema de logica difusa no ha podido ser inicializada", Toast.LENGTH_LONG);
+						finish();
+					}
 				}
 		);
+
+		cargarJuego(infoNivel);
+		configurarMusica(nivelActual);
 	}
 
 	private void reiniciarControles(){
@@ -452,6 +463,17 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 				sesionActual.nivelId = nivelActual.id;
 				sesionActual.conexionId = sharedPreferences.getString(Claves.CONEXION_ID, Claves.EMPTY_STRING);
 				megaCodeViewModel.agregarSesion(sesionActual);
+
+				Intent returnData = new Intent();
+
+				//Estimar dificultad del siguiente nivel
+				if (FuzzyLogic.isEngineReady){
+					double tiempo = sesionActual.tiempo;
+					double ayudas = 0; //No se ha implementado
+					double errores = sesionActual.intentos;
+					FuzzyLogic.Dificultad dificultad = fuzzyLogic.getDificultad(tiempo, ayudas, errores);
+					returnData.putExtra(Claves.DIFICULTAD_DATA, dificultad);
+				}
 
 				MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
 				MegaCodeAcitivity.this.finish();

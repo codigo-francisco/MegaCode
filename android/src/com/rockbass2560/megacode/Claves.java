@@ -30,6 +30,8 @@ public final class Claves {
 
     public final static String JAVASCRIPT_INTERFACE = "megacode";
 
+    public static final String DIFICULTAD_DATA = "DIFICULTADDATA";
+
     //Claves de logica difusa
     public final static String FUNCTION_BLOCK = "dificultad_block";
     public final static String VARIABLE_TIEMPO = "tiempo";
@@ -39,4 +41,5 @@ public final class Claves {
     public final static String TERMINO_REGULAR = "regular";
     public final static String TERMINO_MUCHO = "mucho";
     public static final String VARIABLE_ERRORES = "errores";
+    public static final String VARIABLE_DIFICULTAD = "dificultad";
 }

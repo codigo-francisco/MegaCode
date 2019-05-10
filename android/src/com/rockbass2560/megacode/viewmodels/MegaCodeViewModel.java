@@ -114,15 +114,17 @@ public class MegaCodeViewModel extends AndroidViewModel {
     }
 
     public LiveData<FuzzyLogic.ConfigVariable> obtenerConfiguracionFuzzy(int idNivel){
-        DocumentReference configuracionesFuzzy = db.document("Niveles/"+idNivel+"/ConfiguracionesFuzzy");
+        CollectionReference configuracionesFuzzy = db.collection("Niveles/"+idNivel+"/ConfiguracionesFuzzy");
         configuracionesFuzzy.get()
-                .addOnSuccessListener(document -> {
-                   if (document != null){
-                       try {
-                           FuzzyLogic.ConfigVariable configuraciones = document.toObject(FuzzyLogic.ConfigVariable.class);
-                           observadorConfiguraciones.postValue(configuraciones);
-                       }catch (Exception ex){
-                           
+                .addOnSuccessListener(collections -> {
+                   if (collections != null){
+                       if (!collections.isEmpty()){
+                           try {
+                               FuzzyLogic.ConfigVariable configuraciones = collections.getDocuments().get(0).toObject(FuzzyLogic.ConfigVariable.class);
+                               observadorConfiguraciones.postValue(configuraciones);
+                           }catch (Exception ex){
+                               Log.e(TAG, ex.getMessage(), ex);
+                           }
                        }
                    }
                 });

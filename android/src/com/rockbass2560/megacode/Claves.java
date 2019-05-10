@@ -1,5 +1,8 @@
 package com.rockbass2560.megacode;
 
+import com.rockbass2560.megacode.comparators.ComparatorEmocion;
+import com.rockbass2560.megacode.models.database.Emocion;
+
 public final class Claves {
     //Id de shared preferences
     public final static String ID_USUARIO = "idUsuario";
@@ -42,4 +45,5 @@ public final class Claves {
     public final static String TERMINO_MUCHO = "mucho";
     public static final String VARIABLE_ERRORES = "errores";
     public static final String VARIABLE_DIFICULTAD = "dificultad";
+    public static final String VARIABLE_EMOCION = "emocion";
 }

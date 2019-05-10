@@ -69,8 +69,10 @@ import com.google.common.collect.Lists;
 import com.google.firebase.Timestamp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.rockbass2560.megacode.Claves;
+import com.rockbass2560.megacode.Funciones;
 import com.rockbass2560.megacode.R;
 import com.rockbass2560.megacode.base.ActivityToolbarBase;
+import com.rockbass2560.megacode.comparators.ComparatorEmocion;
 import com.rockbass2560.megacode.components.CustomWebChromeClient;
 import com.rockbass2560.megacode.components.MediaPlayerManager;
 import com.rockbass2560.megacode.components.WebViewJavaScriptInterface;
@@ -103,6 +105,7 @@ import java.nio.ByteBuffer;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -471,11 +474,29 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 					double tiempo = sesionActual.tiempo;
 					double ayudas = 0; //No se ha implementado
 					double errores = sesionActual.intentos;
-					FuzzyLogic.Dificultad dificultad = fuzzyLogic.getDificultad(tiempo, ayudas, errores);
+					//Establecer la emocion, se establece la emocion con más presencia en cada etapa
+					//Emocion con más presencia en etapa 1
+					Emocion emocionEtapa1 = sesionActual.emociones.stream().filter(e -> e.etapa == 1)
+							.max(Funciones.COMPARATOR_EMOCION)
+							.get();
+					//Emocion con más presencia en etapa2
+					Emocion emocionEtapa2 = sesionActual.emociones.stream().filter(e -> e.etapa == 2)
+							.max(Funciones.COMPARATOR_EMOCION)
+							.get();
+					//Emocion con más presencia etapa3
+					Emocion emocionEtapa3 = sesionActual.emociones.stream().filter(e -> e.etapa == 3)
+							.max(Funciones.COMPARATOR_EMOCION)
+							.get();
+
+					Emocion emocionFinal = Arrays.stream(new Emocion[]{emocionEtapa1, emocionEtapa2, emocionEtapa3})
+							.max(Funciones.COMPARATOR_EMOCION)
+							.get();
+
+					FuzzyLogic.Dificultad dificultad = fuzzyLogic.getDificultad(emocionFinal.getNumber(), tiempo, ayudas, errores);
 					returnData.putExtra(Claves.DIFICULTAD_DATA, dificultad);
 				}
 
-				MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
+				MegaCodeAcitivity.this.setResult(Activity.RESULT_OK, returnData);
 				MegaCodeAcitivity.this.finish();
 			});
 		});

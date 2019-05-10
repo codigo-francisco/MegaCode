@@ -49,6 +49,7 @@ public class ApplicationBase extends Application implements LifecycleObserver {
         duracionApp = new Timer("duracionApp");
 
         FuzzyLogic.init(this);
+        //FuzzyLogic.testDefaultEngine();
 
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 

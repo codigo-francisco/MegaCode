@@ -23,6 +23,7 @@ import com.rockbass2560.megacode.R;
 import com.rockbass2560.megacode.adapters.AdapterRecyclerSkillTree;
 import com.rockbass2560.megacode.adapters.model.DataModel;
 import com.rockbass2560.megacode.components.MediaPlayerManager;
+import com.rockbass2560.megacode.ia.FuzzyLogic;
 import com.rockbass2560.megacode.models.database.NivelConTerminado;
 import com.rockbass2560.megacode.viewmodels.NivelViewModel;
 
@@ -40,6 +41,7 @@ public class SkillTreeFragment extends Fragment {
     private NivelViewModel nivelViewModel;
     private MediaPlayer mediaPlayerClickDialog;
     private MediaPlayerManager mediaPlayerManager;
+    private FuzzyLogic.Dificultad ultimaDificultad = FuzzyLogic.Dificultad.FACIL;
 
     public SkillTreeFragment() {
         // Required empty public constructor
@@ -50,6 +52,7 @@ public class SkillTreeFragment extends Fragment {
         if (requestCode == Claves.ABRIR_NIVEL_MEGACODE) {
             if (resultCode == Activity.RESULT_OK){
                 nivelViewModel.listarNiveles();
+                ultimaDificultad = (FuzzyLogic.Dificultad)data.getSerializableExtra(Claves.DIFICULTAD_DATA);
             }
         }
     }
@@ -91,11 +94,13 @@ public class SkillTreeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager());
+        adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager(), this);
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
         nivelViewModel.getNiveles().observe(this, lists -> {
-            adapterRecyclerSkillTree.setData(lists);
+            Bundle data = new Bundle();
+            data.putSerializable(Claves.DIFICULTAD_DATA, ultimaDificultad);
+            adapterRecyclerSkillTree.setData(lists, data);
             refreshLayout.setRefreshing(false);
         });
 

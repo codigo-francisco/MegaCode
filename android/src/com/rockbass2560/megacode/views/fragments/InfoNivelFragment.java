@@ -1,5 +1,6 @@
 package com.rockbass2560.megacode.views.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -26,14 +27,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 public class InfoNivelFragment extends DialogFragment {
 
     private static final String TAG = DialogFragment.class.getName();
     private static final String LINESEPARATOR = System.lineSeparator();
+    private Fragment fragment;
 
-    public InfoNivelFragment(){
+    public InfoNivelFragment(Fragment fragment){
         super();
+        this.fragment = fragment;
     }
 
     @Override
@@ -108,7 +112,8 @@ public class InfoNivelFragment extends DialogFragment {
             button.setOnClickListener(viewButton ->{
                 Intent megaCodeIntent = new Intent(getActivity(), MegaCodeAcitivity.class);
                 megaCodeIntent.putExtra("nivel", nivel);
-                getActivity().startActivityForResult(megaCodeIntent, Claves.ABRIR_NIVEL_MEGACODE);
+                megaCodeIntent.putExtra(Claves.DIFICULTAD_DATA, getArguments().getSerializable(Claves.DIFICULTAD_DATA));
+                fragment.startActivityForResult(megaCodeIntent, Claves.ABRIR_NIVEL_MEGACODE);
                 dismiss();
             });
         }

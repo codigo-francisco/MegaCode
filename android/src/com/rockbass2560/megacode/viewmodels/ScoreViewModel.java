@@ -36,7 +36,7 @@ public class ScoreViewModel extends AndroidViewModel {
                             Usuario u = d.toObject(Usuario.class);
 
                             Score score = new Score();
-                            score.nombre = u.nombre;
+                            score.nombre = user.getEmail();
                             score.id = d.getId();
                             score.score = u.getPuntajeTotal();
                             return score;

@@ -28,8 +28,7 @@ import androidx.lifecycle.ViewModelProviders;
 public class RegisterActivity extends FragmentActivity {
 
     private final static String TAG = "RegisterActivity";
-    private MaterialBetterSpinner spinnerSex;
-    private TextInputEditText nameTextEdit, ageTextEdit, emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
+    private TextInputEditText emailTextEdit, contrasenaTextEdit, contrasena2TextEdit;
     private LoginViewModel loginViewModel;
     private ProgressBar progressBar;
 
@@ -42,9 +41,6 @@ public class RegisterActivity extends FragmentActivity {
 
         ProgressBar progressBar = findViewById(R.id.progressbar_register);
         MaterialButton registrarButton = findViewById(R.id.button_registrarse);
-        spinnerSex = findViewById(R.id.login_spinner_sexo);
-        nameTextEdit = findViewById(R.id.login_text_name);
-        ageTextEdit = findViewById(R.id.login_text_age);
         emailTextEdit = findViewById(R.id.login_text_email);
         contrasenaTextEdit = findViewById(R.id.login_text_contrasena);
         contrasena2TextEdit = findViewById(R.id.login_text_contrasena2);
@@ -71,17 +67,14 @@ public class RegisterActivity extends FragmentActivity {
 
         registrarButton.setOnClickListener(view -> {
             //Validar campos
-            boolean name, age, sex, email, contrasena, contrasena2, contrasenaDiferentes = false;
+            boolean email, contrasena, contrasena2, contrasenaDiferentes = false;
 
-            name = validationEmptyEditText(nameTextEdit, "Debe introducir un nombre");
-            age = validationEmptyEditText(ageTextEdit, "Introduzca una edad");
-            sex = validationEmptyEditText(spinnerSex, "Seleccione una opción");
             email = validationEmptyEditText(emailTextEdit, "Introduzca un email") && validarEmail();
             contrasena = validationEmptyEditText(contrasenaTextEdit, "Introduzca una contraseña");
             contrasena2 = validationEmptyEditText(contrasena2TextEdit, "Confirme su contraseña");
             contrasenaDiferentes = (contrasena && contrasena2) && validarContrasenasIguales();
 
-            boolean todoValido = name && age && sex && email && contrasena && contrasena2 && contrasenaDiferentes;
+            boolean todoValido = email && contrasena && contrasena2 && contrasenaDiferentes;
 
             if (todoValido) {
                 progressBar.setVisibility(ProgressBar.VISIBLE);
@@ -89,18 +82,13 @@ public class RegisterActivity extends FragmentActivity {
 
                 //Se guarda en base de datos remoto y se obtiene el token
                 Usuario usuario = new Usuario();
-                usuario.nombre = nameTextEdit.getText().toString();
-                usuario.sexo = spinnerSex.getText().toString();
-                usuario.edad = Integer.parseInt(ageTextEdit.getText().toString());
+                usuario.email = emailTextEdit.getText().toString();
 
                 ViewHelper.closeKeyboard(this, view.getWindowToken());
 
                 loginViewModel.registrarUsuario(emailTextEdit.getText().toString(), contrasenaTextEdit.getText().toString(), usuario);
             }
         });
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.sexos, android.R.layout.simple_dropdown_item_1line);
-        spinnerSex.setAdapter(adapter);
 
         setFocusChildListener(findViewById(R.id.login_layout_root));
     }
@@ -157,21 +145,12 @@ public class RegisterActivity extends FragmentActivity {
         return !isEmpty;
     }
 
-    private View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {
+    private final View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View view, boolean hasFocus) {
             if (!hasFocus){
                 int id = view.getId();
                 switch(id){
-                    case R.id.login_text_name:
-                        validationEmptyEditText(nameTextEdit, "Debe introducir un nombre");
-                        break;
-                    case R.id.login_text_age:
-                        validationEmptyEditText(ageTextEdit, "Introduzca una edad");
-                        break;
-                    case R.id.login_spinner_sexo:
-                        validationEmptyEditText(spinnerSex, "Seleccione una opción");
-                        break;
                     case R.id.login_text_email:
                         if (validationEmptyEditText(emailTextEdit, "Introduzca un email"))
                             validarEmail();

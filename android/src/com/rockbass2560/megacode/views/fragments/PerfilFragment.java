@@ -176,10 +176,9 @@ public class PerfilFragment extends Fragment {
         perfilViewModel.consultarUsuario().observe(getViewLifecycleOwner(), usuario -> {
             //Se colocan los valores
             if (usuario!=null) {
-                ((TextView) fragmentView.findViewById(R.id.name_view)).setText(usuario.nombre);
-                ((TextView) fragmentView.findViewById(R.id.text_age)).setText(String.format(Locale.getDefault(), "%d %s",
-                        usuario.edad, getResources().getString(R.string.anios)));
-                ((TextView) fragmentView.findViewById(R.id.text_sex)).setText(usuario.sexo);
+
+                TextView nombreTextView = fragmentView.findViewById(R.id.name_view);
+                nombreTextView.setText(usuario.email);
 
                 StorageReference imageReference = FirebaseStorage.getInstance()
                         .getReference(usuario.id+"/fotoPerfil.png");
@@ -238,7 +237,7 @@ public class PerfilFragment extends Fragment {
         return fragmentView;
     }
 
-    private View.OnClickListener clickListener = new View.OnClickListener() {
+    private final View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             int id = view.getId();

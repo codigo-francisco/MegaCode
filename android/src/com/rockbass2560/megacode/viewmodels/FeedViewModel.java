@@ -158,7 +158,7 @@ public class FeedViewModel extends AndroidViewModel {
 
                                     for (Usuario usuarioItem : usuarios) {
                                         int puntajeUsuarioItem = usuarioItem.getPuntajeTotal();
-                                        mensaje.append(String.format("\n\t%s con %s puntos", usuarioItem.nombre, puntajeUsuarioItem));
+                                        mensaje.append(String.format("\n\t%s con %s puntos", usuarioItem.email, puntajeUsuarioItem));
                                     }
 
                                     DataModel dataModel = new DataModel();

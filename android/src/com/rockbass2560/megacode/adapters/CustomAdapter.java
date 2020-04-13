@@ -22,7 +22,7 @@ import java.util.List;
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
     private List<DataModel> dataModels = new ArrayList<>();
-    private Activity activityOwner;
+    private final Activity activityOwner;
 
     public CustomAdapter(Activity activityOwner){
         this.activityOwner = activityOwner;

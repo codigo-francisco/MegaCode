@@ -10,14 +10,11 @@ public class Usuario {
     public String id;
     @Exclude
     public String email;
-    public String nombre;
-    public String sexo;
     public int si;
     public int para;
     public int mientras;
     public int comandos;
     public String fotoPerfil;
-    public int edad;
 
     public int getPuntajeTotal(){
         return comandos+si+para+mientras;

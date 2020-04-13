@@ -91,11 +91,13 @@ public class SkillTreeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager());
+        adapterRecyclerSkillTree = new AdapterRecyclerSkillTree(getFragmentManager(), this);
         recyclerView.setAdapter(adapterRecyclerSkillTree);
 
         nivelViewModel.getNiveles().observe(this, lists -> {
-            adapterRecyclerSkillTree.setData(lists);
+            Bundle data = new Bundle();
+            data.putSerializable(Claves.DIFICULTAD_DATA, null);
+            adapterRecyclerSkillTree.setData(lists, data);
             refreshLayout.setRefreshing(false);
         });
 

@@ -22,6 +22,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,9 +31,12 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
     private LinkedList<List<NivelConTerminado>> nodes = new LinkedList<>();
     private MediaPlayer mediaPlayerSound;
     private FragmentManager fragmentManager;
+    private Fragment fragment;
+    private Bundle bundle;
 
-    public AdapterRecyclerSkillTree(FragmentManager fragmentManager){
+    public AdapterRecyclerSkillTree(FragmentManager fragmentManager, Fragment fragment){
         this.fragmentManager = fragmentManager;
+        this.fragment = fragment;
     }
 
     public void setMediaPlayerSound(MediaPlayer mediaPlayerSound) {
@@ -94,8 +98,7 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
             imageView.setImageResource(nivelConTerminado.getImageResource(bloquearNodos));
 
             imageView.setOnClickListener(view -> {
-                DialogFragment dialogFragment = new InfoNivelFragment();
-                Bundle bundle = new Bundle();
+                DialogFragment dialogFragment = new InfoNivelFragment(fragment);
 
                 bundle.putParcelable("nivel", nivelConTerminado);
                 bundle.putBoolean("bloqueado", bloquear);
@@ -123,9 +126,10 @@ public class AdapterRecyclerSkillTree extends RecyclerView.Adapter<AdapterRecycl
 
     private boolean bloquearNodos = false;
 
-    public void setData(LinkedList<List<NivelConTerminado>> nodes){
+    public void setData(LinkedList<List<NivelConTerminado>> nodes, Bundle data){
         this.nodes = nodes;
         bloquearNodos = false;
+        this.bundle = data;
         notifyDataSetChanged();
     }
 

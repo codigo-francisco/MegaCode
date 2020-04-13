@@ -15,9 +15,7 @@
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:layout_height="100dp"
-            android:src="@drawable/background_game"
-            android:id="@+id/cover_image"
-            />
+            android:src="@drawable/background_game" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:layout_width="120dp"
@@ -63,7 +61,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_seleccion"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"

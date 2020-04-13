@@ -7,7 +7,6 @@
     <string name="progreso">Progreso</string>
     <string name="abierto">Abierto</string>
     <string name="cerrado">Cerrado</string>
-    <string name="jugar">Jugar</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="opcion_no_implementada">Opcion no implementada todavía</string>
@@ -30,7 +29,6 @@
     <string name="noticias">Noticias</string>
     <string name="foto_perfil">Foto Perfil</string>
     <string name="tabla_de_posiciones">Tabla de posiciones</string>
-    <string name="mensaje_instalacion"> A continuación de click en el boton de abajo para dar permisos de instalación a la aplicación.</string>
 
     <string-array name="sexos">
         <item>@string/masculino</item>

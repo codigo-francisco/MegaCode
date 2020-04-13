@@ -4,7 +4,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url 'http://repo1.maven.org/maven2' }
+        //maven { url 'http://insecure.repo1.maven.org/maven2/' }
         maven {
             url  "https://google.bintray.com/tensorflow"
         }
@@ -15,7 +15,7 @@ buildscript {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
         classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.0'
-        classpath "com.badlogicgames.gdx:gdx-tools:1.9.9-SNAPSHOT"
+        classpath "com.badlogicgames.gdx:gdx-tools:1.9.9"
         classpath 'com.badlogicgames.gdx:gdx-freetype:1.9.8@jar'
         classpath 'com.google.gms:google-services:4.2.0'
     }
@@ -50,7 +50,6 @@ allprojects {
 project(":desktop") {
     apply plugin: "java"
 
-
     dependencies {
         implementation project(":core")
         implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
@@ -76,8 +75,6 @@ project(":android") {
         //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
         // Optional, if you use support library fragments:
         //debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
-
-        implementation project(':OpenCV')
     }
 }
 

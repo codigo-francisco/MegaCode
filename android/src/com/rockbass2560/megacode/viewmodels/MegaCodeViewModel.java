@@ -9,7 +9,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.rockbass2560.megacode.entities.MegaCode;
-import com.rockbass2560.megacode.ia.FuzzyLogic;
 import com.rockbass2560.megacode.models.database.Emocion;
 import com.rockbass2560.megacode.models.database.Nivel;
 import com.rockbass2560.megacode.models.database.NivelTerminado;
@@ -31,12 +30,9 @@ public class MegaCodeViewModel extends AndroidViewModel {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private MutableLiveData<FuzzyLogic.ConfigVariable> observadorConfiguraciones;
 
     public MegaCodeViewModel(@NonNull Application application) {
         super(application);
-
-        observadorConfiguraciones = new MutableLiveData<>();
     }
 
     public void agregarNivelTerminado(NivelTerminado nivelTerminado, Map<String, Integer> puntajes){
@@ -111,22 +107,5 @@ public class MegaCodeViewModel extends AndroidViewModel {
                         emocionesCollection.add(emocion);
                     }
                 });*/
-    }
-
-    public LiveData<FuzzyLogic.ConfigVariable> obtenerConfiguracionFuzzy(int idNivel){
-        DocumentReference configuracionesFuzzy = db.document("Niveles/"+idNivel+"/ConfiguracionesFuzzy");
-        configuracionesFuzzy.get()
-                .addOnSuccessListener(document -> {
-                   if (document != null){
-                       try {
-                           FuzzyLogic.ConfigVariable configuraciones = document.toObject(FuzzyLogic.ConfigVariable.class);
-                           observadorConfiguraciones.postValue(configuraciones);
-                       }catch (Exception ex){
-                           
-                       }
-                   }
-                });
-
-        return observadorConfiguraciones;
     }
 }

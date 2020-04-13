@@ -62,7 +62,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/layout_email"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 app:helperTextEnabled="true"

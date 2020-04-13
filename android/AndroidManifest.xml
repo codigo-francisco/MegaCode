@@ -56,7 +56,6 @@
         <activity
             android:name=".views.activities.ScoreActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-        <activity android:name=".views.activities.OpenCVDownload" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

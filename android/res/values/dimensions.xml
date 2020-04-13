@@ -3,8 +3,5 @@
     <dimen name="card_spacing" >8dp</dimen>
     <dimen name="size_card_image_content">45dp</dimen>
     <dimen name="margin_card">5dp</dimen>
-    <dimen name="max_perfil_size">380dp</dimen>
-    <dimen name="size_display_infonivel">65dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
     <dimen name="design_fab_image_size" tools:override="true">56dp</dimen>
 </resources>

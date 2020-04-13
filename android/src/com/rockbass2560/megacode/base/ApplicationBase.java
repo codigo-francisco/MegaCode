@@ -3,27 +3,17 @@ package com.rockbass2560.megacode.base;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.util.Log;
 import android.webkit.WebView;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.rockbass2560.megacode.Claves;
 import com.rockbass2560.megacode.helpers.HtmlHelper;
-import com.rockbass2560.megacode.ia.EmotionClassification;
-import com.rockbass2560.megacode.ia.EmotionTest;
-import com.rockbass2560.megacode.ia.FaceRecognition;
-import com.rockbass2560.megacode.ia.FuzzyLogic;
 import com.rockbass2560.megacode.models.database.Conexion;
 import com.x5.template.Theme;
 import com.x5.template.providers.AndroidTemplates;
 
-import org.opencv.android.OpenCVLoader;
-
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -48,8 +38,6 @@ public class ApplicationBase extends Application implements LifecycleObserver {
 
         duracionApp = new Timer("duracionApp");
 
-        FuzzyLogic.init(this);
-
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
 
         /*if (LeakCanary.isInAnalyzerProcess(this)){
@@ -62,8 +50,6 @@ public class ApplicationBase extends Application implements LifecycleObserver {
         }
 
         HtmlHelper.theme = new Theme(new AndroidTemplates(this));
-
-        OpenCVLoader.initDebug();
 
         //FuzzyLogic.testDefaultEngine();
 

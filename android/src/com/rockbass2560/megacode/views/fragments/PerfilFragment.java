@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -100,7 +99,7 @@ public class PerfilFragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CAMERA_PERMISSION){
@@ -165,7 +164,7 @@ public class PerfilFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(@NonNull  LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View fragmentView = inflater.inflate(R.layout.fragment_perfil, container, false);
@@ -174,7 +173,7 @@ public class PerfilFragment extends Fragment {
 
         fotoPerfil = fragmentView.findViewById(R.id.foto_perfil);
 
-        perfilViewModel.consultarUsuario().observe(this, usuario -> {
+        perfilViewModel.consultarUsuario().observe(getViewLifecycleOwner(), usuario -> {
             //Se colocan los valores
             if (usuario!=null) {
                 ((TextView) fragmentView.findViewById(R.id.name_view)).setText(usuario.nombre);

@@ -60,7 +60,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
-                android:id="@+id/layout_name"
                 app:helperTextEnabled="true"
                 app:helperText="@string/requerido"
                 app:errorEnabled="true">
@@ -105,7 +104,6 @@
                     android:layout_height="match_parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/layout_spinner"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -125,7 +123,6 @@
             </LinearLayout>
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/layout_email"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 app:helperTextEnabled="true"

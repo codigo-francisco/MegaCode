@@ -1,73 +1,31 @@
 package com.rockbass2560.megacode.views.activities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteCursorDriver;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQuery;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.ImageFormat;
-import android.graphics.PixelFormat;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.Image;
-import android.media.ImageReader;
-import android.media.ImageWriter;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Range;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewStub;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.common.collect.Lists;
-import com.google.firebase.Timestamp;
-import com.google.firebase.storage.FirebaseStorage;
 import com.rockbass2560.megacode.Claves;
 import com.rockbass2560.megacode.R;
 import com.rockbass2560.megacode.base.ActivityToolbarBase;
@@ -76,88 +34,44 @@ import com.rockbass2560.megacode.components.MediaPlayerManager;
 import com.rockbass2560.megacode.components.WebViewJavaScriptInterface;
 import com.rockbass2560.megacode.helpers.HtmlHelper;
 import com.rockbass2560.megacode.helpers.StringHelper;
-import com.rockbass2560.megacode.ia.CameraManagerIA;
-import com.rockbass2560.megacode.ia.EmotionClassification;
-import com.rockbass2560.megacode.ia.FuzzyLogic;
 import com.rockbass2560.megacode.models.InfoNivel;
-import com.rockbass2560.megacode.models.database.Emocion;
 import com.rockbass2560.megacode.models.database.Nivel;
 import com.rockbass2560.megacode.models.database.NivelTerminado;
 import com.rockbass2560.megacode.models.database.Sesion;
-import com.rockbass2560.megacode.models.Usuario;
 import com.rockbass2560.megacode.others.CustomCallback;
-import com.rockbass2560.megacode.ia.FaceRecognition;
 import com.rockbass2560.megacode.viewmodels.MegaCodeViewModel;
 import com.rockbass2560.megacode.views.fragments.GameFragment;
 
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Mat;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.sql.Date;
-import java.time.Instant;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import static com.rockbass2560.megacode.ia.FuzzyLogic.Dificultad;
 
 public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFragmentApplication.Callbacks {
 
 	private Sesion sesionActual;
 	private final static String TAG = MegaCodeAcitivity.class.getName();
-	private final static int REQUEST_CAMERA = 0;
 	private TextView textViewEmotion;
 	private WebView webView;
 	private GameFragment libgdxFragment;
 	private Nivel nivelActual;
 	private MegaCodeViewModel megaCodeViewModel;
-    private final static int idMenuCamera = 0;
     private final static int idRecargarBlockly = 1;
     private final static int idMostrarCodigo = 2;
     private WebViewJavaScriptInterface javaScriptInterface;
     private String paginaHtml;
     private SharedPreferences sharedPreferences;
     private int format;
-    private CameraManagerIA cameraManagerIA;
     private Handler.Callback handler;
     private int etapa;
     private boolean reboot=false;
     private FloatingActionButton megacodePlay;
     private boolean canBack = true;
     private LinearLayout linearLayout;
-    private AlertDialog alertDialogErrorCamera;
     private short contadorPeticiones;
-    private FuzzyLogic fuzzyLogic;
-    private Dificultad dificultad = Dificultad.FACIL;
 
     public MegaCodeAcitivity(){
     	super(R.layout.activity_main);
-	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		if (requestCode==REQUEST_CAMERA){
-            if (Arrays.stream(grantResults).anyMatch(grant -> grant == PackageManager.PERMISSION_GRANTED)){
-				crearCameraManager();
-            }else{
-            	contadorPeticiones++;
-            	if (contadorPeticiones > 5){
-            		alertDialogErrorCamera.show();
-				}else {
-					inicializarCamara();
-				}
-			}
-		}
 	}
 
 	@Override
@@ -214,56 +128,6 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
         return super.onOptionsItemSelected(item);
     }
 
-	private void inicializarCamara(){
-    	if (checkSelfPermission(Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED) {
-    		if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)){
-    			final String explicacion = "MegaCode toma fotografía de tu rostro mientras trabajas con el sistema por lo que es necesario utilizar la camara del dispositivo.\n\n" +
-						"Estas fotografías se utilizan nada más con fines cientificos y no se publicaran en ningún sitio.";
-    			new AlertDialog.Builder(this)
-						.setCancelable(false)
-						.setMessage(explicacion)
-						.setPositiveButton("Solicitar permisos de nuevo", ((dialog, which) -> {
-							requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
-						}))
-				.show();
-			}else{
-    			requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
-			}
-		}else{
-    		crearCameraManager();
-		}
-	}
-
-	private void crearCameraManager(){
-		if (cameraManagerIA == null) {
-			handler = new Handler.Callback(){
-				@Override
-				public boolean handleMessage(Message msg) {
-					boolean result = false;
-
-					if (msg.what == Claves.EMOTION_FOUND){
-						Bundle bundle = msg.getData();
-						String emotion = bundle.getString(Claves.EMOTION);
-						Emocion emocion = new Emocion();
-						emocion.etapa = etapa;
-						emocion.label = emotion;
-						emocion.momento = Timestamp.now();
-						sesionActual.emociones.add(emocion);
-
-						result = true;
-					}
-
-					return result;
-				}
-			};
-			try {
-				cameraManagerIA = new CameraManagerIA(this, handler);
-			}catch(Exception ex){
-				alertDialogErrorCamera.show();
-			}
-		}
-	}
-
 	private Timer contador = new Timer("contadorTiempo");
 
 	private void inicializarTiempo(){
@@ -307,9 +171,6 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 		Intent intent = getIntent();
 		if (intent != null){
 			nivelActual = intent.getParcelableExtra("nivel");
-			if (intent.getSerializableExtra(Claves.DIFICULTAD_DATA) != null){
-				dificultad = (Dificultad)intent.getSerializableExtra(Claves.DIFICULTAD_DATA);
-			}
 		}
 
 		if (nivelActual == null){
@@ -317,21 +178,9 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 			finish();
 		}
 
-		alertDialogErrorCamera = new AlertDialog.Builder(this)
-				.setCancelable(false)
-				.setMessage("El permiso de la camara está deshabilitado, habilita este permiso para poder utilizar megacode")
-				.setPositiveButton("Está bien", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						finish();
-					}
-				}).create();
-
 		sharedPreferences = getSharedPreferences(Claves.SHARED_MEGACODE_PREFERENCES, 0);
 
 		mediaPlayerManager.setBackActivity(true);
-
-		inicializarCamara();
 
 		megaCodeViewModel = ViewModelProviders.of(this).get(MegaCodeViewModel.class);
 
@@ -366,21 +215,6 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
         });
 
         InfoNivel infoNivel = nivelActual.buildInfoNivel();
-
-        //Configurar FuzzyLogic
-        FuzzyLogic.isEngineReady = false;
-        megaCodeViewModel.obtenerConfiguracionFuzzy(nivelActual.id).observe(
-        		this,
-        		configuracion -> {
-					try {
-						fuzzyLogic = FuzzyLogic.configEngine(configuracion);
-					} catch (Exception e) {
-						Log.e(TAG, e.getMessage(), e);
-						Toast.makeText(this,"El sistema de logica difusa no ha podido ser inicializada", Toast.LENGTH_LONG);
-						finish();
-					}
-				}
-		);
 
 		cargarJuego(infoNivel);
 		configurarMusica(nivelActual);
@@ -466,15 +300,6 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 
 				Intent returnData = new Intent();
 
-				//Estimar dificultad del siguiente nivel
-				if (FuzzyLogic.isEngineReady){
-					double tiempo = sesionActual.tiempo;
-					double ayudas = 0; //No se ha implementado
-					double errores = sesionActual.intentos;
-					FuzzyLogic.Dificultad dificultad = fuzzyLogic.getDificultad(tiempo, ayudas, errores);
-					returnData.putExtra(Claves.DIFICULTAD_DATA, dificultad);
-				}
-
 				MegaCodeAcitivity.this.setResult(Activity.RESULT_OK);
 				MegaCodeAcitivity.this.finish();
 			});
@@ -488,42 +313,6 @@ public class MegaCodeAcitivity extends ActivityToolbarBase implements  AndroidFr
 			transaction.replace(R.id.game_fragment, libgdxFragment).commit();
 		else
 			transaction.add(R.id.game_fragment, libgdxFragment).commit();
-	}
-
-    @Override
-    protected void onResume() {
-		super.onResume();
-
-		if (cameraManagerIA != null && !cameraManagerIA.isRunning)
-			cameraManagerIA.iniciarCamara();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		if (cameraManagerIA!=null){
-			cameraManagerIA.cerrarCamara();
-		}
-	}
-
-	@Override
-    protected void onStop() {
-        super.onStop();
-
-        if (cameraManagerIA != null)
-            cameraManagerIA.cerrarTodo();
-
-        //Detener ejecución del webview
-    }
-
-	@Override
-	protected void onDestroy() {
-		/*linearLayout.removeView(webView);
-		webView.removeAllViews();
-		webView.destroy();*/
-
-		super.onDestroy();
 	}
 
 	@Override
